@@ -1,0 +1,44 @@
+query allOpportunity($page: Int) {
+  allOpportunity(filters: {status: "open", committee: 1606}, page: $page, per_page: 100) {
+    paging {
+      current_page
+      total_pages
+    }
+    data {
+      id
+      title
+      home_lc {
+        id
+        name
+      }
+      programme {
+        id
+        short_name
+      }
+      sub_product {
+        id
+        name
+      }
+      sdg_info {
+        sdg_target {
+          goal_index
+        }
+      }
+      organisation {
+        id
+        name
+      }
+      duration
+      project_duration
+      earliest_start_date
+      latest_end_date
+      applicants_count
+      available_openings
+      created_at
+      updated_at
+      date_opened
+      cover_photo
+      location
+    }
+  }
+}

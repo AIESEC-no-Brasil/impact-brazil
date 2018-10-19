@@ -1,0 +1,42 @@
+$ib-blue-dk: #188cff;
+$ib-blue-lt: #18c2f4;
+$ib-orange-dk: #ff8c01;
+$ib-orange-lt: #ff6d00;
+$ib-green-dk: #3be33d;
+$ib-green-lt: #97e04a;
+$ib-purple-dk: #ff3b98;
+$ib-purple-lt: #ff5eba;
+$ib-yellow-dk: #ffdd00;
+$ib-yellow-lt: #ffb200;
+$ib-pink-dk: #d12354;
+$ib-pink-lt: #ff3b54;
+
+$ib-colors-list-lt: (
+        blue: $ib-blue-lt,
+        green: $ib-green-lt,
+        pink: $ib-pink-lt,
+        yellow: $ib-yellow-lt,
+        orange: $ib-orange-lt,
+        purple: $ib-purple-lt);
+
+$ib-colors-list-dk: (
+        blue: $ib-blue-dk,
+        green: $ib-green-dk,
+        pink: $ib-pink-dk,
+        yellow: $ib-yellow-dk,
+        orange: $ib-orange-dk,
+        purple: $ib-purple-dk);
+
+$colors: blue yellow green orange purple pink;
+
+   @each $val in $colors
+   {
+       .bg-ib--#{$val}
+       {
+           background-color: map_get($ib-colors-list-dk, $val)
+       }
+       .text-ib--#{$val}
+       {
+           color: map_get($ib-colors-list-lt, $val)
+       }
+   }
