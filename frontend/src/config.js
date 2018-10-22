@@ -1,5 +1,5 @@
 const config = {
-	api:       "http://localhost:8000/api/",
+	api:       "http://32478bb8.ngrok.io/api/",//"http://localhost:8000/api/",
 	colors:    {
 		ibBlue:   {
 			dark:  "#188cff",

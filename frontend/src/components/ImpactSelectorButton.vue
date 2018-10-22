@@ -1,7 +1,9 @@
 <template>
     <transition name="fade" mode="out-in">
-        <img v-if="qno === 0 && dir === 'left'" src="../assets/logo5.png" style="width: 100%; margin-top: -20px;"/>
-        <button v-else :class="['spin', 'circle', 'accent--'+accent, dir === 'left' ? 'left-button' : 'right-button']">
+        <img v-if="qno === 0 && dir === 'left'" src="../assets/logo5.png"
+             style="width: 100%; margin-top: -20px;"/>
+        <button v-else
+                :class="['spin', 'circle', 'accent--'+accent, dir === 'left' ? 'left-button' : 'right-button']">
             <i class="material-icons md-light">{{ dir === "left" ? "keyboard_arrow_left" :
                 "keyboard_arrow_right" }}</i>
         </button>

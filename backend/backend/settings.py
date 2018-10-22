@@ -26,7 +26,7 @@ SECRET_KEY = getattr(config, 'secret_key', 'uphq)=hprsaxu0$-%eczi97y_c)i8jz57uv^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = not getattr(config, 'prod', False)
 
-ALLOWED_HOSTS = ['127.0.0.1', '13.57.181.224', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', '13.57.181.224', 'localhost', '.ngrok.io']
 
 
 # Application definition
@@ -55,7 +55,11 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_WHITELIST = (
-    'localhost:8080',
+    'localhost:8080'
+)
+
+CORS_ORIGIN_REGEX_WHITELIST = (
+    r'^(.*)\.ngrok.io$'
 )
 
 ROOT_URLCONF = 'backend.urls'

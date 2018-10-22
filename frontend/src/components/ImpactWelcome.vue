@@ -8,7 +8,8 @@
         <div class="overlay"
              id="higher-overlay"
              v-show="showingQuestions"></div>
-        <VideoBg :sources="['../static/background.webm']">
+        <VideoBg :sources="['../static/background.webm']"
+                 img="../static/background.jpg">
             <div class="text-center" id="logo">
                 <img src="../assets/logo4.png">
             </div>
@@ -18,10 +19,10 @@
                     Visit<br><b>Brazil</b>
                 </ImpactWelcomeButton>
             </div>
+            <!-- We v-show this so that the API can load while the page is loading -->
+            <ImpactSelector v-show="showingQuestions"
+                            @got-answers="setAnswers"/>
         </VideoBg>
-        <!-- We v-show this so that the API can load while the page is loading -->
-        <ImpactSelector v-show="showingQuestions"
-                        @got-answers="setAnswers"/>
     </div>
 </template>
 
@@ -48,7 +49,7 @@
 			setAnswers(answers)
 			{
 				this.showingQuestions = false;
-				this.answers = answers;
+				this.$router.push({path: 'opportunities', query: {product: 2}});
 			}
 		}
 	};
@@ -128,8 +129,12 @@
         img
         {
             display: block;
-            min-height: 256px;
             height: 100%;
+        }
+
+        @media (max-aspect-ratio: 16/9)
+        {
+            height: 45vh;
         }
 
     }
@@ -141,6 +146,11 @@
         left: 50%;
         transform: translateX(-50%);
         border-spacing: 10px;
+
+        @media (max-aspect-ratio: 16/9)
+        {
+            bottom: 20%;
+        }
     }
 
     #button-visit

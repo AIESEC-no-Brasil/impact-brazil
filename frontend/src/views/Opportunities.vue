@@ -1,7 +1,8 @@
 <template>
     <div class="section" id="opportunities">
         this is where oppportunities will occur
-        {{ answers }}
+        Selection:
+
         <br><br><br><br>
         <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id illum libero nobis reprehenderit tempora!
             Error harum itaque voluptas! Consequatur impedit nostrum nulla numquam qui soluta. Doloribus molestias
@@ -67,7 +68,13 @@
 
 <script>
 	export default {
-		name: "Opportunities"
+		name: "Opportunities",
+		data()
+		{
+			return {
+				potato: this.$route
+			};
+		}
 	};
 </script>
 

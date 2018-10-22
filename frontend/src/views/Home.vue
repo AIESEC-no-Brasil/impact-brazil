@@ -6,15 +6,15 @@
 </template>
 
 <script>
-    import ImpactWelcome from '@/components/ImpactWelcome.vue';
-    import ImpactDescription from '@/components/ImpactDescription.vue';
+	import ImpactWelcome from '@/components/ImpactWelcome.vue';
+	import ImpactDescription from '@/components/ImpactDescription.vue';
 
 	export default {
-		name: "Home",
-        components: {
+		name:       "Home",
+		components: {
 			ImpactWelcome,
-            ImpactDescription
-        }
+			ImpactDescription
+		}
 	};
 </script>
 

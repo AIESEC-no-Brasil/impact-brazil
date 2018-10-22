@@ -1,5 +1,7 @@
 <template>
-    <div :id="id" class="header-button">
+    <div :id="id"
+         class="header-button"
+         role="button">
         <slot />
     </div>
 </template>

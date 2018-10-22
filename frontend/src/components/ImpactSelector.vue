@@ -34,6 +34,7 @@
                                       :accent="questionColors[currentQ]"
                                       @click.native="nextQuestion"/>
             </div>
+            <div v-show="false" class="image-preloader" ref="image-preloader"></div>
         </div>
     </transition>
 </template>
@@ -135,62 +136,7 @@
 		},
 		async mounted()
 		{
-			// Create a function to load data into {id, text} format
-			async function loadData(url, idKey, textKey, imageKey = false, imageW = 0)
-			{
-				try
-				{
-					let data = await axios.get(url);
-					let loadedData = [];
-					let loadedDataWithImages = [];
-
-					for (let k in data.data)
-					{
-						if (data.data.hasOwnProperty(k))
-						{
-							loadedData.push({id: data.data[k][idKey], text: data.data[k][textKey]});
-
-							if (imageKey !== false)
-								loadedDataWithImages.push({
-									id:   data.data[k][idKey],
-									text: `<img src='${data.data[k][imageKey]}' style='width: ${imageW}px'> ${data.data[k][textKey]}`
-								});
-						}
-					}
-
-					if (imageKey === false)
-						return loadedData;
-					else
-						return {textOnly: loadedData, withImages: loadedDataWithImages};
-				}
-				catch (err)
-				{
-					// TODO: Return the actual error
-					return false;
-				}
-			}
-
-			// Load entities list
-			this.lists.entityList = await loadData(config.api + config.endpoints.entities, 'id', 'name');
-
-			// Generate months array
-			let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-			for (let i = 1; i <= 12; i++)
-				this.lists.months.push({id: i, text: months[i - 1]});
-
-			// Load products etc.
-			// For the sake of not adding a "load" between choosing your product and choosing the SDG/subproduct,
-			// we load both SDGs and subproduct
-			let loadList = ["products", "sdgs", "subproductsGT", "subproductsGE"];
-
-			loadList.forEach(async (load) => {
-				let {textOnly, withImages} = await loadData(config.api + config.endpoints[load], 'gis_id', 'name', 'logo', 90);
-
-				this.lists[load] = textOnly;
-				this.lists[load + 'WithImages'] = withImages;
-
-			});
+			await this.loadLists();
 		},
 		methods:    {
 			prevQuestion()
@@ -212,7 +158,6 @@
 					else
 						ref = this.$refs['q3subproduct' + (this.answers.product === 2 ? "GT" : "GE")];
 				}
-				console.log('q3subproduct' + this.answers.product === 2 ? "GT" : "GE");
 
 				// Get the search
 				let selectedID = ref[0].selectedID;
@@ -267,6 +212,80 @@
 				}
 
 				setTimeout(showElem, 501, el);
+			},
+			async loadLists()
+			{
+				// Create a function to load data into {id, text} format
+				async function loadData(vm, url, idKey, textKey, imageKey = false, imageW = 0)
+				{
+					try
+					{
+						let data = await axios.get(url);
+						let loadedData = [];
+						let loadedDataWithImages = [];
+
+						for (let k in data.data)
+						{
+							if (data.data.hasOwnProperty(k))
+							{
+								loadedData.push({id: data.data[k][idKey], text: data.data[k][textKey]});
+
+								if (imageKey !== false)
+								{
+									// Load the image list
+									loadedDataWithImages.push({
+										id:   data.data[k][idKey],
+										text: `<img src='${data.data[k][imageKey]}' style='width: ${imageW}px'> ${data.data[k][textKey]}`
+									});
+
+									// Preload the image in a hidden element
+									let preload = new Image();
+									preload.src = data.data[k][imageKey];
+                                    vm.$refs['image-preloader'].appendChild(preload);
+								}
+							}
+						}
+
+						if (imageKey === false)
+							return loadedData;
+						else
+							return {textOnly: loadedData, withImages: loadedDataWithImages};
+					}
+					catch (err)
+					{
+						// TODO: Return the actual error
+						return false;
+					}
+				}
+
+				// Load entities list
+				let entityList = await loadData(this, config.api + config.endpoints.entities, 'id', 'name');
+				if (entityList === false)
+					return false;
+
+				this.lists.entityList = entityList;
+
+				// Generate months array
+				let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+				for (let i = 1; i <= 12; i++)
+					this.lists.months.push({id: i, text: months[i - 1]});
+
+				// Load products etc.
+				// For the sake of not adding a "load" between choosing your product and choosing the SDG/subproduct,
+				// we load both SDGs and subproduct
+				let loadList = ["products", "sdgs", "subproductsGT", "subproductsGE"];
+
+				loadList.forEach(async (load) => {
+					let {textOnly, withImages} = await loadData(this, config.api + config.endpoints[load], 'gis_id', 'name', 'logo', 90);
+
+					if (textOnly === false || withImages === false)
+						return false;
+
+					this.lists[load] = textOnly;
+					this.lists[load + 'WithImages'] = withImages;
+
+				});
 			}
 		}
 	};
@@ -282,12 +301,17 @@
         height: 30vh;
         /*background-color: #3be33d;*/
         transition: background-color 0.5s, border-left 0.5s;
-        position: fixed;
+        position: absolute;
         bottom: 0;
         width: 100%;
         z-index: 5;
         box-shadow: 0 -4px 12px 4px rgba(0, 0, 0, 0.8);
         /*padding-top: 20px;*/
+
+        @media (max-aspect-ratio: 16/9)
+        {
+            height: 70vh;
+        }
 
         #ib-logo-questions
         {
@@ -306,23 +330,50 @@
         {
             padding-top: 50px;
         }
+        .left, .right, .center
+        {
+            position: absolute;
+        }
         .left
         {
-            position: fixed;
             left: 4vw;
             width: 10vw;
         }
         .center
         {
-            position: fixed;
             left: 18vw;
             width: 60vw;
             padding-top: 20px;
         }
         .right
         {
-            position: fixed;
             right: 5vw;
+        }
+
+        @media (max-aspect-ratio: 16/9)
+        {
+            // We redo the positionining on mobile
+            .center
+            {
+                left: 5vw;
+                width: 90vw;
+                padding-top: 5px;
+            }
+            .left
+            {
+                left: 5vw;
+                padding-top: 40vh;
+
+                img
+                {
+                    display: none;
+                }
+            }
+            .right
+            {
+                right: 5vw;
+                padding-top: 40vh;
+            }
         }
 
         .question-text
@@ -371,13 +422,11 @@
 
     .impact-selector-enter-active, .impact-selector-leave-active
     {
-        transition: transform 0.5s !important; // so that we don't kill the background-color transition
-        left: -$border-left-width;
+        transition: transform 0.5s !important; // this has to override the background-color transition
     }
 
     .impact-selector-enter, .impact-selector-leave-to
     {
-        position: relative;
         transform: translateY(100%);
     }
 </style>

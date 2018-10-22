@@ -3,6 +3,7 @@
         <video autoplay loop muted ref="video">
             <source v-for="source in sources" :src="source" :type="getMediaType(source)">
         </video>
+        <div ref="bgimage" class="VideoBg__background"></div>
         <div class="VideoBg__content">
             <slot></slot>
         </div>
@@ -32,7 +33,7 @@
 		mounted()
 		{
 			this.setImageUrl();
-			this.setContainerHeight();
+			//this.setContainerHeight();
 
 			if (this.videoCanPlay())
 			{
@@ -56,7 +57,7 @@
 		methods: {
 			resize()
 			{
-				this.setContainerHeight();
+				//this.setContainerHeight();
 
 				if (this.videoCanPlay())
 				{
@@ -73,7 +74,7 @@
 			{
 				if (this.img)
 				{
-					this.$el.style.backgroundImage = `url(${this.img})`;
+					this.$refs.bgimage.style.backgroundImage = `url(${this.img})`;
 				}
 			},
 
@@ -117,6 +118,7 @@
         background-size: cover;
         background-position: center;
         overflow: hidden;
+        height: 100vh;
     }
 
     .VideoBg video
@@ -131,12 +133,19 @@
         transform: translate(-50%, -50%);
     }
 
-    .VideoBg__content
+    .VideoBg__content,
+    .VideoBg__background
     {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
+    }
+
+    .VideoBg__background
+    {
+        background-size: cover;
+        z-index: -9001;
     }
 </style>
