@@ -1,7 +1,43 @@
 <template>
     <div class="section" id="opportunities">
+        <div id="invite">Inviting <span>India</span> to Impact Brazil</div>
+        <div id="ey-banner">
+            <div></div>
+        </div>
+        <div id="options-left">
+            Showing <b>IT</b> opportunities for <b>Global Talent</b>
+        </div>
+        <div id="options-right">
+            <b-dropdown id="timespan" variant="transparent" right size="sm" text="January 2019">
+                <b-dropdown-item>Global Volunteer</b-dropdown-item>
+                <b-dropdown-item>Global Talent</b-dropdown-item>
+                <b-dropdown-item>Global Entrepreneur</b-dropdown-item>
+            </b-dropdown>
+            <b-dropdown id="prog" variant="transparent" right size="sm" text="Global Talent">
+                <b-dropdown-item>Global Volunteer</b-dropdown-item>
+                <b-dropdown-item>Global Talent</b-dropdown-item>
+                <b-dropdown-item>Global Entrepreneur</b-dropdown-item>
+            </b-dropdown>
+            <b-dropdown id="subproductOrSdg" variant="transparent" right size="sm" text="IT">
+                <b-dropdown-item>Global Volunteer</b-dropdown-item>
+                <b-dropdown-item>Global Talent</b-dropdown-item>
+                <b-dropdown-item>Global Entrepreneur</b-dropdown-item>
+            </b-dropdown>
+        </div>
+
+        <div id="opportunities-list">
+            <div class="opportunity">
+                <div class="opportunity-image">
+                    <b-img src="../assets/videothumbs/sample_city.jpg" fluid-grow/>
+                </div>
+                <div class="opportunity-desc-l">
+
+                </div>
+            </div>
+        </div>
+        <br><br><br><br>
         this is where oppportunities will occur
-        Selection:
+        Selection: {{potato.query}}
 
         <br><br><br><br>
         <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id illum libero nobis reprehenderit tempora!
@@ -67,8 +103,17 @@
 </template>
 
 <script>
+	import bDropdown from 'bootstrap-vue/es/components/dropdown/dropdown';
+	import bDropdownItem from 'bootstrap-vue/es/components/dropdown/dropdown-item';
+	import bImg from 'bootstrap-vue/es/components/image/img';
+
 	export default {
-		name: "Opportunities",
+		name:       "Opportunities",
+		components: {
+			bDropdown,
+			bDropdownItem,
+			bImg,
+		},
 		data()
 		{
 			return {
@@ -78,6 +123,64 @@
 	};
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+    #invite
+    {
+        padding-top: 12px;
+        text-align: center;
+
+        span
+        {
+            font-size: 3em;
+            padding: 0 4px;
+            font-family: PierSansBold, sans-serif;
+        }
+    }
+
+    #ey-banner
+    {
+        width: calc(100% + 48px);
+        height: 300px;
+        margin: 12px 0 24px -24px;
+        padding: 0;
+
+        cursor: pointer;
+
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+
+        background-image: url('../assets/videothumbs/sample_ep.jpg');
+
+        div
+        {
+            background-image: url('../assets/play-button.png');
+            width: 150px;
+            height: 150px;
+            background-size: 100%;
+            position: relative;
+            top: 75px;
+            margin: auto;
+        }
+    }
+
+    #options-left
+    {
+        float: left;
+    }
+
+    #options-right
+    {
+        float: right;
+    }
+
+    #options-right /deep/
+    {
+        button
+        {
+            margin-left: 8px;
+        }
+    }
 
 </style>

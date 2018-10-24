@@ -23,6 +23,7 @@ class EntityPartner(models.Model):
 class Entity(models.Model):
     entity_name = models.CharField('Entity Name', max_length=50)
     gis_id = models.IntegerField('MC ID on GIS')
+    no_visa = models.BooleanField('No Visa for Brazil')
 
     def __str__(self):
         return self.entity_name
@@ -31,6 +32,7 @@ class Entity(models.Model):
 class Product(models.Model):
     name = models.CharField('Product Name', max_length=50)
     shortname = models.CharField('Product Short Name', max_length=50)
+    description = models.TextField('Product Description')
     gis_id = models.IntegerField('Product ID on GIS', unique=True)
     logo = models.TextField('Product Logo Filename', blank=True)
 

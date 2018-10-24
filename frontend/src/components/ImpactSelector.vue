@@ -24,6 +24,7 @@
                                                         :options="question.options"
                                                         :defaults="question.defaults"
                                                         :ref="question.id"
+                                                        :text="defaultText[question.id]"
                                                         :error="error"/>
                         </div>
                     </div>
@@ -31,6 +32,7 @@
             </div>
             <div class="right">
                 <ImpactSelectorButton dir="right"
+                                      ref="rbutton"
                                       :accent="questionColors[currentQ]"
                                       @click.native="nextQuestion"/>
             </div>
@@ -49,7 +51,7 @@
 		name:       "ImpactSelector",
 		components: {
 			ImpactSelectorAutocomplete,
-			ImpactSelectorButton
+			ImpactSelectorButton,
 		},
 		data()
 		{
@@ -68,13 +70,16 @@
 					subproductsGE:           [],
 				},
 				answers:        {
-					country:         -1,
+					entity:          -1,
 					month:           -1,
 					product:         -1,
 					subproduct:      -1,
 					sdg:             -1,
 					subproductOrSdg: ""
 				},
+                defaultText: {
+					q0: "",
+                },
 				error:          false,
 				questionColors: ["blue", "pink", "orange", "purple"]
 			};
@@ -174,7 +179,7 @@
 					switch (this.currentQ)
 					{
 						case 0:
-							this.answers.country = selectedID;
+							this.answers.entity = selectedID;
 							break;
 
 						case 1:
@@ -213,49 +218,56 @@
 
 				setTimeout(showElem, 501, el);
 			},
+			reloadPage()
+			{
+				window.location.reload();
+			},
 			async loadLists()
 			{
 				// Create a function to load data into {id, text} format
 				async function loadData(vm, url, idKey, textKey, imageKey = false, imageW = 0)
 				{
+					let data;
 					try
 					{
-						let data = await axios.get(url);
-						let loadedData = [];
-						let loadedDataWithImages = [];
-
-						for (let k in data.data)
-						{
-							if (data.data.hasOwnProperty(k))
-							{
-								loadedData.push({id: data.data[k][idKey], text: data.data[k][textKey]});
-
-								if (imageKey !== false)
-								{
-									// Load the image list
-									loadedDataWithImages.push({
-										id:   data.data[k][idKey],
-										text: `<img src='${data.data[k][imageKey]}' style='width: ${imageW}px'> ${data.data[k][textKey]}`
-									});
-
-									// Preload the image in a hidden element
-									let preload = new Image();
-									preload.src = data.data[k][imageKey];
-                                    vm.$refs['image-preloader'].appendChild(preload);
-								}
-							}
-						}
-
-						if (imageKey === false)
-							return loadedData;
-						else
-							return {textOnly: loadedData, withImages: loadedDataWithImages};
+						data = await axios.get(url);
 					}
 					catch (err)
 					{
-						// TODO: Return the actual error
+						console.error(err);
+						vm.$root.$emit('error');
 						return false;
 					}
+					let loadedData = [];
+					let loadedDataWithImages = [];
+
+					for (let k in data.data)
+					{
+						if (data.data.hasOwnProperty(k))
+						{
+							loadedData.push({id: data.data[k][idKey], text: data.data[k][textKey]});
+
+							if (imageKey !== false)
+							{
+								// Load the image list
+								loadedDataWithImages.push({
+									id:   data.data[k][idKey],
+									text: `<img src='${data.data[k][imageKey]}' style='width: ${imageW}px'> ${data.data[k][textKey]}`
+								});
+
+								// Preload the image in a hidden element
+								let preload = new Image();
+								preload.src = data.data[k][imageKey];
+								vm.$refs['image-preloader'].appendChild(preload);
+							}
+						}
+					}
+
+					if (imageKey === false)
+						return loadedData;
+					else
+						return {textOnly: loadedData, withImages: loadedDataWithImages};
+
 				}
 
 				// Load entities list
@@ -266,10 +278,21 @@
 				this.lists.entityList = entityList;
 
 				// Generate months array
-				let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+				let months         = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+				    monthsNextYear = [];
+
+				// We want to circle the month so it starts from this month
+				let now = new Date(), month = now.getMonth(), year = now.getFullYear();
+
+				for (let i = 0; i < month; i++)
+					monthsNextYear.push(months.shift() + " " + (year + 1));
+
+				months = months.map(m => m + " " + year);
+				months = [...months, ...monthsNextYear];
+
 
 				for (let i = 1; i <= 12; i++)
-					this.lists.months.push({id: i, text: months[i - 1]});
+					this.lists.months.push({id: ((i + month) % 12), text: months[i - 1]});
 
 				// Load products etc.
 				// For the sake of not adding a "load" between choosing your product and choosing the SDG/subproduct,
@@ -277,7 +300,7 @@
 				let loadList = ["products", "sdgs", "subproductsGT", "subproductsGE"];
 
 				loadList.forEach(async (load) => {
-					let {textOnly, withImages} = await loadData(this, config.api + config.endpoints[load], 'gis_id', 'name', 'logo', 90);
+					let {textOnly, withImages} = await loadData(this, config.api + config.endpoints[load], 'gis_id', (load === 'products' ? 'description' : 'name'), 'logo', 90);
 
 					if (textOnly === false || withImages === false)
 						return false;
@@ -379,9 +402,14 @@
         .question-text
         {
             display: inline-block;
-            margin-top: 30px;
+            margin-top: 20px;
+
+            @media (max-aspect-ratio: 16/9)
+            {
+                margin-top: 30px;
+            }
             font-size: 2em;
-            font-family: 'Pier Sans Light';
+            font-family: PierSansLight, sans-serif;
             color: #fff;
         }
         .answer-space
@@ -429,4 +457,5 @@
     {
         transform: translateY(100%);
     }
+
 </style>

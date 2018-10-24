@@ -18,7 +18,7 @@
 <style lang="scss" scoped>
     .header-button
     {
-        font-family: 'Pier Sans', sans-serif;
+        font-family: PierSans, sans-serif;
         display: table-cell;
         vertical-align: middle;
         text-align: center;
@@ -35,7 +35,6 @@
         b
         {
             font-size: 48pt;
-            font-family: 'Pier Sans Bold', sans-serif;
             font-weight: bold;
             text-shadow: 0 2px rgba(0, 0, 0, 0.4);
         }

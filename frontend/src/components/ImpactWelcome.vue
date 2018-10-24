@@ -1,21 +1,21 @@
 <template>
-    <div id="header"
-         :class="showingQuestions ? 'no-scroll' : ''">
+    <div id="header">
         <!-- We v-show these because if we v-if these, the video stops playing in the background -->
         <div class="overlay"
              id="lower-overlay"
              v-show="!showingQuestions"></div>
         <div class="overlay"
              id="higher-overlay"
-             v-show="showingQuestions"></div>
+             v-show="showingQuestions"
+             @mousedown="hideQuestions"></div>
         <VideoBg :sources="['../static/background.webm']"
                  img="../static/background.jpg">
             <div class="text-center" id="logo">
                 <img src="../assets/logo4.png">
             </div>
-            <div id="buttons"
-                 @click="showingQuestions = true">
-                <ImpactWelcomeButton id="button-visit">
+            <div id="buttons">
+                <ImpactWelcomeButton id="button-visit"
+                                     @click.native="showQuestions">
                     Visit<br><b>Brazil</b>
                 </ImpactWelcomeButton>
             </div>
@@ -41,15 +41,31 @@
 		data()
 		{
 			return {
-				showingQuestions: false,
-				answers:          {}
+				showingQuestions: false
 			};
 		},
 		methods:    {
 			setAnswers(answers)
 			{
+				this.hideQuestions();
+
+				if (answers.subproductOrSdg === 'sdg')
+					delete answers.subproduct;
+				else
+					delete answers.sdg;
+				delete answers.subproductOrSdg;
+
+				this.$router.push({path: 'opportunities', query: answers});
+			},
+			showQuestions()
+			{
+				this.showingQuestions = true;
+				this.$emit('showing-questions');
+			},
+			hideQuestions()
+			{
 				this.showingQuestions = false;
-				this.$router.push({path: 'opportunities', query: {product: 2}});
+				this.$emit('not-showing-questions');
 			}
 		}
 	};

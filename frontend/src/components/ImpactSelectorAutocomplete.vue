@@ -26,25 +26,28 @@
             </transition>
         </div>
         <div v-else>
-            <Loading />
+            <Loading/>
         </div>
     </div>
 </template>
 
 <script>
 	import Vue from "vue";
-    import Loading from "./Loading.vue";
+	import Loading from "./Loading.vue";
+	import axios from "axios";
+	import {config} from "../config";
 
 	export default {
-		name:     "ImpactSelectorAutocomplete",
-        components: {
+		name:       "ImpactSelectorAutocomplete",
+		components: {
 			Loading
-        },
-		props:    {
+		},
+		props:      {
 			caption:  String,
 			options:  Array,
 			defaults: Array,
-			error:    Boolean
+			error:    Boolean,
+			text:     String
 		},
 		data()
 		{
@@ -55,7 +58,7 @@
 				search:          "",
 			};
 		},
-		computed: {
+		computed:   {
 			optlistFiltered()
 			{
 				return this.search.length === 0 ? this.defaults : this.options.filter(opt => this.search.length === 0 || opt.text.substr(0, this.search.length).toLowerCase() === this.search.toLowerCase());
@@ -65,7 +68,24 @@
 				return typeof this.options !== "undefined" && this.options.length > 0;
 			}
 		},
-		methods:  {
+		mounted()
+		{
+			this.detectCountry();
+		},
+		methods:    {
+			async detectCountry()
+			{
+				// Try to auto-detect entity if this is the entity question
+				if (this.$vnode.data.ref === "q0")
+				{
+					// Since there's nothing wrong with not finding a entity, we have no error handler
+					axios.get(config.ipApiURI).then((data) => {
+						let currentCountry = this.defaults.find(ey => ey.text === data.data.country);
+						console.log(currentCountry);
+						this.confirmOption(currentCountry.id, true);
+					}).catch(()=>{});
+				}
+			},
 			selectOption(e)
 			{
 				switch (e.which)
@@ -109,7 +129,7 @@
 						break;
 				}
 			},
-			confirmOption(id)
+			confirmOption(id, noEmit = false)
 			{
 				// We want to make sure we don't get the data from 'defaults' since those might include images etc.
 				let correctedOption = this.options.find(option => option.id === id);
@@ -118,6 +138,11 @@
 				this.search = correctedOption.text;
 				this.$refs.ibox.focus();
 				this.dropdownVisible = false;
+
+				if (!noEmit)
+					setTimeout(() => {
+						this.$emit('got-answer');
+					}, 500);
 			},
 			focusText(e)
 			{
@@ -128,7 +153,7 @@
 	};
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
     .autocomplete
     {
         /*the container must be positioned relative:*/
@@ -142,7 +167,7 @@
         background-color: #f1f1f1;
         padding: 12px;
         font-size: 2em;
-        font-family: 'Pier Sans', sans-serif;
+        font-family: PierSans, sans-serif;
         position: relative;
 
     }
@@ -166,7 +191,12 @@
         left: 0;
         right: 0;
         max-height: 70vh;
+        @media (max-aspect-ratio: 16/9)
+        {
+            max-height: 40vh;
+        }
         overflow-y: auto;
+        width: 90%;
     }
 
     .autocomplete-items div
@@ -177,7 +207,7 @@
         background-color: #fff;
         border-bottom: 1px solid #d4d4d4;
         /*font-size: 2em;*/
-        font-family: 'Pier Sans', sans-serif;
+        font-family: PierSans, sans-serif;
     }
 
     .autocomplete-items div:hover

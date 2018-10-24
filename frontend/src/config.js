@@ -1,5 +1,13 @@
 const config = {
 	api:       "http://32478bb8.ngrok.io/api/",//"http://localhost:8000/api/",
+	ipApiURI:  "http://ip-api.com/json",
+	endpoints: {
+		entities:      "entities.json",
+		products:      "products.json",
+		sdgs:          "sdgs.json",
+		subproductsGT: "subproducts.json?product=2",
+		subproductsGE: "subproducts.json?product=5",
+	},
 	colors:    {
 		ibBlue:   {
 			dark:  "#188cff",
@@ -25,13 +33,6 @@ const config = {
 			dark:  "#d12354",
 			light: "#ff3b54",
 		},
-	},
-	endpoints: {
-		entities:      "entities.json",
-		products:      "products.json",
-		sdgs:          "sdgs.json",
-		subproductsGT: "subproducts.json?product=2",
-		subproductsGE: "subproducts.json?product=5",
 	},
 };
 

@@ -4,7 +4,7 @@
              style="width: 100%; margin-top: -20px;"/>
         <button v-else
                 :class="['spin', 'circle', 'accent--'+accent, dir === 'left' ? 'left-button' : 'right-button']">
-            <i class="material-icons md-light">{{ dir === "left" ? "keyboard_arrow_left" :
+            <i role="button" class="material-icons md-light">{{ dir === "left" ? "keyboard_arrow_left" :
                 "keyboard_arrow_right" }}</i>
         </button>
     </transition>
@@ -36,12 +36,12 @@
 
     .left-button i
     {
-        left: -8px;
+        left: -2px;
     }
 
     .right-button i
     {
-        left: -4px;
+        left: 2px;
     }
 
     button

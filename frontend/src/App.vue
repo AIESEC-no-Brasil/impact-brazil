@@ -1,31 +1,133 @@
 <template>
     <div id="app">
+        <div id="nav"
+             :class="isTopOfPage ? 'no-background' : ''">
+            <img src="./assets/logonav.png" title="Impact Brazil"/>
+
+            <nav>
+                <ul>
+                    <li>
+                        <router-link to="/" exact>Home</router-link>
+                    </li>
+                    <li>
+                        <router-link to="/opportunities">Opportunities</router-link>
+                    </li>
+                    <li>
+                        <router-link to="/cities">Cities</router-link>
+                    </li>
+                    <li>
+                        <router-link to="/about">About</router-link>
+                    </li>
+                    <li>
+                        <router-link to="/contact">Contact</router-link>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
         <transition name="fade">
             <router-view/>
         </transition>
+        <sweet-modal title="Oops!"
+                     icon="error"
+                     hide-close-button
+                     blocking
+                     overlay-theme="dark"
+                     modal-theme="light"
+                     ref="reloaderror">
+            We were unable to load this page. Check your internet connection and try again.
+
+            <button class="retry"
+                    @click="reloadPage()">
+                Try Again
+            </button>
+        </sweet-modal>
     </div>
 </template>
 
+<script>
+	import {SweetModal} from 'sweet-modal-vue';
+	import ImpactWelcomeButton from './components/ImpactWelcomeButton.vue';
+    import 'bootstrap/dist/css/bootstrap.css';
+    import 'bootstrap-vue/dist/bootstrap-vue.css';
+
+	export default {
+		name:       "app",
+		components: {
+			SweetModal,
+			ImpactWelcomeButton,
+		},
+		data()
+		{
+			return {
+				isTopOfPage: true
+			};
+		},
+		methods:    {
+			reloadPage()
+			{
+				window.location.reload();
+			},
+			handleMenubarVisibility()
+			{
+				this.isTopOfPage = this.$route.name === "home" && window.scrollY === 0;
+			}
+		},
+		created()
+		{
+			this.$root.$on('error', () => {
+				setTimeout(() => {
+					this.$refs.reloaderror.open();
+				}, 1000);
+			});
+			window.addEventListener('scroll', this.handleMenubarVisibility);
+
+		},
+		destroyed()
+		{
+			window.removeEventListener('scroll', this.handleMenubarVisibility);
+		},
+		watch:      {
+			$route(to, from)
+			{
+				this.handleMenubarVisibility();
+			}
+		}
+	};
+</script>
+
 <style lang="scss">
-    #app
+    @import "./assets/_colors";
+
+    @font-face
     {
-        /*font-family: 'Avenir', Helvetica, Arial, sans-serif;*/
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        /*text-align: center;*/
-        /*color: #2c3e50;*/
+        font-family: PierSans;
+        src: local('Pier Sans'), url('./assets/PierSans-Regular.otf');
     }
 
-    /*#nav {*/
-    /*padding: 30px;*/
-    /*a {*/
-    /*font-weight: bold;*/
-    /*color: #2c3e50;*/
-    /*&.router-link-exact-active {*/
-    /*color: #42b983;*/
-    /*}*/
-    /*}*/
-    /*}*/
+    @font-face
+    {
+        font-family: PierSansLight;
+        src: local('Pier Sans Light'), url('./assets/PierSans-Light.otf');
+    }
+
+    @font-face
+    {
+        font-family: PierSansBold;
+        src: local('Pier Sans Bold'), url('./assets/PierSans-Bold.otf');
+    }
+
+    *
+    {
+        margin: 0;
+        padding: 0;
+    }
+
+    b
+    {
+        font-family: PierSansBold, sans-serif;
+        padding: 0 4px;
+    }
 
     body, html
     {
@@ -33,9 +135,17 @@
         padding: 0;
     }
 
+    html
+    {
+        // The "questions" modal prevents scrolling, but we don't want the scrollbar to disappear
+        overflow-y: scroll;
+    }
+
     .section
     {
-        padding: 24px;
+        padding: 44px 24px;
+        font-family: PierSansLight, sans-serif;
+        color: #353535;
     }
 
     .fade-enter-active, .fade-leave-active
@@ -51,5 +161,93 @@
     .fade-enter, .fade-leave-to
     {
         opacity: 0;
+    }
+
+    .retry
+    {
+        border: 1px solid #f44336;
+        padding: 8px;
+        font-family: PierSans, sans-serif;
+        margin-top: 20px;
+        font-size: 18px;
+        background: transparent;
+        color: #f44336;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .retry:hover
+    {
+        border: 1px solid #000;
+        color: #000;
+    }
+
+    #nav
+    {
+        height: 38px;
+        max-height: 50px;
+        position: fixed;
+        width: 100%;
+        z-index: 1000;
+        background-color: $ib-blue-dk;
+        transition: background-color 0.5s;
+        font-family: PierSansLight, sans-serif;
+
+        img
+        {
+            margin: 8px 0 0 16px;
+            height: 24px;
+            float: left;
+
+            @media (max-aspect-ratio: 16/9)
+            {
+                display: none;
+            }
+        }
+
+        nav
+        {
+            float: right;
+            margin-right: 8px;
+        }
+        nav ul li
+        {
+            display: inline-block;
+            list-style-type: none;
+        }
+
+        a
+        {
+            font-size: 14px;
+            display: block;
+            text-decoration: none;
+            padding: 5px 10px;
+            margin: 4px 2px;
+            color: #fff;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        a:hover
+        {
+            box-shadow: inset 0 0 0 1px #fff;
+        }
+
+        a.router-link-active
+        {
+            background-color: #fff;
+            color: $ib-blue-lt;
+        }
+    }
+
+    .no-background
+    {
+        background-color: transparent !important;
+
+        a
+        {
+            color: #fff !important;
+            background-color: transparent !important;
+        }
     }
 </style>
