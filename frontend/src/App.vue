@@ -47,7 +47,6 @@
 
 <script>
 	import {SweetModal} from 'sweet-modal-vue';
-	import ImpactWelcomeButton from './components/ImpactWelcomeButton.vue';
 	import 'bootstrap/dist/css/bootstrap.css';
 	import 'bootstrap-vue/dist/bootstrap-vue.css';
 
@@ -55,7 +54,6 @@
 		name:       "app",
 		components: {
 			SweetModal,
-			ImpactWelcomeButton,
 		},
 		data()
 		{

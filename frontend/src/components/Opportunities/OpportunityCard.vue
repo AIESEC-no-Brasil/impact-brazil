@@ -51,10 +51,10 @@
 </script>
 
 <style lang="scss" scoped>
-    @import "~bootstrap/scss/functions";
-    @import "~bootstrap/scss/variables";
-    @import "~bootstrap/scss/mixins/breakpoints";
-    @import "../assets/colors";
+    @import "../../../node_modules/bootstrap/scss/functions";
+    @import "../../../node_modules/bootstrap/scss/variables";
+    @import "../../../node_modules/bootstrap/scss/mixins/breakpoints";
+    @import "../../assets/colors";
 
     $box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
 
@@ -96,7 +96,7 @@
 
         div
         {
-            background-image: url('../assets/play-button.png');
+            background-image: url('../../assets/play-button.png');
             width: 100px;
             height: 100px;
             background-size: 100%;

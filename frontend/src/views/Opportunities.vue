@@ -6,16 +6,13 @@
             <OpportunityCard/>
             <OpportunityCard/>
         </div>
-        <br><br><br><br>
-        this is where oppportunities will occur
-        Selection: {{potato.query}}
     </div>
 </template>
 
 <script>
-	import OpportunityInvite from '../components/OpportunityInvite.vue';
-	import OpportunityOptions from '../components/OpportunityOptions.vue';
-	import OpportunityCard from '../components/OpportunityCard.vue';
+	import OpportunityInvite from '../components/Opportunities/OpportunityInvite.vue';
+	import OpportunityOptions from '../components/Opportunities/OpportunityOptions.vue';
+	import OpportunityCard from '../components/Opportunities/OpportunityCard.vue';
 
 	export default {
 		name:       "Opportunities",

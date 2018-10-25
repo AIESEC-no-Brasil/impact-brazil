@@ -45,7 +45,7 @@
 	import ImpactSelectorAutocomplete from './ImpactSelectorAutocomplete.vue';
 	import ImpactSelectorButton from './ImpactSelectorButton.vue';
 	import axios from 'axios';
-	import {config} from '../config.js';
+	import {config} from '../../config.js';
 
 	export default {
 		name:       "ImpactSelector",
@@ -315,7 +315,7 @@
 </script>
 
 <style lang="scss" scoped>
-    @import "../assets/colors";
+    @import "../../assets/colors";
 
     $border-left-width: 20px;
 

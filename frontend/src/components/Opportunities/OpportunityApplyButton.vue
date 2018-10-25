@@ -9,10 +9,10 @@
 </script>
 
 <style lang="scss" scoped>
-    @import "~bootstrap/scss/functions";
-    @import "~bootstrap/scss/variables";
-    @import "~bootstrap/scss/mixins/breakpoints";
-    @import "../assets/colors";
+    @import "../../../node_modules/bootstrap/scss/functions";
+    @import "../../../node_modules/bootstrap/scss/variables";
+    @import "../../../node_modules/bootstrap/scss/mixins/breakpoints";
+    @import "../../assets/colors";
 
     .shiny-btn
     {

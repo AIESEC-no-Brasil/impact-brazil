@@ -11,7 +11,7 @@
         <VideoBg :sources="['../static/background.webm']"
                  img="/static/background.jpg">
             <div class="text-center" id="logo">
-                <img src="../assets/logo4.png">
+                <img src="../../assets/logo4.png">
             </div>
             <div id="buttons">
                 <ImpactWelcomeButton id="button-visit"
@@ -27,9 +27,9 @@
 </template>
 
 <script>
-	import ImpactWelcomeButton from '@/components/ImpactWelcomeButton.vue';
-	import ImpactSelector from '@/components/ImpactSelector.vue';
-	import VideoBg from '@/components/VideoBackground.vue';
+	import ImpactWelcomeButton from './ImpactWelcomeButton.vue';
+	import ImpactSelector from './ImpactSelector.vue';
+	import VideoBg from './VideoBackground.vue';
 
 	export default {
 		name:       "ImpactWelcome",
@@ -72,7 +72,7 @@
 </script>
 
 <style lang="scss" scoped>
-    @import '../assets/colors';
+    @import '../../assets/colors';
 
     /*#header
     {

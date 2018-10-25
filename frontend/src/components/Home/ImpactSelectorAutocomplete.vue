@@ -33,9 +33,9 @@
 
 <script>
 	import Vue from "vue";
-	import Loading from "./Loading.vue";
+	import Loading from "../Loading.vue";
 	import axios from "axios";
-	import {config} from "../config";
+	import {config} from "../../config";
 
 	export default {
 		name:       "ImpactSelectorAutocomplete",

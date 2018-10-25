@@ -21,6 +21,7 @@
             </b-dropdown>
         </div>
     </div>
+    {{ route.$query }}
 </template>
 
 <script>

@@ -36,12 +36,12 @@
 
         cursor: pointer;
 
-        background: url('../assets/videothumbs/sample_ep.jpg') no-repeat fixed center;
+        background: url('../../assets/videothumbs/sample_ep.jpg') no-repeat fixed center;
         background-size: cover;
 
         div
         {
-            background-image: url('../assets/play-button.png');
+            background-image: url('../../assets/play-button.png');
             width: 150px;
             height: 150px;
             background-size: 100%;

@@ -1,6 +1,6 @@
 <template>
     <transition name="fade" mode="out-in">
-        <img v-if="qno === 0 && dir === 'left'" src="../assets/logo5.png"
+        <img v-if="qno === 0 && dir === 'left'" src="../../assets/logo5.png"
              style="width: 100%; margin-top: -20px;"/>
         <button v-else
                 :class="['spin', 'circle', 'accent--'+accent, dir === 'left' ? 'left-button' : 'right-button']">
@@ -25,7 +25,7 @@
 </script>
 
 <style lang="scss" scoped>
-    @import "../assets/colors";
+    @import "../../assets/colors";
     @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 
     i
