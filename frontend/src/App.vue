@@ -102,7 +102,7 @@
     @font-face
     {
         font-family: PierSans;
-        src: local('Pier Sans'), url('./assets/PierSans-Regular.otf');
+        src: local('Pier Sans Regular'), url('./assets/PierSans-Regular.otf');
     }
 
     @font-face
