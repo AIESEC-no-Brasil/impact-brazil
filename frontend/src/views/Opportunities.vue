@@ -1,25 +1,19 @@
 <template>
     <div class="section" id="opportunities">
         <OpportunityInvite/>
-        <OpportunityOptions/>
-        <div id="opportunities-list">
-            <OpportunityCard/>
-            <OpportunityCard/>
-        </div>
+        <OpportunityList/>
     </div>
 </template>
 
 <script>
 	import OpportunityInvite from '../components/Opportunities/OpportunityInvite.vue';
-	import OpportunityOptions from '../components/Opportunities/OpportunityOptions.vue';
-	import OpportunityCard from '../components/Opportunities/OpportunityCard.vue';
+	import OpportunityList from '../components/Opportunities/OpportunityList.vue';
 
 	export default {
 		name:       "Opportunities",
 		components: {
 			OpportunityInvite,
-			OpportunityOptions,
-			OpportunityCard,
+			OpportunityList,
 		},
 		data()
 		{
@@ -31,9 +25,6 @@
 </script>
 
 <style lang="scss" scoped>
-    #opportunities-list
-    {
-        margin-top: 24px;
-    }
+
 </style>
 

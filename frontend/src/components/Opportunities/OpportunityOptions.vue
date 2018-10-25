@@ -21,7 +21,6 @@
             </b-dropdown>
         </div>
     </div>
-    {{ route.$query }}
 </template>
 
 <script>
@@ -34,6 +33,10 @@
 			bDropdown,
 			bDropdownItem,
 		},
+        mounted()
+            {
+            	console.log(this.$route);
+            }
 	};
 </script>
 

@@ -8,10 +8,10 @@
                 <b-container fluid class="ml-md-3 opportunity-desc opportunity-card">
                     <b-row>
                         <b-col cols="12" md="7">
-                            <div class="city">Florianópolis</div>
-                            <div class="title">Full Stack Developer</div>
-                            <div class="organization">Cedro Technologies</div>
-                            <div class="duration">Jan 15, 2019 &middot; 24 Weeks</div>
+                            <div class="city">{{opp.lc.reference_name}}</div>
+                            <div class="title">{{opp.title}}</div>
+                            <div class="organization">{{opp.organization_name}}</div>
+                            <div class="duration">{{opp.start_date}} &middot; {{opp.duration}} Weeks</div>
                         </b-col>
                         <b-col cols="12" md="5">
                             <b-row no-gutters>
@@ -22,7 +22,7 @@
                                     <div class="host-title">Hosted by:</div>
                                 </b-col>
                                 <b-col cols="12" md="12" class="order-1 order-md-2">
-                                    <div class="host-lc">AIESEC in Florianopolis</div>
+                                    <div class="host-lc">AIESEC in {{opp.lc.reference_name}}</div>
                                 </b-col>
                             </b-row>
                         </b-col>
@@ -46,7 +46,10 @@
 			bRow,
 			bContainer,
 			OpportunityApplyButton,
-		}
+		},
+		props:      {
+			opp: Object,
+		},
 	};
 </script>
 
@@ -162,6 +165,7 @@
                 font-size: 16px;
             }
             font-family: PierSans, sans-serif;
+            white-space: nowrap;
         }
 
         .organization
@@ -176,6 +180,8 @@
             }
             color: #686868;
             font-family: PierSansLight, sans-serif;
+            white-space: nowrap;
+            overflow: hidden;
         }
 
         .duration

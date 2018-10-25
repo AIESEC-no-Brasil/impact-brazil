@@ -1,9 +1,10 @@
 import json
+from builtins import str
 
 import requests
 from django.core import serializers
 from django.db.models import Max
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework import status, generics, exceptions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -43,10 +44,10 @@ class EntityList(APIView):
 
 
 # Get the list of opportunities by parameter
-class OpportunityList(generics.ListAPIView):
-    serializer_class = OpportunitySerializer
-
-    def get_queryset(self):
+class OpportunityList(APIView):
+    # FIXME: if no opportunities are present, it breaks
+    # FIXME: also, we need to figure out why most opps have no sDG
+    def get(self, request, format=None):
         entity = self.request.query_params.get('entity', None)
         start_date = self.request.query_params.get('start_date', None)
         end_date = self.request.query_params.get('end_date', None)
@@ -103,7 +104,7 @@ class OpportunityList(generics.ListAPIView):
                         opportunities_list_ordered.remove(opportunity)
                         opportunities_list_ordered = [opportunity] + opportunities_list_ordered
 
-        return opportunities_list_ordered
+        return Response(OpportunitySerializer(opportunities_list_ordered, many=True).data)
 
 
 # Get list of LCs
@@ -150,9 +151,22 @@ class EntityPartnerList(generics.ListAPIView):
 
 
 # Get list of entity partners
-class EntityPartnerDetails(generics.RetrieveAPIView):
-    queryset = EntityPartner.objects.all()
-    serializer_class = EntityPartnerSerializer
+class EntityPartnerDetails(APIView):
+    def get(self, request, format=None, pk=0):
+        try:
+            entity = EntityPartner.objects.get(gis_id=pk)
+            is_partner = True
+        except EntityPartner.DoesNotExist:
+            entity = get_object_or_404(Entity.objects.all(), gis_id=pk)
+            is_partner = False
+
+        partnership_details = {"id": entity.id, "gis_id": entity.gis_id, "name": entity.entity_name, "is_partner": is_partner, "video": None}
+
+        if is_partner:
+            partnership_details['video'] = entity.video_link
+
+        return Response(partnership_details)
+
 
 # Get the list of entities, prioritizing country partners
 # class OpportunityList(APIView):

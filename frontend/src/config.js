@@ -7,6 +7,7 @@ const config = {
 		sdgs:          "sdgs.json",
 		subproductsGT: "subproducts.json?product=2",
 		subproductsGE: "subproducts.json?product=5",
+		entityPartner: (id) => `entity_partners/${id}.json`,
 	},
 	colors:    {
 		ibBlue:   {

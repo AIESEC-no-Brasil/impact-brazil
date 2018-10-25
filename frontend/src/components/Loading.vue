@@ -1,5 +1,5 @@
 <template>
-    <div class="spinner">
+    <div :class="[dark ? 'dark' : '', 'spinner', center ? 'center' : '']">
         <div class="bounce1"></div>
         <div class="bounce2"></div>
         <div class="bounce3"></div>
@@ -8,7 +8,11 @@
 
 <script>
 	export default {
-		name: "Loading"
+		name:  "Loading",
+		props: {
+			center: Boolean,
+			dark:   Boolean
+		}
 	};
 </script>
 
@@ -19,6 +23,12 @@
         margin-top: 40px;
         width: 100px;
         text-align: center;
+    }
+
+    .center
+    {
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .spinner > div
@@ -32,6 +42,11 @@
         display: inline-block;
         -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
         animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+    }
+
+    .dark > div
+    {
+        background-color: #444;
     }
 
     .spinner .bounce1

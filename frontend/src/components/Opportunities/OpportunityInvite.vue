@@ -1,14 +1,38 @@
 <template>
-    <div id="invite">Inviting <span>India</span> to Impact Brazil
-        <div id="ey-banner">
+    <div v-if="entityName !== ''" id="invite">Inviting <span>{{entityName}}</span> to Impact Brazil
+        <div v-if="entityVideo !== null" id="ey-banner">
             <div></div>
         </div>
+    </div>
+    <div v-else id="invite">
+        <Loading center dark/>
     </div>
 </template>
 
 <script>
+	import Loading from '../Loading';
+	import axios from 'axios';
+	import {config} from '../../config';
+
 	export default {
-		name: "OpportunityInvite"
+		name:       "OpportunityInvite",
+		components: {
+			Loading
+		},
+		data()
+		{
+			return {
+				entityName:  "",
+				entityVideo: ""
+			};
+		},
+		async mounted()
+		{
+			let entityPartnerID = this.$route.query['entity']; // TODO: handle error
+			let entityPartner = await axios.get(config.api + config.endpoints.entityPartner(entityPartnerID));
+			this.entityName = entityPartner.data['name'];
+			this.entityVideo = entityPartner.data['video'];
+		}
 	};
 </script>
 

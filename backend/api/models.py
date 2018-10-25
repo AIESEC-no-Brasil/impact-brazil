@@ -28,6 +28,9 @@ class Entity(models.Model):
     def __str__(self):
         return self.entity_name
 
+    class Meta:
+        verbose_name_plural = "Entities"
+
 
 class Product(models.Model):
     name = models.CharField('Product Name', max_length=50)
