@@ -10,7 +10,8 @@ class EntityPartner(models.Model):
     entity_name = models.CharField('Entity Name', max_length=50)
     gis_id = models.IntegerField('MC ID on GIS')
     partnership_name = models.CharField('Partnership Name', max_length=50, default='')
-    video_link = models.TextField('Partnership Video Link', blank=True)
+    video_link = models.TextField('Partnership Video ID (YouTube)', blank=True)
+    thumbnail = models.CharField('Thumbnail Filename (.jpg, HD)', blank=True, max_length=256)
 
     def __str__(self):
         return self.entity_name
@@ -68,11 +69,14 @@ class Subproduct(models.Model):
 
 class LC(models.Model):
     name = ''  # Get this from GIS
-    reference_name = models.CharField('Name for Reference Purposes', max_length=50)
+    reference_name = models.CharField('LC Name', max_length=50)
+    city = models.CharField('City Name', max_length=50)
     gis_id = models.IntegerField('LC ID on GIS', unique=True)
     products = models.ManyToManyField(Product, blank=True)
     subproducts = models.ManyToManyField(Subproduct, blank=True)
     sdgs = models.ManyToManyField(SDG, verbose_name='SDG', blank=True)
+    video_link = models.CharField('Video ID (YouTube)', max_length=256, blank=True)
+    thumbnail = models.CharField('Thumbnail Filename (.jpg)', blank=True, max_length=256)
 
     def __str__(self):
         return self.reference_name
@@ -98,10 +102,11 @@ class Opportunity(models.Model):
     picture_url = models.TextField('Picture URL')
     location = models.CharField('Location', max_length=256, null=True)
 
-    # Numbers
+    # Numbers & dates
     duration = models.IntegerField('Duration')
     start_date = models.DateField('Start Date')
     end_date = models.DateField('End Date')
+    close_date = models.DateField('Close Date')
     available_openings = models.IntegerField('Available Openings')
     created_at = models.DateTimeField('Created At')
     updated_at = models.DateTimeField('Updated At')

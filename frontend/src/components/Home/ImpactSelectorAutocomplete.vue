@@ -68,9 +68,11 @@
 				return typeof this.options !== "undefined" && this.options.length > 0;
 			}
 		},
-		mounted()
-		{
-			this.detectCountry();
+		watch:      {
+			defaults(newProp, oldProp)
+			{
+				this.detectCountry();
+			}
 		},
 		methods:    {
 			async detectCountry()
@@ -81,9 +83,9 @@
 					// Since there's nothing wrong with not finding a entity, we have no error handler
 					axios.get(config.ipApiURI).then((data) => {
 						let currentCountry = this.defaults.find(ey => ey.text === data.data.country);
-						console.log(currentCountry);
 						this.confirmOption(currentCountry.id, true);
-					}).catch(()=>{});
+					}).catch(() => {
+					});
 				}
 			},
 			selectOption(e)

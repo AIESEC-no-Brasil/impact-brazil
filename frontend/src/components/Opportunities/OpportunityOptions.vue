@@ -33,10 +33,6 @@
 			bDropdown,
 			bDropdownItem,
 		},
-        mounted()
-            {
-            	console.log(this.$route);
-            }
 	};
 </script>
 

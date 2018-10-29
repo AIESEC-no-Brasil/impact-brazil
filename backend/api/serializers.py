@@ -5,13 +5,13 @@ from .models import LC, Product, SDG, Subproduct, EntityPartner, Opportunity
 class LCSerializer(serializers.ModelSerializer):
     class Meta:
         model = LC
-        fields = ('id', 'reference_name', 'gis_id', 'products', 'subproducts', 'sdgs')
+        fields = ('id', 'reference_name', 'city', 'gis_id', 'video_link', 'thumbnail', 'products', 'subproducts', 'sdgs')
 
 
 class LCSerializerMini(serializers.ModelSerializer):
     class Meta:
         model = LC
-        fields = ('id', 'reference_name', 'gis_id')
+        fields = ('id', 'reference_name', 'city', 'gis_id', 'video_link', 'thumbnail')
 
 
 class ProductSerializer(serializers.ModelSerializer):

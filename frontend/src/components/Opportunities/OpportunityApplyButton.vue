@@ -43,11 +43,11 @@
     .shiny-btn:hover
     {
         transform: scale(1.1);
-        background-position: -60px;
+        background-position: -40px;
         box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     }
 
-    .shiny-btn:active
+    .shiny-btn:focus, .shiny-btn:active
     {
         transform: scale(1);
         background-position: 500px;

@@ -1,16 +1,18 @@
 <template>
     <b-container fluid class="opportunity">
         <b-row>
-            <b-col cols="12" md="4" class="opportunity-image opportunity-card">
+            <b-col cols="12" md="4" class="opportunity-image opportunity-card"
+                   @mousedown="showVideo(opp.lc.video_link)"
+                   :style="oppVideoThumb">
                 <div></div>
             </b-col>
             <b-col cols="12" md="8" class="opportunity-desc-col">
                 <b-container fluid class="ml-md-3 opportunity-desc opportunity-card">
                     <b-row>
                         <b-col cols="12" md="7">
-                            <div class="city">{{opp.lc.reference_name}}</div>
-                            <div class="title">{{opp.title}}</div>
-                            <div class="organization">{{opp.organization_name}}</div>
+                            <div class="city">{{opp.lc.city}}</div>
+                            <div class="title text-truncate">{{opp.title}}</div>
+                            <div class="organization text-truncate">{{opp.organization_name}}</div>
                             <div class="duration">{{opp.start_date}} &middot; {{opp.duration}} Weeks</div>
                         </b-col>
                         <b-col cols="12" md="5">
@@ -38,6 +40,7 @@
 	import bContainer from 'bootstrap-vue/es/components/layout/container';
 	import bCol from 'bootstrap-vue/es/components/layout/col';
 	import bRow from 'bootstrap-vue/es/components/layout/row';
+	import {config} from '../../config';
 
 	export default {
 		name:       "OpportunityCard",
@@ -49,6 +52,20 @@
 		},
 		props:      {
 			opp: Object,
+		},
+		data()
+		{
+			return {
+				oppVideoThumb: {
+					backgroundImage: "url('" + config.videos.lcThumbDir + (this.opp.lc.thumbnail === "" ? config.videos.defaultLCThumb : this.opp.lc.thumbnail) + "')",
+				}
+			};
+		},
+		methods:    {
+			showVideo(url)
+			{
+				this.$emit('show-video', url);
+			}
 		},
 	};
 </script>
@@ -91,7 +108,7 @@
 
     .opportunity-image
     {
-        background: url('/static/videothumbs/sample_city.jpg') center;
+        background-position: center;
         background-size: cover;
         height: 180px;
         max-height: 180px;
@@ -180,8 +197,6 @@
             }
             color: #686868;
             font-family: PierSansLight, sans-serif;
-            white-space: nowrap;
-            overflow: hidden;
         }
 
         .duration

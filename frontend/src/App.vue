@@ -28,20 +28,34 @@
         <transition name="fade">
             <router-view/>
         </transition>
-        <sweet-modal title="Oops!"
-                     icon="error"
-                     hide-close-button
-                     blocking
-                     overlay-theme="dark"
-                     modal-theme="light"
-                     ref="reloaderror">
+        <SweetModal title="Oops!"
+                    icon="error"
+                    hide-close-button
+                    blocking
+                    overlay-theme="dark"
+                    modal-theme="light"
+                    ref="reloaderror">
             We were unable to load this page. Check your internet connection and try again.
 
             <button class="retry"
                     @click="reloadPage()">
                 Try Again
             </button>
-        </sweet-modal>
+        </SweetModal>
+        <SweetModal title="Oops!"
+                    icon="error"
+                    hide-close-button
+                    blocking
+                    overlay-theme="dark"
+                    modal-theme="light"
+                    ref="fatalerror">
+            Something went wrong while loading this page.
+            <br>
+            <button class="retry"
+                    @click="goHome()">
+                Try Again
+            </button>
+        </SweetModal>
     </div>
 </template>
 
@@ -66,6 +80,10 @@
 			{
 				window.location.reload();
 			},
+			goHome()
+			{
+				window.location = "/";
+			},
 			handleMenubarVisibility()
 			{
 				this.isTopOfPage = this.$route.name === "home" && window.scrollY === 0;
@@ -76,6 +94,11 @@
 			this.$root.$on('error', () => {
 				setTimeout(() => {
 					this.$refs.reloaderror.open();
+				}, 1000);
+			});
+			this.$root.$on('fatal', () => {
+				setTimeout(() => {
+					this.$refs.fatalerror.open();
 				}, 1000);
 			});
 			window.addEventListener('scroll', this.handleMenubarVisibility);

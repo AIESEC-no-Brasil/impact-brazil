@@ -77,9 +77,9 @@
 					sdg:             -1,
 					subproductOrSdg: ""
 				},
-                defaultText: {
+				defaultText:    {
 					q0: "",
-                },
+				},
 				error:          false,
 				questionColors: ["blue", "pink", "orange", "purple"]
 			};
@@ -225,7 +225,7 @@
 			async loadLists()
 			{
 				// Create a function to load data into {id, text} format
-				async function loadData(vm, url, idKey, textKey, imageKey = false, imageW = 0)
+				async function loadData(vm, url, idKey, textKey, imageKey = false, imageW = 0, imageDir = "/static/images/")
 				{
 					let data;
 					try
@@ -252,7 +252,7 @@
 								// Load the image list
 								loadedDataWithImages.push({
 									id:   data.data[k][idKey],
-									text: `<img src='${data.data[k][imageKey]}' style='width: ${imageW}px'> ${data.data[k][textKey]}`
+									text: `<img src='${imageDir}${data.data[k][imageKey]}' style='width: ${imageW}px'> ${data.data[k][textKey]}`
 								});
 
 								// Preload the image in a hidden element
@@ -300,7 +300,7 @@
 				let loadList = ["products", "sdgs", "subproductsGT", "subproductsGE"];
 
 				loadList.forEach(async (load) => {
-					let {textOnly, withImages} = await loadData(this, config.api + config.endpoints[load], 'gis_id', (load === 'products' ? 'description' : 'name'), 'logo', 90);
+					let {textOnly, withImages} = await loadData(this, config.api + config.endpoints[load], 'gis_id', (load === 'products' ? 'description' : 'name'), 'logo', 90, config.logos[load]);
 
 					if (textOnly === false || withImages === false)
 						return false;

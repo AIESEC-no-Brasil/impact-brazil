@@ -1,6 +1,9 @@
 <template>
-    <div v-if="entityName !== ''" id="invite">Inviting <span>{{entityName}}</span> to Impact Brazil
-        <div v-if="entityVideo !== null" id="ey-banner">
+    <div v-if="entityName !== ''"
+         id="invite"
+         @mousedown="$emit('show-video', entityVideo)">
+        Inviting <span>{{entityName}}</span> to Impact Brazil
+        <div v-if="entityVideo !== null" id="ey-banner" :style="entityThumb">
             <div></div>
         </div>
     </div>
@@ -23,15 +26,29 @@
 		{
 			return {
 				entityName:  "",
-				entityVideo: ""
+				entityVideo: false,
+				entityThumb: {backgroundImage: "url('')"}
 			};
 		},
 		async mounted()
 		{
 			let entityPartnerID = this.$route.query['entity']; // TODO: handle error
 			let entityPartner = await axios.get(config.api + config.endpoints.entityPartner(entityPartnerID));
+
+			if (entityPartner.data.gis_id === 1606)
+			{
+                this.$emit('i-am-from-brazil');
+                this.$emit('no-visa');
+            }
+
+			if (entityPartner.data.no_visa)
+				this.$emit('no-visa');
+
 			this.entityName = entityPartner.data['name'];
 			this.entityVideo = entityPartner.data['video'];
+			this.entityThumb = {
+				backgroundImage: "url('" + config.videos.entiyPartnerThumbDir + (entityPartner.data['thumbnail'] === "" ? config.videos.defaultEntityPartnerThumb : entityPartner.data['thumbnail']) + "')",
+			};
 		}
 	};
 </script>
@@ -60,7 +77,7 @@
 
         cursor: pointer;
 
-        background: url('../../assets/videothumbs/sample_ep.jpg') no-repeat fixed center;
+        background: no-repeat fixed center;
         background-size: cover;
 
         div

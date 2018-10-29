@@ -42,7 +42,7 @@ class Command(BaseCommand):
                 product = None
 
             try:
-                sdg = SDG.objects.filter(gis_id=opp['sdg_info']['sdg_target']['goal_index']).first()
+                sdg = SDG.objects.filter(number=opp['sdg_info']['sdg_target']['goal_index']).first()  # Weird GIS
             except TypeError:
                 sdg = None
 
@@ -64,6 +64,7 @@ class Command(BaseCommand):
                 'duration': opp['duration'],
                 'start_date': date_to_db(opp['earliest_start_date'], date_only=True),
                 'end_date': date_to_db(opp['latest_end_date'], date_only=True),
+                'close_date': date_to_db(opp['applications_close_date'], date_only=True),
                 'available_openings': opp['available_openings'],
                 'created_at': opp['created_at'],
                 'updated_at': opp['updated_at']

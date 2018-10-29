@@ -32,6 +32,7 @@ query allOpportunity($page: Int) {
       project_duration
       earliest_start_date
       latest_end_date
+      applications_close_date
       applicants_count
       available_openings
       created_at

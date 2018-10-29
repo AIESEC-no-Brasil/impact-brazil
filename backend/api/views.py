@@ -1,4 +1,6 @@
 import json
+from datetime import datetime
+
 from builtins import str
 
 import requests
@@ -46,15 +48,20 @@ class EntityList(APIView):
 # Get the list of opportunities by parameter
 class OpportunityList(APIView):
     # FIXME: if no opportunities are present, it breaks
-    # FIXME: also, we need to figure out why most opps have no sDG
     def get(self, request, format=None):
         entity = self.request.query_params.get('entity', None)
         start_date = self.request.query_params.get('start_date', None)
         end_date = self.request.query_params.get('end_date', None)
         product = self.request.query_params.get('product', None)
 
-        if None in (entity, start_date, end_date, product):
-            raise exceptions.ParseError('entity, start_date, end_date and product must be set')
+        if None in (entity, start_date, product):
+            raise exceptions.ParseError('entity, start_date and product must be set')
+
+        if end_date is None:
+            end_date = "2099-12-31"  # TODO: There's probably a better way of doing this
+
+        # Prevent opportunities that have closed from showing
+        today = datetime.now()
 
         sdg = self.request.query_params.get('sdg', None)
         subproduct = self.request.query_params.get('subproduct', None)
@@ -69,11 +76,15 @@ class OpportunityList(APIView):
 
         # First, get all LCs & matching opportunities
         if sdg_or_subproduct == 'subproduct':
-            lcs = LC.objects.filter(products__gis_id=product, subproducts__gis_id=subproduct)
-            opportunities_list = Opportunity.objects.filter(product__gis_id=product, subproduct__gis_id=subproduct)
+            # lcs = LC.objects.filter(products__gis_id=product, subproducts__gis_id=subproduct)
+            opportunities_list = Opportunity.objects.filter(product__gis_id=product, subproduct__gis_id=subproduct,
+                                                            start_date__gte=start_date, start_date__lte=end_date,
+                                                            close_date__gt=today)
         else:
-            lcs = LC.objects.filter(products__gis_id=product, sdgs__gis_id=sdg)
-            opportunities_list = Opportunity.objects.filter(product__gis_id=product, sdg__gis_id=sdg)
+            # lcs = LC.objects.filter(products__gis_id=product, sdgs__gis_id=sdg)
+            opportunities_list = Opportunity.objects.filter(product__gis_id=product, sdg__gis_id=sdg,
+                                                            start_date__gte=start_date, start_date__lte=end_date,
+                                                            close_date__gt=today)
 
         # Now, for every LC, get one opportunity
         opportunities_list = opportunities_list.distinct('lc_id').order_by('lc_id', '-available_openings')
@@ -160,13 +171,17 @@ class EntityPartnerDetails(APIView):
             entity = get_object_or_404(Entity.objects.all(), gis_id=pk)
             is_partner = False
 
-        partnership_details = {"id": entity.id, "gis_id": entity.gis_id, "name": entity.entity_name, "is_partner": is_partner, "video": None}
+        partnership_details = {"id": entity.id, "gis_id": entity.gis_id, "name": entity.entity_name,
+                               "is_partner": is_partner, "video": None, "thumbnail": None, "no_visa": False}
 
         if is_partner:
             partnership_details['video'] = entity.video_link
+            partnership_details['thumbnail'] = entity.thumbnail
+
+        if not is_partner and entity.no_visa:
+            partnership_details['no_visa'] = True
 
         return Response(partnership_details)
-
 
 # Get the list of entities, prioritizing country partners
 # class OpportunityList(APIView):
