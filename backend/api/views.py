@@ -149,8 +149,22 @@ class SubproductList(generics.ListAPIView):
     serializer_class = SubproductSerializer
 
 
+# Get details of subproduct
+class SubproductDetail(generics.RetrieveAPIView):
+    lookup_field = 'gis_id'
+    queryset = Subproduct.objects.all()
+    serializer_class = SubproductSerializer
+
+
 # Get list of SDGs
 class SDGList(generics.ListAPIView):
+    queryset = SDG.objects.all()
+    serializer_class = SDGSerializer
+
+
+# Get details of SDG
+class SDGDetail(generics.RetrieveAPIView):
+    lookup_field = 'number'
     queryset = SDG.objects.all()
     serializer_class = SDGSerializer
 

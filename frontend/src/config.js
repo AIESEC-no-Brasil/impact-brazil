@@ -1,29 +1,33 @@
 const config = {
-	api:             "http://32478bb8.ngrok.io/api/",//"http://localhost:8000/api/",
-	ipApiURI:        "http://ip-api.com/json",
-	defaultVideoURI: "https://www.youtube.com/embed/CckIMe0VT2k?enablejsapi=1",
-	videos:          {
+	api:                "http://32478bb8.ngrok.io/api/",//"http://localhost:8000/api/",
+	gisPublicAPI:       "https://gis-api.aiesec.org/graphql?access_token=e316ebe109dd84ed16734e5161a2d236d0a7e6daf499941f7c110078e3c75493",
+	ipApiURI:           "http://ip-api.com/json",
+	defaultVideoURI:    "https://www.youtube.com/embed/CckIMe0VT2k?enablejsapi=1",
+	defaultMonthOffset: 6,
+	videos:             {
 		lcThumbDir:                "/static/videothumbs/lcs/",
 		defaultLCThumb:            "default_lc_thumb.jpg",
 		entiyPartnerThumbDir:      "/static/videothumbs/entity_partners/",
 		defaultEntityPartnerThumb: "default_ep_thumb.jpg",
 	},
-	logos:           {
+	logos:              {
 		products:      "/static/images/products/",
 		subproductsGT: "/static/images/subproducts/",
 		subproductsGE: "/static/images/subproducts/",
 		sdgs:          "/static/images/sdgs/"
 	},
-	endpoints:       {
+	endpoints:          {
 		entities:      "entities.json",
 		products:      "products.json",
 		sdgs:          "sdgs.json",
 		subproductsGT: "subproducts.json?product=2",
 		subproductsGE: "subproducts.json?product=5",
 		entityPartner: (id) => `entity_partners/${id}.json`,
+		sdg:           (id) => `sdg/${id}.json`,
+		subproduct:    (id) => `subproduct/${id}.json`,
 		opportunities: "opportunities.json",
 	},
-	colors:          {
+	colors:             {
 		ibBlue:   {
 			dark:  "#188cff",
 			light: "#18c2f4",

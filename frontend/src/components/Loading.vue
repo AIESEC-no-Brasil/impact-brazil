@@ -1,5 +1,5 @@
 <template>
-    <div :class="[dark ? 'dark' : '', 'spinner', center ? 'center' : '']">
+    <div :class="[dark ? 'dark' : '', 'spinner', center ? 'center' : '', small ? 'small' : '']">
         <div class="bounce1"></div>
         <div class="bounce2"></div>
         <div class="bounce3"></div>
@@ -11,7 +11,8 @@
 		name:  "Loading",
 		props: {
 			center: Boolean,
-			dark:   Boolean
+			dark:   Boolean,
+			small:  Boolean
 		}
 	};
 </script>
@@ -49,6 +50,16 @@
         background-color: #444;
     }
 
+    .small
+    {
+        margin-top: 4px;
+    }
+
+    .small > div
+    {
+        width: 8px;
+        height: 8px;
+    }
     .spinner .bounce1
     {
         -webkit-animation-delay: -0.32s;

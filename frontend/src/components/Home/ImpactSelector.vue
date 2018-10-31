@@ -46,6 +46,7 @@
 	import ImpactSelectorButton from './ImpactSelectorButton.vue';
 	import axios from 'axios';
 	import {config} from '../../config.js';
+	import {monthList} from '../../functions/month-list';
 
 	export default {
 		name:       "ImpactSelector",
@@ -206,8 +207,8 @@
 			{
 				// Small hack to make sure that when we hit "prevQuestion", the list doesn't displace the current question as it's fading out
 				el.style.position = 'absolute';
-				el.style.top = -9999;
-				el.style.left = -9999;
+				el.style.top = "-9999px";
+				el.style.left = "-9999px";
 
 				function showElem(elem)
 				{
@@ -258,7 +259,8 @@
 								// Preload the image in a hidden element
 								let preload = new Image();
 								preload.src = data.data[k][imageKey];
-								vm.$refs['image-preloader'].appendChild(preload);
+								if (vm.$refs['image-preloader'] !== undefined)
+									vm.$refs['image-preloader'].appendChild(preload);
 							}
 						}
 					}
@@ -278,21 +280,9 @@
 				this.lists.entityList = entityList;
 
 				// Generate months array
-				let months         = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-				    monthsNextYear = [];
-
-				// We want to circle the month so it starts from this month
-				let now = new Date(), month = now.getMonth(), year = now.getFullYear();
-
-				for (let i = 0; i < month; i++)
-					monthsNextYear.push(months.shift() + " " + (year + 1));
-
-				months = months.map(m => m + " " + year);
-				months = [...months, ...monthsNextYear];
-
-
-				for (let i = 1; i <= 12; i++)
-					this.lists.months.push({id: ((i + month) % 12), text: months[i - 1]});
+				let {months, month} = monthList();
+				for (let i = 0; i < 12; i++)
+					this.lists.months.push({id: ((i + month) % 12) + 1, text: months[i]});
 
 				// Load products etc.
 				// For the sake of not adding a "load" between choosing your product and choosing the SDG/subproduct,

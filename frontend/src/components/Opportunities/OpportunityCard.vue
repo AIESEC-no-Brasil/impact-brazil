@@ -9,13 +9,15 @@
             <b-col cols="12" md="8" class="opportunity-desc-col">
                 <b-container fluid class="ml-md-3 opportunity-desc opportunity-card">
                     <b-row>
-                        <b-col cols="12" md="7">
+                        <b-col cols="12" md="8">
                             <div class="city">{{opp.lc.city}}</div>
-                            <div class="title text-truncate">{{opp.title}}</div>
-                            <div class="organization text-truncate">{{opp.organization_name}}</div>
+                            <div class="title text-truncate" :title="opp.title">{{opp.title}}</div>
+                            <div class="organization text-truncate" :title="opp.organization_name">
+                                {{opp.organization_name}}
+                            </div>
                             <div class="duration">{{opp.start_date}} &middot; {{opp.duration}} Weeks</div>
                         </b-col>
-                        <b-col cols="12" md="5">
+                        <b-col cols="12" md="4">
                             <b-row no-gutters>
                                 <b-col cols="12" class="order-2 order-md-0">
                                     <OpportunityApplyButton/>
@@ -24,7 +26,9 @@
                                     <div class="host-title">Hosted by:</div>
                                 </b-col>
                                 <b-col cols="12" md="12" class="order-1 order-md-2">
-                                    <div class="host-lc">AIESEC in {{opp.lc.reference_name}}</div>
+                                    <div class="host-lc text-truncate" :title="'AIESEC in ' +opp.lc.reference_name">
+                                        AIESEC in {{opp.lc.reference_name}}
+                                    </div>
                                 </b-col>
                             </b-row>
                         </b-col>

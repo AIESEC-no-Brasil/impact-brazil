@@ -2,8 +2,13 @@
 <template>
     <div id="opportunity-list-root">
         <OpportunityOptions v-if="!noVisa"
+                            :options="options"
                             @options-changed="optionsChanged"/>
-        <div v-if="iAmFromBrazil" id="no-opps-available">
+        <div v-if="missingOpts && !iAmFromBrazil" id="no-opps-available">
+            <i class="material-icons">settings</i><br>
+            To get started, please select your filters from the top right.
+        </div>
+        <div v-else-if="iAmFromBrazil" id="no-opps-available">
             <i class="material-icons">location_on</i><br>
             Hello! This website is meant for internationals who are searching for opportunities in Brazil.<br>
             If you are a Brazilian and you want to find opportunities internationally, please visit <a
@@ -56,9 +61,10 @@
 		data()
 		{
 			return {
-				oppList: [],
-				noOpps:  false,
-				options: {}
+				oppList:     [],
+				noOpps:      false,
+				missingOpts: false,
+				options:     {}
 			};
 		},
 		methods:    {
@@ -68,10 +74,15 @@
 			},
 			optionsChanged(options)
 			{
-
+				this.oppList = [];
+				this.noOpps = false;
+				this.loadOpps();
 			},
 			async loadOpps()
 			{
+				// Reset
+				this.missingOpts = false;
+
 				// Configure the options
 				let {entity, product} = this.$route.query;
 				let options = {entity, product};
@@ -83,8 +94,16 @@
 				}
 				else if (this.$route.query.month)
 				{
-					let thisDate = new Date();
-					options.start_date = thisDate.getFullYear() + "-" + ("0" + this.$route.query.month).substr(-2) + "-01";
+					let startDate = new Date(
+						new Date().getFullYear()
+						+ (parseInt(this.$route.query.month) < ((new Date()).getMonth() + 1) ? 1 : 0),
+						parseInt(this.$route.query.month) - 1,
+						1);
+					options.start_date = dateFormat(startDate, 'yyyy-mm-dd');
+
+					let endDate = startDate;
+					endDate.setMonth(startDate.getMonth() + config.defaultMonthOffset);
+					options.end_date = dateFormat(endDate, 'yyyy-mm-dd');
 				}
 
 				if (this.$route.query.sdg)
@@ -95,35 +114,33 @@
 				// Convert objects to proper datatype
 				for (let k in options)
 				{
-					if (k.indexOf("date") > -1)
-						options[k] = new Date(options[k]);
-					else
+					if (k.indexOf("date") === -1)
 						options[k] = parseInt(options[k]);
 				}
+                this.options = options;
 
 				// Check if all required parameters are set
-				if (!(options.entity && options.product)
-					|| !(options.month || (options.start_date && options.end_date))
+				if (!(options.entity && options.product && options.start_date)
 					|| !(options.sdg || options.subproduct)
 					|| ((options.product === 5 || options.product === 2) && !options.subproduct)
 					|| (options.product === 1 && !options.sdg))
 				{
-					console.error("All required parameters not set");
-					this.$root.$emit('fatal');
+					//console.error("All required parameters not set");
+					this.missingOpts = true;
 					return false;
 				}
-				this.options = options;
 
 				// Now that we're 100% sure, let's set this up
 				let query = queryString.stringify(options);
-				console.log(query);
+
+				let opps;
 				try
 				{
-					let opps = await axios.get(config.api + config.endpoints.opportunities + '?' + query);
+					opps = await axios.get(config.api + config.endpoints.opportunities + '?' + query);
 				}
 				catch (err)
 				{
-					console.log(err);
+					console.error(err);
 					this.$root.$emit('error');
 					return;
 				}
@@ -142,15 +159,18 @@
 				// Make the dates look nice
 				opps.data.forEach((opp) => {
 					opp.title = opp.title
+					.trim()
 					.replace(/^\[(.*)]( - )?/, '')
-					.replace(` at ${opp.organization_name}`, '');
+					.replace(` at ${opp.organization_name}`, '')
+					.replace(` in ${opp.lc.reference_name}`, '')
+					.replace(' in Brazil', '');
 
 					opp.title =
 						opp.title.toUpperCase() === opp.title ?
 							opp.title
 							.split(' ')
-							.map(i => i[0].toUpperCase()
-								+ i.substring(1).toLowerCase())
+							.map(i => i !== "" ? (i[0].toUpperCase()
+								+ i.substring(1).toLowerCase()) : "")
 							.join(' ')
 							: opp.title;
 

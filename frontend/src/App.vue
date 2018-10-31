@@ -10,7 +10,7 @@
                         <router-link to="/" exact>Home</router-link>
                     </li>
                     <li>
-                        <router-link to="/opportunities">Opportunities</router-link>
+                        <router-link :to="opportunityLink">Opportunities</router-link>
                     </li>
                     <li>
                         <router-link to="/cities">Cities</router-link>
@@ -26,8 +26,13 @@
         </div>
 
         <transition name="fade">
-            <router-view/>
+            <keep-alive include="Opportunities">
+                <router-view/>
+            </keep-alive>
         </transition>
+        <div id="footer" style="text-align: center;"><br><br>
+            This website is &copy; AIESEC in Brazil. Don't do shady stuff.
+        </div>
         <SweetModal title="Oops!"
                     icon="error"
                     hide-close-button
@@ -49,11 +54,11 @@
                     overlay-theme="dark"
                     modal-theme="light"
                     ref="fatalerror">
-            Something went wrong while loading this page.
+            {{fatalError}}
             <br>
             <button class="retry"
                     @click="goHome()">
-                Try Again
+                Ok
             </button>
         </SweetModal>
     </div>
@@ -63,6 +68,7 @@
 	import {SweetModal} from 'sweet-modal-vue';
 	import 'bootstrap/dist/css/bootstrap.css';
 	import 'bootstrap-vue/dist/bootstrap-vue.css';
+	import queryString from 'query-string';
 
 	export default {
 		name:       "app",
@@ -72,8 +78,16 @@
 		data()
 		{
 			return {
-				isTopOfPage: true
+				isTopOfPage:     true,
+				opportunityOpts: {},
+				fatalError:      "Something went wrong while loading this page.",
 			};
+		},
+		computed:   {
+			opportunityLink()
+			{
+				return "/opportunities?" + queryString.stringify(this.opportunityOpts);
+			}
 		},
 		methods:    {
 			reloadPage()
@@ -86,7 +100,7 @@
 			},
 			handleMenubarVisibility()
 			{
-				this.isTopOfPage = this.$route.name === "home" && window.scrollY === 0;
+				this.isTopOfPage = (this.$route.name === "home" || this.$route.name === "opportunity") && window.scrollY === 0;
 			}
 		},
 		created()
@@ -96,10 +110,18 @@
 					this.$refs.reloaderror.open();
 				}, 1000);
 			});
-			this.$root.$on('fatal', () => {
+			this.$root.$on('fatal', (text) => {
 				setTimeout(() => {
+					if (typeof text !== undefined)
+						this.fatalError = text;
+
 					this.$refs.fatalerror.open();
 				}, 1000);
+			});
+			this.$root.$on('options-changed', (opts) => {
+				// FIXME: t'is broken when you set options then go home and change them
+				console.log(opts);
+				this.opportunityOpts = opts;
 			});
 			window.addEventListener('scroll', this.handleMenubarVisibility);
 

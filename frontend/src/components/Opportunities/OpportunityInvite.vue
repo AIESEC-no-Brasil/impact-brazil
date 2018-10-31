@@ -32,14 +32,39 @@
 		},
 		async mounted()
 		{
-			let entityPartnerID = this.$route.query['entity']; // TODO: handle error
-			let entityPartner = await axios.get(config.api + config.endpoints.entityPartner(entityPartnerID));
+			let entityPartner, entityPartnerID;
+			try
+			{
+
+				if (this.$route.query['entity'])
+					entityPartnerID = this.$route.query['entity'];
+				else
+				{
+					// Auto detect the entity!
+					let entities = await axios.get(config.api + config.endpoints.entities);
+					let myEntity = await axios.get(config.ipApiURI);
+
+					// FIXME: DEBUG ONLY!!!
+                    //entityPartnerID = 1553;
+					entityPartnerID = entities.data.find(entity => entity.name === myEntity.data.country).id;
+
+					// Don't forget to route
+					this.$router.push({path: 'opportunities', query: {entity: entityPartnerID}});
+				}
+				entityPartner = await axios.get(config.api + config.endpoints.entityPartner(entityPartnerID));
+			}
+			catch (err)
+			{
+				console.error(err);
+				this.$root.$emit('error');
+				return false;
+			}
 
 			if (entityPartner.data.gis_id === 1606)
 			{
-                this.$emit('i-am-from-brazil');
-                this.$emit('no-visa');
-            }
+				this.$emit('i-am-from-brazil');
+				this.$emit('no-visa');
+			}
 
 			if (entityPartner.data.no_visa)
 				this.$emit('no-visa');
