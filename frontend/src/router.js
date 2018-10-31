@@ -37,7 +37,7 @@ export default new Router({
 			return savedPosition;
 		else if (to.hash)
 			return window.scrollTo({top: document.querySelector(to.hash).offsetTop, behavior: 'smooth'});
-		else
-			return window.scrollTo({top: 0, behavior: 'smooth'});
+		//else
+		//	return window.scrollTo({top: 0, behavior: 'smooth'});
 	}
 });

@@ -1,10 +1,15 @@
 <template>
-    <a href="#" class="shiny-btn">Apply &raquo;</a>
+    <a v-if="sendEvent" href="#" class="shiny-btn">Apply</a>
+    <router-link v-else :to="`/opportunity/${id}`" class="shiny-btn">Apply &raquo;</router-link>
 </template>
 
 <script>
 	export default {
-		name: "OpportunityApplyButton"
+		name:  "OpportunityApplyButton",
+		props: {
+			id:        Number,
+			sendEvent: Boolean
+		}
 	};
 </script>
 

@@ -20,7 +20,7 @@
                         <b-col cols="12" md="4">
                             <b-row no-gutters>
                                 <b-col cols="12" class="order-2 order-md-0">
-                                    <OpportunityApplyButton/>
+                                    <OpportunityApplyButton :id="opp.gis_id"/>
                                 </b-col>
                                 <b-col cols="0" md="12" class="order-0 order-md-1">
                                     <div class="host-title">Hosted by:</div>

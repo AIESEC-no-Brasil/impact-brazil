@@ -21,6 +21,7 @@
                         :text="selections.months">
                 <b-dropdown-item @click="chooseDateRange">Select a date range</b-dropdown-item>
                 <b-dropdown-item v-for="month in lists.months"
+                                 :key="month.id"
                                  @click="changeOption('month', month.id)">
                     {{month.text}}
                 </b-dropdown-item>
@@ -31,6 +32,7 @@
                         size="sm"
                         :text="selections.products">
                 <b-dropdown-item v-for="product in lists.products"
+                                 :key="product.id"
                                  @click="changeOption('product', product.id)">
                     {{product.text}}
                 </b-dropdown-item>
@@ -43,6 +45,7 @@
                         :text="selections.sdgs"
                         v-if="product===1">
                 <b-dropdown-item v-for="sdg in lists.sdgs"
+                                 :key="sdg.id"
                                  @click="changeOption('sdg', sdg.id)">
                     {{sdg.text}}
                 </b-dropdown-item>
@@ -55,6 +58,7 @@
                         :text="selections.subproductsGT"
                         v-if="product===2">
                 <b-dropdown-item v-for="subproduct in lists.subproductsGT"
+                                 :key="subproduct.id"
                                  @click="changeOption('subproduct', subproduct.id)">
                     {{subproduct.text}}
                 </b-dropdown-item>
@@ -67,6 +71,7 @@
                         :text="selections.subproductsGE"
                         v-if="product===5">
                 <b-dropdown-item v-for="subproduct in lists.subproductsGE"
+                                 :key="subproduct.id"
                                  @click="changeOption('subproduct', subproduct.id)">
                     {{subproduct.text}}
                 </b-dropdown-item>
@@ -96,9 +101,6 @@
 			Loading,
 			DatePicker,
 		},
-		props:      {
-			options: Object,
-		},
 		data()
 		{
 			return {
@@ -122,6 +124,10 @@
 			};
 		},
 		computed:   {
+			options()
+			{
+				return this.$store.state.options;
+			},
 			subproductOrSdg()
 			{
 				let retText = this.options.product === 1 ? this.selections.sdgs
@@ -262,7 +268,7 @@
 
 				this.$router.push({path: 'opportunities', query: queryString});
 				this.$emit('options-changed');
-				this.$root.$emit('options-changed', queryString);
+				this.$store.commit('optquery', queryString);
 			},
 			changeDate(evt)
 			{
@@ -274,7 +280,7 @@
 				this.customDate = true;
 				this.$router.push({path: 'opportunities', query: queryString});
 				this.$emit('options-changed');
-				this.$root.$emit('options-changed', queryString);
+				this.$store.commit('optquery', queryString);
 			},
 			chooseDateRange()
 			{

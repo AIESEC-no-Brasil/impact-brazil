@@ -55,6 +55,11 @@
 					delete answers.sdg;
 				delete answers.subproductOrSdg;
 
+				this.$store.commit('queueOptReload');
+				this.$store.commit('noVisa', false);
+				this.$store.commit('brazilian', false);
+				this.$store.commit('options', {});
+				this.$store.commit('optquery', {});
 				this.$router.push({path: 'opportunities', query: answers});
 			},
 			showQuestions()

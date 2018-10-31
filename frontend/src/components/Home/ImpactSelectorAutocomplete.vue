@@ -81,7 +81,7 @@
 				if (this.$vnode.data.ref === "q0")
 				{
 					// Since there's nothing wrong with not finding a entity, we have no error handler
-					axios.get(config.ipApiURI).then((data) => {
+					axios.get(config.ipAPI).then((data) => {
 						let currentCountry = this.defaults.find(ey => ey.text === data.data.country);
 						this.confirmOption(currentCountry.id, true);
 					}).catch(() => {

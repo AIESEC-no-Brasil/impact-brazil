@@ -1,10 +1,14 @@
 <template>
     <div>
         <div id="cover-opportunity" :style="backgroundStyle">
+            <div id="cover-back-button"
+                 @click="goBack">
+                <i class="material-icons">arrow_back</i>
+            </div>
             <div id="cover-overlay">
                 <div class="title">{{opportunity.title}}</div>
                 <div class="location"><i class="material-icons">location_on</i> {{opportunity.location}}</div>
-                <OpportunityApplyButton v-if="daysLeft >= 0"/>
+                <OpportunityApplyButton send-event v-if="daysLeft >= 0"/>
                 <div class="deadline"><i class="material-icons">alarm</i>
                     {{daysLeft > 0 ? `${daysLeft} day${daysLeft !== 1 ? 's' : ''} left to apply`
                     : daysLeft === 0 ? `Last day to apply`
@@ -47,6 +51,12 @@
 				}
 				return 0;
 			}
+		},
+		methods:    {
+			goBack()
+			{
+				window.history.back();
+			}
 		}
 	};
 </script>
@@ -60,6 +70,20 @@
         background-size: cover;
         margin-bottom: 24px;
         position: relative;
+    }
+
+    #cover-back-button
+    {
+        position: absolute;
+        top: 50px;
+        left: 10px;
+        color: #fff;
+        z-index: 1000;
+        i
+        {
+            font-size: 48px;
+        }
+        cursor: pointer;
     }
 
     #cover-overlay

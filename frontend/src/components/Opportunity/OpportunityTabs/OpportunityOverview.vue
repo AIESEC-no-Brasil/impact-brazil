@@ -28,8 +28,12 @@
         <o-row title="Duration">{{opportunity.duration}} weeks</o-row>
         <o-row separator/>
         <o-row title="Salary">
-            {{opportunity.specifics_info.salary === 0 ? "None" : `${opportunity.specifics_info.salary}
-            ${opportunity.specifics_info.salary_currency.alphabetic_code}`}}
+            {{opportunity.specifics_info.salary === 0 || opportunity.specifics_info.salary === null
+            ? "Unpaid"
+            : `${opportunity.specifics_info.salary}
+            ${opportunity.specifics_info.salary_currency === null
+            ? ''
+            : opportunity.specifics_info.salary_currency.alphabetic_code}`}}
         </o-row>
         <o-row title="Positions">{{opportunity.available_openings}}</o-row>
         <o-row separator/>

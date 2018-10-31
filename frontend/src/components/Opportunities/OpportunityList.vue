@@ -1,20 +1,19 @@
 <!--suppress XmlDuplicatedId -->
 <template>
     <div id="opportunity-list-root">
-        <OpportunityOptions v-if="!noVisa"
-                            :options="options"
+        <OpportunityOptions v-if="!$store.state.noVisa"
                             @options-changed="optionsChanged"/>
-        <div v-if="missingOpts && !iAmFromBrazil" id="no-opps-available">
+        <div v-if="missingOpts && !$store.state.iAmFromBrazil && !$store.state.noVisa" id="no-opps-available">
             <i class="material-icons">settings</i><br>
             To get started, please select your filters from the top right.
         </div>
-        <div v-else-if="iAmFromBrazil" id="no-opps-available">
+        <div v-else-if="$store.state.iAmFromBrazil" id="no-opps-available">
             <i class="material-icons">location_on</i><br>
             Hello! This website is meant for internationals who are searching for opportunities in Brazil.<br>
             If you are a Brazilian and you want to find opportunities internationally, please visit <a
                 href="https://aiesec.org.br">our national website</a>.
         </div>
-        <div v-else-if="noVisa" id="no-opps-available">
+        <div v-else-if="$store.state.noVisa" id="no-opps-available">
             <i class="material-icons">location_off</i><br>
             Sorry, due to Visa regulations, we do not have any opportunities to show you right now.<br>
             Please
@@ -25,6 +24,7 @@
             <OpportunityCard v-for="opp in oppList"
                              :ref="opp.id"
                              :opp="opp"
+                             :key="opp.id"
                              @show-video="showVideo"/>
         </div>
         <div v-else-if="noOpps" id="no-opps-available">
@@ -54,17 +54,12 @@
 			OpportunityCard,
 			Loading,
 		},
-		props:      {
-			noVisa:        Boolean,
-			iAmFromBrazil: Boolean
-		},
 		data()
 		{
 			return {
 				oppList:     [],
 				noOpps:      false,
 				missingOpts: false,
-				options:     {}
 			};
 		},
 		methods:    {
@@ -117,7 +112,7 @@
 					if (k.indexOf("date") === -1)
 						options[k] = parseInt(options[k]);
 				}
-                this.options = options;
+				this.$store.commit('options', options);
 
 				// Check if all required parameters are set
 				if (!(options.entity && options.product && options.start_date)
@@ -177,11 +172,22 @@
 					opp.start_date = dateFormat(opp.start_date, "mmm d, yyyy");
 				});
 				this.oppList = opps.data;
+
+				// Store the querystring too
+				this.$store.commit('optquery', this.$route.query);
+
+				// We don't need to reload any more
+				this.$store.commit('listLoaded');
 			}
 		},
 		async mounted()
 		{
 			this.loadOpps();
+		},
+		async activated()
+		{
+			if (this.$store.state.optReloadQueued.list)
+				this.loadOpps();
 		}
 	};
 </script>

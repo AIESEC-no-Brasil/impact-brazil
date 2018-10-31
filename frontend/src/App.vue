@@ -86,7 +86,7 @@
 		computed:   {
 			opportunityLink()
 			{
-				return "/opportunities?" + queryString.stringify(this.opportunityOpts);
+				return "/opportunities?" + queryString.stringify(this.$store.state.optquery);
 			}
 		},
 		methods:    {
@@ -117,11 +117,6 @@
 
 					this.$refs.fatalerror.open();
 				}, 1000);
-			});
-			this.$root.$on('options-changed', (opts) => {
-				// FIXME: t'is broken when you set options then go home and change them
-				console.log(opts);
-				this.opportunityOpts = opts;
 			});
 			window.addEventListener('scroll', this.handleMenubarVisibility);
 

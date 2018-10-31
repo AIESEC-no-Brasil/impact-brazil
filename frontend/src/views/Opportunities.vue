@@ -1,11 +1,9 @@
 <template>
     <div class="section" id="opportunities">
-        <OpportunityInvite v-if="!noVisa"
-                           @no-visa="noVisa = true"
-                           @i-am-from-brazil="iAmFromBrazil = true"
+        <OpportunityInvite v-if="!$store.state.noVisa"
                            @show-video="showVideo"/>
-        <OpportunityList :no-visa="noVisa"
-                         :i-am-from-brazil="iAmFromBrazil"
+        <OpportunityList :no-visa="$store.state.noVisa"
+                         :i-am-from-brazil="$store.state.iAmFromBrazil"
                          @show-video="showVideo"/>
         <SweetModal modal-theme="dark"
                     overlay-theme="dark"
@@ -16,7 +14,7 @@
                     @close="stopPlayingVideo">
             <iframe width="100%"
                     height="100%"
-                    :src="defaultVideoURI"
+                    :src="defaultVideoURL"
                     frameborder="0"
                     allow="autoplay; encrypted-media"
                     allowfullscreen
@@ -43,9 +41,7 @@
 		data()
 		{
 			return {
-				noVisa:          false,
-				iAmFromBrazil:   false,
-				defaultVideoURI: config.defaultVideoURI
+				defaultVideoURL: config.defaultVideoURL
 			};
 		},
 		methods:    {
@@ -55,9 +51,9 @@
 				{
 					let setSrc;
 					if (url !== "")
-						setSrc = `https://www.youtube.com/embed/${url}?enablejsapi=1`;
+						setSrc = config.youtubeURL(url);
 					else
-						setSrc = this.defaultVideoURI;
+						setSrc = this.defaultVideoURL;
 
 					if (this.$refs.youtube.src !== setSrc)
 						this.$refs.youtube.src = setSrc;

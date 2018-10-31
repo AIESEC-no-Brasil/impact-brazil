@@ -1,3 +1,4 @@
+<!--suppress XmlDuplicatedId -->
 <template>
     <div v-if="entityName !== ''"
          id="invite"
@@ -30,50 +31,66 @@
 				entityThumb: {backgroundImage: "url('')"}
 			};
 		},
+		methods:    {
+			async loadInvite()
+			{
+				let entityPartner, entityPartnerID;
+				try
+				{
+					if (this.$route.query.entity)
+						entityPartnerID = this.$route.query.entity;
+					else if (this.$store.state.options.entity)
+						entityPartnerID = this.$store.state.options.entity;
+					else
+					{
+						// Auto detect the entity!
+						let entities = await axios.get(config.api + config.endpoints.entities);
+						let myEntity = await axios.get(config.ipAPI);
+
+						// FIXME: DEBUG ONLY!!!
+						//entityPartnerID = 1553;
+						entityPartnerID = entities.data.find(entity => entity.name === myEntity.data.country).id;
+
+						// Don't forget to route
+						this.$router.push({path: 'opportunities', query: {entity: entityPartnerID}});
+					}
+					entityPartner = await axios.get(config.api + config.endpoints.entityPartner(entityPartnerID));
+				}
+				catch (err)
+				{
+					console.error(err);
+					this.$root.$emit('error');
+					return false;
+				}
+
+				if (entityPartner.data.gis_id === 1606)
+				{
+					this.$store.commit('brazilian', true);
+					this.$store.commit('noVisa', true);
+				}
+
+				if (entityPartner.data.no_visa)
+					this.$store.commit('noVisa', true);
+
+				this.entityName = entityPartner.data['name'];
+				this.entityVideo = entityPartner.data['video'];
+				this.entityThumb = {
+					backgroundImage: "url('" + config.videos.entiyPartnerThumbDir + (entityPartner.data['thumbnail'] === "" ? config.videos.defaultEntityPartnerThumb : entityPartner.data['thumbnail']) + "')",
+				};
+
+
+				// We don't need to reload any more
+				this.$store.commit('inviteLoaded');
+			}
+		},
 		async mounted()
 		{
-			let entityPartner, entityPartnerID;
-			try
-			{
-
-				if (this.$route.query['entity'])
-					entityPartnerID = this.$route.query['entity'];
-				else
-				{
-					// Auto detect the entity!
-					let entities = await axios.get(config.api + config.endpoints.entities);
-					let myEntity = await axios.get(config.ipApiURI);
-
-					// FIXME: DEBUG ONLY!!!
-                    //entityPartnerID = 1553;
-					entityPartnerID = entities.data.find(entity => entity.name === myEntity.data.country).id;
-
-					// Don't forget to route
-					this.$router.push({path: 'opportunities', query: {entity: entityPartnerID}});
-				}
-				entityPartner = await axios.get(config.api + config.endpoints.entityPartner(entityPartnerID));
-			}
-			catch (err)
-			{
-				console.error(err);
-				this.$root.$emit('error');
-				return false;
-			}
-
-			if (entityPartner.data.gis_id === 1606)
-			{
-				this.$emit('i-am-from-brazil');
-				this.$emit('no-visa');
-			}
-
-			if (entityPartner.data.no_visa)
-				this.$emit('no-visa');
-
-			this.entityName = entityPartner.data['name'];
-			this.entityVideo = entityPartner.data['video'];
-			this.entityThumb = {
-				backgroundImage: "url('" + config.videos.entiyPartnerThumbDir + (entityPartner.data['thumbnail'] === "" ? config.videos.defaultEntityPartnerThumb : entityPartner.data['thumbnail']) + "')",
-			};
+			this.loadInvite();
+		},
+		async activated()
+		{
+			if (this.$store.state.optReloadQueued.invite)
+				this.loadInvite();
 		}
 	};
 </script>
