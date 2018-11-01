@@ -7,30 +7,35 @@
             <ul>
                 <li class="">
                     <a @click="changeTab('overview')"
+                       role="button"
                        :class="tab === 'overview' ? 'active-tab' : ''">
                         Overview
                     </a>
                 </li>
                 <li>
                     <a @click="changeTab('role')"
+                       role="button"
                        :class="tab === 'role' ? 'active-tab' : ''">
                         Role
                     </a>
                 </li>
                 <li>
                     <a @click="changeTab('prerequisites')"
+                       role="button"
                        :class="tab === 'prerequisites' ? 'active-tab' : ''">
                         Prerequisites
                     </a>
                 </li>
                 <li>
                     <a @click="changeTab('logistics')"
+                       role="button"
                        :class="tab === 'logistics' ? 'active-tab' : ''">
                         Logistics
                     </a>
                 </li>
                 <li>
                     <a @click="changeTab('visa')"
+                       role="button"
                        :class="tab === 'visa' ? 'active-tab' : ''">
                         Visa
                     </a>

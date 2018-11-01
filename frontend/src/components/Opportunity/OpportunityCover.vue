@@ -78,7 +78,7 @@
         top: 50px;
         left: 10px;
         color: #fff;
-        z-index: 1000;
+        z-index: 200;
         i
         {
             font-size: 48px;
