@@ -8,7 +8,13 @@
             <div id="cover-overlay">
                 <div class="title">{{opportunity.title}}</div>
                 <div class="location"><i class="material-icons">location_on</i> {{opportunity.location}}</div>
-                <OpportunityApplyButton send-event v-if="daysLeft >= 0"/>
+                <OpportunityPerformApplyButton
+                        :id="parseInt(opportunity.id)"
+                        :is-gt="parseInt(opportunity.programme.id) > 1"
+                        v-if="daysLeft >= 0 && !opportunity.applied_to"/>
+                <div class="location" v-else-if="opportunity.applied_to">
+                    You have applied to this opportunity.
+                </div>
                 <div class="deadline"><i class="material-icons">alarm</i>
                     {{daysLeft > 0 ? `${daysLeft} day${daysLeft !== 1 ? 's' : ''} left to apply`
                     : daysLeft === 0 ? `Last day to apply`
@@ -21,12 +27,12 @@
 </template>
 
 <script>
-	import OpportunityApplyButton from "../Opportunities/OpportunityApplyButton.vue";
+	import OpportunityPerformApplyButton from "./OpportunityPerformApplyButton.vue";
 
 	export default {
 		name:       "OpportunityCover",
 		components: {
-			OpportunityApplyButton
+			OpportunityPerformApplyButton
 		},
 		props:      {
 			opportunity: Object
@@ -130,6 +136,11 @@
             width: 200px;
             border-radius: 4px;
             margin: 0 auto 16px auto;
+        }
+
+        .sweet-modal
+        {
+            color: #000;
         }
     }
 </style>

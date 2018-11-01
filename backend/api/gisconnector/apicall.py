@@ -145,7 +145,7 @@ def yop_apply_opportunity(api_key, opp_id, gip_answer=None, user_id=None):
     # We need to check for academic_exp, professional_exp and summary
     if len(person_profile['academic_experiences']) == 0 or len(person_profile['professional_experiences']) == 0 or \
             len(person_profile['summary']) == 0:
-        return False, json.dumps({'error': 'Incomplete profile', 'E_INCOMPLETE_PROFILE': True})
+        return False, json.dumps({'error': 'Incomplete profile', 'error_code': 'E_INCOMPLETE_PROFILE'})
 
     # Now submit the application and hope it worked!
     url = config.expa_rest_api_apply_url.format(api_key)

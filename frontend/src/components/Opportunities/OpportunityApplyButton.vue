@@ -1,14 +1,12 @@
 <template>
-    <a v-if="sendEvent" href="#" class="shiny-btn">Apply</a>
-    <router-link v-else :to="`/opportunity/${id}`" class="shiny-btn">Apply &raquo;</router-link>
+    <router-link :to="`/opportunity/${id}`" class="shiny-btn">Apply &raquo;</router-link>
 </template>
 
 <script>
 	export default {
 		name:  "OpportunityApplyButton",
 		props: {
-			id:        Number,
-			sendEvent: Boolean
+			id: Number,
 		}
 	};
 </script>
@@ -58,30 +56,4 @@
         background-position: 500px;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     }
-
-    /*        .apply
-            {
-                background-color: $ib-green-dk;
-                color: #fff;
-                display: block;
-                padding: 4px 12px;
-                border-radius: 4px;
-                transition: background-color 0.2s;
-                cursor: pointer;
-                text-align: center;
-                @include media-breakpoint-up(md)
-                {
-                    font-size: 36px;
-                    margin: 32px 0;
-                }
-                @include media-breakpoint-down(md)
-                {
-                    font-size: 20px;
-                    margin: 14px 0;
-                }
-            }
-            .apply:hover
-            {
-                background-color: $ib-green-lt;
-            }*/
 </style>

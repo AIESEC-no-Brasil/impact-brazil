@@ -19,9 +19,14 @@ export default new Router({
 			component: () => import(/* webpackChunkName: "opportunities" */ './views/Opportunities.vue')
 		},
 		{
-			path: '/opportunity/:id',
-			name: 'opportunity',
+			path:      '/opportunity/:id',
+			name:      'opportunity',
 			component: () => import(/* webpackChunkName: "opportunity" */ './views/Opportunity.vue')
+		},
+		{
+			path:      '/about',
+			name:      'about',
+			component: () => import('./views/About.vue')
 		}
 		//{
 		//	path:      '/about',

@@ -17,7 +17,7 @@
                     <router-link :to="opportunityLink">Opportunities</router-link>
                 </li>
                 <li>
-                    <router-link :to="projects">Projects</router-link>
+                    <router-link to="/projects">Projects</router-link>
                 </li>
                 <li>
                     <router-link to="/cities">Cities</router-link>
@@ -29,7 +29,8 @@
                     <router-link to="/contact">Contact</router-link>
                 </li>
                 <li>
-                    <router-link to="/login">Login</router-link>
+                    <a @click="showLoginBox" v-if="!loggedIn">Login</a>
+                    <a @click="logout" v-else>Logout</a>
                 </li>
             </ul>
         </nav>
@@ -47,20 +48,34 @@
 		data()
 		{
 			return {
-                isTopOfPage:     true,
-				hidden: true,
+				isTopOfPage: true,
+				hidden:      true,
 			};
 		},
 		computed: {
 			opportunityLink()
 			{
 				return "/opportunities?" + queryString.stringify(this.$store.state.optquery);
+			},
+			loggedIn()
+			{
+				return typeof this.$session.get('loggedIn') === "undefined" ? false : this.$session.get('loggedIn');
 			}
 		},
 		methods:  {
 			handleMenubarVisibility()
 			{
 				this.isTopOfPage = (this.$route.name === "home" || this.$route.name === "opportunity") && window.scrollY === 0;
+			},
+			showLoginBox()
+			{
+				this.$root.$emit('login');
+			},
+			logout()
+			{
+                this.$session.set('loggedIn', false);
+                this.$session.set('accessToken', "");
+                window.location.reload();
 			}
 		},
 		created()
@@ -125,6 +140,7 @@
             color: #fff;
             border-radius: 4px;
             transition: all 0.3s;
+            cursor: pointer;
         }
 
         a:hover

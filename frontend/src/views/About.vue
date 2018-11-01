@@ -1,9 +1,23 @@
 <template>
-    <div class="about">
-        <h1>This is an about page</h1>
+    <div id="about">
+        <ImpactDescription v-show="!showingQuestions"/>
     </div>
 </template>
 
 <script>
+	import ImpactDescription from '../components/Home/ImpactDescription.vue';
 
+	export default {
+		name:       "About",
+		components: {
+			ImpactDescription
+		},
+	};
 </script>
+
+<style scoped>
+    #about
+    {
+        padding-top: 40px;
+    }
+</style>

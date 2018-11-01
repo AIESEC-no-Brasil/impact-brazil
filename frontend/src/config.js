@@ -1,6 +1,7 @@
 const config = {
 	api:                "http://9781516a.ngrok.io/api/",//"http://localhost:8000/api/",
 	gisPublicAPI:       "https://gis-api.aiesec.org/graphql?access_token=e316ebe109dd84ed16734e5161a2d236d0a7e6daf499941f7c110078e3c75493",
+	gisTokenAPI:        token => `https://gis-api.aiesec.org/graphql?access_token=${token}`,
 	ipAPI:              "http://ip-api.com/json",
 	youtubeURL:         url => `https://www.youtube.com/embed/${url}?enablejsapi=1`,
 	defaultVideoURL:    "https://www.youtube.com/embed/CckIMe0VT2k?enablejsapi=1",
@@ -27,6 +28,8 @@ const config = {
 		sdg:           id => `sdg/${id}.json`,
 		subproduct:    id => `subproduct/${id}.json`,
 		opportunities: "opportunities.json",
+		login:         "login.json",
+		apply:         "apply.json",
 	},
 	colors:             {
 		ibBlue:   {

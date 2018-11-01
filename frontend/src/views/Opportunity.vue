@@ -68,7 +68,11 @@
 			let oppData;
 			try
 			{
-				oppData = await axios.post(config.gisPublicAPI, {
+				let requestURL = this.$session.get('loggedIn')
+					? config.gisTokenAPI(this.$session.get('accessToken'))
+					: config.gisPublicAPI;
+
+				oppData = await axios.post(requestURL, {
 					query:     gqlGetOpportunity,
 					variables: {
 						id:        parseInt(this.$route.params.id),
@@ -78,7 +82,7 @@
 			}
 			catch (err)
 			{
-				if (err.response.status === 404)
+				if (err.response && err.response.status === 404)
 				{
 					this.$root.$emit('fatal', 'This opportunity does not exist.');
 					return;

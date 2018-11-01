@@ -8,6 +8,7 @@
         </transition>
         <Footer/>
 
+        <User/>
         <Errors/>
     </div>
 </template>
@@ -15,6 +16,7 @@
 <script>
 	import Navigation from './components/Global/Navigation.vue';
 	import Errors from './components/Global/Errors.vue';
+	import User from './components/Global/User.vue';
 	import Footer from './components/Global/Footer.vue';
 
 	import 'bootstrap/dist/css/bootstrap.css';
@@ -26,6 +28,7 @@
 			Navigation,
 			Errors,
 			Footer,
+			User
 		},
 	};
 </script>

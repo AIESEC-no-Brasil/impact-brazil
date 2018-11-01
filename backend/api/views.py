@@ -197,14 +197,56 @@ class EntityPartnerDetails(APIView):
 
         return Response(partnership_details)
 
-# Get the list of entities, prioritizing country partners
-# class OpportunityList(APIView):
-#     def get(self, request, format=None):
-#         try:
-#             gis_list_request = requests.get(gis_mc_list_url)
-#             gis_list = json.loads(gis_list_request.text)
-#         except:
-#             return Response({'error': "There was a problem getting the opportunity list from the GIS."},
-#                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-#         else:
-#
+
+# Login with API
+class Login(APIView):
+    def post(self, request, format=None):
+        from api.gisconnector.userauth import yop_login
+        import json
+
+        attrs = json.loads(request.body)
+
+        try:
+            success, token = yop_login(attrs['username'], attrs['password'])
+        except KeyError:
+            return Response({"error": "MISSING_PARAMS"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if success:
+            return Response({"access_token": token})
+        else:
+            return Response({"error": token}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+# Apply to an opportunity
+class Apply(APIView):
+    def post(self, request, format=None):
+        from api.gisconnector.apicall import yop_apply_opportunity
+        import json
+
+        attrs = json.loads(request.body)
+
+        try:
+            gip_answer = attrs['gip_answer']
+            if gip_answer == '':
+                gip_answer = None
+        except KeyError:
+            gip_answer = None
+
+        try:
+            success, response = yop_apply_opportunity(attrs['api_key'], attrs['opp_id'], gip_answer)
+        except KeyError:
+            return Response({"error": "MISSING_PARAMS"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if success:
+            return Response({"success": True, "response": response})
+        else:
+            try:
+                response_dict = json.loads(response)
+                if response_dict['error_code'] == 'E_INCOMPLETE_PROFILE':
+                    return Response({"error": "Incomplete profile"}, status=status.HTTP_403_FORBIDDEN)
+                else:
+                    return Response({"error": "Error", "response": response},
+                                    status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            except KeyError:
+                return Response({"error": "Error", "response": response},
+                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
