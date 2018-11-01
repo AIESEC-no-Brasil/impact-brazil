@@ -6,44 +6,17 @@
                 <router-view/>
             </keep-alive>
         </transition>
-        <div id="footer" style="text-align: center;"><br><br>
-            This website is &copy; AIESEC in Brazil. Don't do shady stuff.
-        </div>
-        <SweetModal title="Oops!"
-                    icon="error"
-                    hide-close-button
-                    blocking
-                    overlay-theme="dark"
-                    modal-theme="light"
-                    ref="reloaderror">
-            We were unable to load this page. Check your internet connection and try again.
+        <Footer/>
 
-            <button class="retry"
-                    @click="reloadPage()">
-                Try Again
-            </button>
-        </SweetModal>
-        <SweetModal title="Oops!"
-                    icon="error"
-                    hide-close-button
-                    blocking
-                    overlay-theme="dark"
-                    modal-theme="light"
-                    ref="fatalerror">
-            {{fatalError}}
-            <br>
-            <button class="retry"
-                    @click="goHome()">
-                Ok
-            </button>
-        </SweetModal>
+        <Errors/>
     </div>
 </template>
 
 <script>
 	import Navigation from './components/Global/Navigation.vue';
+	import Errors from './components/Global/Errors.vue';
+	import Footer from './components/Global/Footer.vue';
 
-	import {SweetModal} from 'sweet-modal-vue';
 	import 'bootstrap/dist/css/bootstrap.css';
 	import 'bootstrap-vue/dist/bootstrap-vue.css';
 
@@ -51,58 +24,9 @@
 		name:       "app",
 		components: {
 			Navigation,
-			SweetModal,
+			Errors,
+			Footer,
 		},
-		data()
-		{
-			return {
-				isTopOfPage:     true,
-				opportunityOpts: {},
-				fatalError:      "Something went wrong while loading this page.",
-			};
-		},
-		methods: {
-			reloadPage()
-			{
-				window.location.reload();
-			},
-			goHome()
-			{
-				window.location = "/";
-			},
-			handleMenubarVisibility()
-			{
-				this.isTopOfPage = (this.$route.name === "home" || this.$route.name === "opportunity") && window.scrollY === 0;
-			}
-		},
-		created()
-		{
-			this.$root.$on('error', () => {
-				setTimeout(() => {
-					this.$refs.reloaderror.open();
-				}, 1000);
-			});
-			this.$root.$on('fatal', (text) => {
-				setTimeout(() => {
-					if (typeof text !== undefined)
-						this.fatalError = text;
-
-					this.$refs.fatalerror.open();
-				}, 1000);
-			});
-			window.addEventListener('scroll', this.handleMenubarVisibility);
-
-		},
-		destroyed()
-		{
-			window.removeEventListener('scroll', this.handleMenubarVisibility);
-		},
-		watch:   {
-			$route(to, from)
-			{
-				this.handleMenubarVisibility();
-			}
-		}
 	};
 </script>
 
@@ -176,35 +100,5 @@
     .fade-enter, .fade-leave-to
     {
         opacity: 0;
-    }
-
-    .retry
-    {
-        border: 1px solid #f44336;
-        padding: 8px;
-        font-family: PierSans, sans-serif;
-        margin-top: 20px;
-        font-size: 18px;
-        background: transparent;
-        color: #f44336;
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-
-    .retry:hover
-    {
-        border: 1px solid #000;
-        color: #000;
-    }
-
-    .no-background
-    {
-        background-color: transparent !important;
-
-        a
-        {
-            color: #fff !important;
-            background-color: transparent !important;
-        }
     }
 </style>

@@ -17,6 +17,9 @@
                     <router-link :to="opportunityLink">Opportunities</router-link>
                 </li>
                 <li>
+                    <router-link :to="projects">Projects</router-link>
+                </li>
+                <li>
                     <router-link to="/cities">Cities</router-link>
                 </li>
                 <li>
@@ -24,6 +27,9 @@
                 </li>
                 <li>
                     <router-link to="/contact">Contact</router-link>
+                </li>
+                <li>
+                    <router-link to="/login">Login</router-link>
                 </li>
             </ul>
         </nav>
@@ -34,13 +40,14 @@
 </template>
 
 <script>
-    import queryString from 'query-string';
+	import queryString from 'query-string';
 
 	export default {
 		name:     "Navigation",
 		data()
 		{
 			return {
+                isTopOfPage:     true,
 				hidden: true,
 			};
 		},
@@ -50,6 +57,26 @@
 				return "/opportunities?" + queryString.stringify(this.$store.state.optquery);
 			}
 		},
+		methods:  {
+			handleMenubarVisibility()
+			{
+				this.isTopOfPage = (this.$route.name === "home" || this.$route.name === "opportunity") && window.scrollY === 0;
+			}
+		},
+		created()
+		{
+			window.addEventListener('scroll', this.handleMenubarVisibility);
+		},
+		destroyed()
+		{
+			window.removeEventListener('scroll', this.handleMenubarVisibility);
+		},
+		watch:    {
+			$route(to, from)
+			{
+				this.handleMenubarVisibility();
+			}
+		}
 	};
 </script>
 
@@ -164,5 +191,16 @@
     .mobile-only:hover, .mobile-only a:hover
     {
         box-shadow: none !important;
+    }
+
+    .no-background
+    {
+        background-color: transparent !important;
+
+        a
+        {
+            color: #fff !important;
+            background-color: transparent !important;
+        }
     }
 </style>
