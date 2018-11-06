@@ -3,12 +3,12 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
-# Create your models here.
+# TOOD: Long term - create indices
 
 # Country partners
 class EntityPartner(models.Model):
     entity_name = models.CharField('Entity Name', max_length=50)
-    gis_id = models.IntegerField('MC ID on GIS')
+    gis_id = models.IntegerField('MC ID on GIS', unique=True)
     partnership_name = models.CharField('Partnership Name', max_length=50, default='')
     video_link = models.TextField('Partnership Video ID (YouTube)', blank=True)
     thumbnail = models.CharField('Thumbnail Filename (.jpg, HD)', blank=True, max_length=256)
@@ -17,13 +17,13 @@ class EntityPartner(models.Model):
         return self.entity_name
 
     class Meta:
-        verbose_name = 'Entity Partner'
+        verbose_name = 'Entity partner'
 
 
 # List of entities
 class Entity(models.Model):
     entity_name = models.CharField('Entity Name', max_length=50)
-    gis_id = models.IntegerField('MC ID on GIS')
+    gis_id = models.IntegerField('MC ID on GIS', unique=True)
     no_visa = models.BooleanField('No Visa for Brazil')
 
     def __str__(self):
@@ -116,6 +116,12 @@ class Opportunity(models.Model):
 
     class Meta:
         verbose_name_plural = "Opportunities"
+        indexes = [
+            models.Index(fields=['lc']),
+            models.Index(fields=['product']),
+            models.Index(fields=['subproduct']),
+            models.Index(fields=['sdg'])
+        ]
 
 
 class Focus(models.Model):
@@ -128,13 +134,50 @@ class Focus(models.Model):
 
     class Meta:
         verbose_name_plural = "Focuses"
+        unique_together = ('lc', 'product')
 
 
 class Analytic(models.Model):
     lc = models.ForeignKey(LC, on_delete=models.SET_NULL, null=True)
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     type = models.CharField('ICX or OGX', default='icx', max_length=3)
+    stage = models.CharField('CF Stage', default='APD', max_length=3)
     number = models.IntegerField('Analytic')
 
     def __str__(self):
-        return f'{self.lc.reference_name} - {self.product.shortname} {self.type}: {self.number}'
+        return f'{self.lc.reference_name} - {self.product.shortname} {self.type} - {self.stage}: {self.number}'
+
+    class Meta:
+        # TODO: figure out uniqueness
+        pass
+
+
+class ResponseTime(models.Model):
+    lc = models.ForeignKey(LC, on_delete=models.SET_NULL, null=True)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    response_time = models.DurationField()
+
+    def __str__(self):
+        return f'{self.lc.reference_name} {self.product.shortname}: {self.response_time}'
+
+    class Meta:
+        unique_together = ('lc', 'product')
+
+
+class StandardsDelivery(models.Model):
+    lc = models.ForeignKey(LC, on_delete=models.SET_NULL, null=True)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    standards_delivery_percent = models.IntegerField()
+    responses = models.IntegerField()
+
+    def __str__(self):
+        return f'{self.lc.reference_name} {self.product.shortname}: {self.standards_delivery_percent}%'
+
+    class Meta:
+        unique_together = ('lc', 'product')
+        verbose_name = "Standard delivery percentage"
+        verbose_name_plural = "Standard delivery percentages"
+
+
+class City(models.Model):
+    name = models.CharField(max_length=255)

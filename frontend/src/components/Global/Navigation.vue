@@ -1,6 +1,6 @@
 <template>
     <div id="nav"
-         :class="isTopOfPage ? 'no-background' : ''">
+         :class="isTopOfPage && !$store.state.showingQuestions ? 'no-background' : ''">
         <img src="../../assets/logonav.png" title="Impact Brazil"/>
 
         <nav :class="hidden ? 'collapsed' : 'open'">
@@ -73,9 +73,9 @@
 			},
 			logout()
 			{
-                this.$session.set('loggedIn', false);
-                this.$session.set('accessToken', "");
-                window.location.reload();
+				this.$session.set('loggedIn', false);
+				this.$session.set('accessToken', "");
+				window.location.reload();
 			}
 		},
 		created()

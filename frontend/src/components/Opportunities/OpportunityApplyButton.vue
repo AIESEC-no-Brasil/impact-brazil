@@ -1,12 +1,17 @@
 <template>
-    <router-link :to="`/opportunity/${id}`" class="shiny-btn">Apply &raquo;</router-link>
+    <div>
+        <router-link :to="`/opportunity/${id}`" class="shiny-btn">Apply &raquo;</router-link>
+        <div class="response-time" v-if="responseTime">Usually follows up within {{responseTime}}</div>
+        <div class="response-time" v-else>&nbsp;</div>
+    </div>
 </template>
 
 <script>
 	export default {
 		name:  "OpportunityApplyButton",
 		props: {
-			id: Number,
+			id:           Number,
+			responseTime: String
 		}
 	};
 </script>
@@ -31,15 +36,30 @@
 
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 
+        margin-bottom: 2px;
         @include media-breakpoint-up(md)
         {
             font-size: 36px;
-            margin: 32px 0;
+            margin-top: 22px;
         }
-        @include media-breakpoint-down(md)
+        @include media-breakpoint-down(sm)
         {
             font-size: 20px;
-            margin: 14px 0;
+            margin-top: 20px;
+        }
+    }
+
+    .response-time
+    {
+        text-align: center;
+        font-size: 14px;
+        @include media-breakpoint-up(md)
+        {
+            margin-bottom: 24px;
+        }
+        @include media-breakpoint-down(sm)
+        {
+            margin-bottom: 8px;
         }
     }
 

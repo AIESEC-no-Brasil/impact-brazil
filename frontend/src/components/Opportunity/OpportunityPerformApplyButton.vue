@@ -140,7 +140,7 @@
             font-size: 36px;
             margin: 32px 0;
         }
-        @include media-breakpoint-down(md)
+        @include media-breakpoint-down(sm)
         {
             font-size: 20px;
             margin: 14px 0;

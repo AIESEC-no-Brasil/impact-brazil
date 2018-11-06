@@ -39,7 +39,7 @@
         <o-row separator/>
         <o-row title="Fees">{{oppFees}}</o-row>
         <o-row title="Fee Breakdown" fullspan v-if="$session.get('loggedIn')">
-            To be paid to AIESEC in your home entity once you are accepted for this opportunity<br>
+            To be paid to AIESEC in your home entity once you are accepted for this opportunity:<br>
             <b>{{opportunity.opportunity_cost.programme_fee}} {{opportunity.opportunity_cost.currency}} </b><br>
             <br>
             To be paid to AIESEC in Brazil once you arrive - in cash, in either US Dollars or
@@ -95,7 +95,7 @@
 			feeCovers()
 			{
 				if (this.opportunity.transparent_fee_details === null || typeof this.opportunity.transparent_fee_details === "undefined")
-					return "Not available";
+					return "";
 				else
 				{
 					let covers = [];

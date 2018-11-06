@@ -17,6 +17,7 @@ urlpatterns = [
     path('entity_partners/<int:pk>/', views.EntityPartnerDetails.as_view()),
     path('opportunities/', views.OpportunityList.as_view()),
     path('login/', views.Login.as_view()),
-    path('apply/', views.Apply.as_view())
+    path('apply/', views.Apply.as_view()),
+    path('ip/', views.IP.as_view())
 ]
 urlpatterns = format_suffix_patterns(urlpatterns)

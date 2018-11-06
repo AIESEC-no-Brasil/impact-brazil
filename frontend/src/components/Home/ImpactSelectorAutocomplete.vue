@@ -1,17 +1,17 @@
 <template>
     <div id="autocomplete-component">
         <div class="autocomplete-input-container" v-if="optlistReady">
-            <input title="question"
-                   type="text"
-                   autocomplete="disabled"
-                   :class="error ? 'error-bounce' : ''"
-                   :placeholder="caption"
-                   v-model="search"
-                   @focus="focusText($event)"
-                   @keydown="selectOption($event)"
-                   ref="ibox"
-                   tabindex="0"
-            />
+            <label>
+                <input :title="caption"
+                       type="text"
+                       autocomplete="disabled"
+                       :class="error ? 'error-bounce' : ''"
+                       v-model="search"
+                       @focus="focusText($event)"
+                       @keydown="selectOption($event)"
+                       ref="ibox"
+                       tabindex="0"/>
+            </label>
             <transition name="autocomplete-items">
                 <div class="autocomplete-items"
                      v-if="dropdownVisible">
@@ -81,9 +81,10 @@
 				if (this.$vnode.data.ref === "q0")
 				{
 					// Since there's nothing wrong with not finding a entity, we have no error handler
-					axios.get(config.ipAPI).then((data) => {
+					axios.get(config.api + config.endpoints.ip).then((data) => {
 						let currentCountry = this.defaults.find(ey => ey.text === data.data.country);
-						this.confirmOption(currentCountry.id, true);
+						if (currentCountry)
+							this.confirmOption(currentCountry.id, true);
 					}).catch(() => {
 					});
 				}
@@ -156,6 +157,10 @@
 </script>
 
 <style lang="scss" scoped>
+    @import "../../../node_modules/bootstrap/scss/functions";
+    @import "../../../node_modules/bootstrap/scss/variables";
+    @import "../../../node_modules/bootstrap/scss/mixins/breakpoints";
+
     .autocomplete
     {
         /*the container must be positioned relative:*/
@@ -180,6 +185,11 @@
         width: 90%;
     }
 
+    label
+    {
+        display: block;
+    }
+
     .autocomplete-items
     {
         position: absolute;
@@ -188,14 +198,19 @@
         border-top: none;
         z-index: 99;
         /*position the autocomplete items to be the same width as the container:*/
-        bottom: 100%;
         /*top: 40%;*/
         left: 0;
         right: 0;
         max-height: 70vh;
-        @media (max-aspect-ratio: 16/9)
+
+        @include media-breakpoint-down(sm)
         {
             max-height: 40vh;
+            top: 100%;
+        }
+        @include media-breakpoint-up(md)
+        {
+            bottom: 100%;
         }
         overflow-y: auto;
         width: 90%;

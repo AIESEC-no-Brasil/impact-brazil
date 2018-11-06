@@ -1,8 +1,7 @@
 <template>
     <div id="home">
-        <ImpactWelcome @showing-questions="showingQuestions = true"
-                       @not-showing-questions="showingQuestions = false"/>
-        <ImpactDescription v-show="!showingQuestions"/>
+        <ImpactWelcome/>
+        <ImpactDescription v-if="!$store.state.showingQuestions"/>
     </div>
 </template>
 
@@ -16,12 +15,6 @@
 			ImpactWelcome,
 			ImpactDescription
 		},
-		data()
-		{
-			return {
-				showingQuestions: false
-			};
-		}
 	};
 </script>
 

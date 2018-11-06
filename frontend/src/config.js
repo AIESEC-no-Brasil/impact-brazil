@@ -1,8 +1,7 @@
 const config = {
-	api:                "http://9781516a.ngrok.io/api/",//"http://localhost:8000/api/",
+	api:                "http://f7159acb.ngrok.io/api/",//"http://localhost:8000/api/",
 	gisPublicAPI:       "https://gis-api.aiesec.org/graphql?access_token=e316ebe109dd84ed16734e5161a2d236d0a7e6daf499941f7c110078e3c75493",
 	gisTokenAPI:        token => `https://gis-api.aiesec.org/graphql?access_token=${token}`,
-	ipAPI:              "http://ip-api.com/json",
 	youtubeURL:         url => `https://www.youtube.com/embed/${url}?enablejsapi=1`,
 	defaultVideoURL:    "https://www.youtube.com/embed/CckIMe0VT2k?enablejsapi=1",
 	defaultMonthOffset: 6,
@@ -18,6 +17,12 @@ const config = {
 		subproductsGE: "/static/images/subproducts/",
 		sdgs:          "/static/images/sdgs/"
 	},
+	logosHD:            {
+		products:      "/static/images/products/hd/",
+		subproductsGT: "/static/images/subproducts/hd/",
+		subproductsGE: "/static/images/subproducts/hd/",
+		sdgs:          "/static/images/sdgs/hd/"
+	},
 	endpoints:          {
 		entities:      "entities.json",
 		products:      "products.json",
@@ -30,6 +35,7 @@ const config = {
 		opportunities: "opportunities.json",
 		login:         "login.json",
 		apply:         "apply.json",
+		ip:            "ip.json",
 	},
 	colors:             {
 		ibBlue:   {

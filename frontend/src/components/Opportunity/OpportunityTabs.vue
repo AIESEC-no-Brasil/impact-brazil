@@ -2,7 +2,8 @@
     <div id="nav-opportunity">
         <!--<img src="../assets/logonav.png" title="Impact Brazil"/>-->
         <img v-if="opportunity"
-             :src="'/static/images/products/'+opportunity.programme.short_name_display.toLowerCase()+'-logo-hd.png'"><br>
+             :src="'/static/images/products/hd/'+opportunity.programme.short_name_display.toLowerCase()+'-logo.png'"><br>
+        <!-- FIXME: eventually we will get the opportunity details from our own API, then the above URL can be computed -->
         <nav>
             <ul>
                 <li class="">
@@ -38,6 +39,13 @@
                        role="button"
                        :class="tab === 'visa' ? 'active-tab' : ''">
                         Visa
+                    </a>
+                </li>
+                <li style='margin-top: 10px;'>
+                    <a @click="changeTab('visa')"
+                       role="button"
+                       :class="tab === 'visa' ? 'active-tab' : ''">
+                        Learn more about {{opportunity.
                     </a>
                 </li>
             </ul>

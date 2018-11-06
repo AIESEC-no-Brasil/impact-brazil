@@ -250,3 +250,23 @@ class Apply(APIView):
             except KeyError:
                 return Response({"error": "Error", "response": response},
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# Get the IP address
+class IP(APIView):
+    def get(self, request, format=None):
+        from django.contrib.gis.geoip2 import GeoIP2
+        import os
+        from backend.settings import BASE_DIR
+        from ipware import get_client_ip
+
+        g = GeoIP2(path=os.path.join(BASE_DIR, 'api', 'geoipdata'))
+        ip, is_routable = get_client_ip(request)
+
+        if ip is None:
+            return Response({"country": "Unknown", "ip": None})
+        else:
+            if is_routable:
+                return Response({"country": g.country(ip)['country_name'], "ip": ip})
+            else:
+                return Response({"country": "Private", "ip": ip})

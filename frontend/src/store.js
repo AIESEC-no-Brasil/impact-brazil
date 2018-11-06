@@ -5,14 +5,18 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
 	state:     {
-		noVisa:          false,
-		iAmFromBrazil:   false,
-		options:         {},
-		optquery:        {},
-		optReloadQueued: {invite: false, list: false},
+		showingQuestions: false,
+		noVisa:           false,
+		iAmFromBrazil:    false,
+		options:          {},
+		optquery:         {},
+		optReloadQueued:  {invite: false, list: false},
 	},
-	getters:   {},
+	getters:   {
+		showingQuestions: state => state.showingQuestions
+	},
 	mutations: {
+		showingQuestions: (state, sQ) => state.showingQuestions = sQ,
 		noVisa:         (state, noVisa) => state.noVisa = noVisa,
 		brazilian:      (state, brazilian) => state.iAmFromBrazil = brazilian,
 		options:        (state, options) => state.options = options,

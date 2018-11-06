@@ -15,12 +15,26 @@
                             <div class="organization text-truncate" :title="opp.organization_name">
                                 {{opp.organization_name}}
                             </div>
-                            <div class="duration">{{opp.start_date}} &middot; {{opp.duration}} Weeks</div>
+                            <div class="duration">
+                                {{opp.start_date}}
+                                &middot; {{opp.duration}} Weeks
+                                <span v-if="opp.standards_delivery">
+                                    &middot;
+                                    <i class="material-icons star star-full"
+                                       v-for="rating in opp.standards_delivery.rating"
+                                       :key="rating">star</i>
+                                    <i class="material-icons star star-empty"
+                                       v-for="rating in 5-opp.standards_delivery.rating"
+                                       :key="rating">star_border</i>
+                                    from {{opp.standards_delivery.responses}} responses
+                                </span>
+                            </div>
                         </b-col>
                         <b-col cols="12" md="4">
                             <b-row no-gutters>
                                 <b-col cols="12" class="order-2 order-md-0">
-                                    <OpportunityApplyButton :id="opp.gis_id"/>
+                                    <OpportunityApplyButton :id="opp.gis_id"
+                                                            :response-time="opp.response_time"/>
                                 </b-col>
                                 <b-col cols="0" md="12" class="order-0 order-md-1">
                                     <div class="host-title">Hosted by:</div>
@@ -84,7 +98,7 @@
 
     .opportunity
     {
-        @include media-breakpoint-down(md)
+        @include media-breakpoint-down(sm)
         {
             box-shadow: $box-shadow;
             border-radius: 4px;
@@ -103,7 +117,7 @@
             box-shadow: $box-shadow;
         }
 
-        @include media-breakpoint-down(md)
+        @include media-breakpoint-down(sm)
         {
             padding: 8px 15px;
         }
@@ -129,7 +143,7 @@
             margin: auto;
         }
 
-        @include media-breakpoint-down(md)
+        @include media-breakpoint-down(sm)
         {
             border-top-left-radius: 4px;
             border-top-right-radius: 4px;
@@ -138,7 +152,7 @@
 
     .opportunity-desc-col
     {
-        @include media-breakpoint-down(md)
+        @include media-breakpoint-down(sm)
         {
             padding: 0;
         }
@@ -154,7 +168,7 @@
             max-height: 180px;
         }
 
-        @include media-breakpoint-down(md)
+        @include media-breakpoint-down(sm)
         {
             border-bottom-left-radius: 4px;
             border-bottom-right-radius: 4px;
@@ -166,7 +180,7 @@
             {
                 font-size: 36px;
             }
-            @include media-breakpoint-down(md)
+            @include media-breakpoint-down(sm)
             {
                 font-size: 20px;
             }
@@ -181,7 +195,7 @@
                 line-height: 30px;
                 font-size: 24px;
             }
-            @include media-breakpoint-down(md)
+            @include media-breakpoint-down(sm)
             {
                 font-size: 16px;
             }
@@ -195,7 +209,7 @@
             {
                 font-size: 24px;
             }
-            @include media-breakpoint-down(md)
+            @include media-breakpoint-down(sm)
             {
                 font-size: 14px;
             }
@@ -228,7 +242,7 @@
                 text-align: right;
                 line-height: 12px;
             }
-            @include media-breakpoint-down(md)
+            @include media-breakpoint-down(sm)
             {
                 display: none;
                 font-size: 12px;
@@ -243,10 +257,27 @@
                 font-size: 20px;
                 text-align: right;
             }
-            @include media-breakpoint-down(md)
+            @include media-breakpoint-down(sm)
             {
                 font-size: 12px;
             }
+        }
+
+        .star
+        {
+            vertical-align: middle;
+            position: relative;
+            top: -2px;
+            letter-spacing: -4px;
+        }
+
+        .star-full
+        {
+            color: $ib-orange-dk;
+        }
+        .star-empty
+        {
+            color: #686868;
         }
     }
 </style>

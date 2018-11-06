@@ -5,30 +5,14 @@
         <OpportunityList :no-visa="$store.state.noVisa"
                          :i-am-from-brazil="$store.state.iAmFromBrazil"
                          @show-video="showVideo"/>
-        <SweetModal modal-theme="dark"
-                    overlay-theme="dark"
-                    ref="videoModal"
-                    id="video-modal"
-                    width="90%"
-                    :enable-mobile-fullscreen="false"
-                    @close="stopPlayingVideo">
-            <iframe width="100%"
-                    height="100%"
-                    :src="defaultVideoURL"
-                    frameborder="0"
-                    allow="autoplay; encrypted-media"
-                    allowfullscreen
-                    ref="youtube"
-                    id="youtube">
-            </iframe>
-        </SweetModal>
+        <VideoModal ref="videomodal"/>
     </div>
 </template>
 
 <script>
 	import OpportunityInvite from '../components/Opportunities/OpportunityInvite.vue';
 	import OpportunityList from '../components/Opportunities/OpportunityList.vue';
-	import {SweetModal} from 'sweet-modal-vue';
+	import VideoModal from '../components/VideoModal.vue';
 	import {config} from '../config';
 
 	export default {
@@ -36,7 +20,7 @@
 		components: {
 			OpportunityInvite,
 			OpportunityList,
-			SweetModal,
+			VideoModal,
 		},
 		data()
 		{
@@ -47,35 +31,13 @@
 		methods:    {
 			showVideo(url = false)
 			{
-				if (url !== false)
-				{
-					let setSrc;
-					if (url !== "")
-						setSrc = config.youtubeURL(url);
-					else
-						setSrc = this.defaultVideoURL;
-
-					if (this.$refs.youtube.src !== setSrc)
-						this.$refs.youtube.src = setSrc;
-				}
-
-				setTimeout(() => {
-					this.$refs.videoModal.open();
-				}, 400);
+				this.$refs.videomodal.showVideo(url);
 			},
-			stopPlayingVideo()
-			{
-				this.$refs.youtube.contentWindow.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
-			}
 		},
 	};
 </script>
 
 <style scoped>
-    #youtube
-    {
-        width: 100%;
-        height: calc(80vw * 0.5625);
-    }
+
 </style>
 

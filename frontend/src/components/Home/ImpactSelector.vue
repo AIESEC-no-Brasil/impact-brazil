@@ -305,6 +305,9 @@
 </script>
 
 <style lang="scss" scoped>
+    @import "../../../node_modules/bootstrap/scss/functions";
+    @import "../../../node_modules/bootstrap/scss/variables";
+    @import "../../../node_modules/bootstrap/scss/mixins/breakpoints";
     @import "../../assets/colors";
 
     $border-left-width: 20px;
@@ -321,9 +324,10 @@
         box-shadow: 0 -4px 12px 4px rgba(0, 0, 0, 0.8);
         /*padding-top: 20px;*/
 
-        @media (max-aspect-ratio: 16/9)
+        @include media-breakpoint-down(sm)
         {
-            height: 70vh;
+            height: 100vh;
+            padding-top: 20px;
         }
 
         #ib-logo-questions
@@ -363,7 +367,7 @@
             right: 5vw;
         }
 
-        @media (max-aspect-ratio: 16/9)
+        @include media-breakpoint-down(sm)
         {
             // We redo the positionining on mobile
             .center
@@ -375,7 +379,7 @@
             .left
             {
                 left: 5vw;
-                padding-top: 40vh;
+                bottom: 20vh;
 
                 img
                 {
@@ -385,7 +389,7 @@
             .right
             {
                 right: 5vw;
-                padding-top: 40vh;
+                bottom: 20vh;
             }
         }
 
@@ -394,7 +398,7 @@
             display: inline-block;
             margin-top: 20px;
 
-            @media (max-aspect-ratio: 16/9)
+            @include media-breakpoint-down(sm)
             {
                 margin-top: 30px;
             }
@@ -413,7 +417,10 @@
     {
         .border-left--#{$border-left}
         {
-            border-left: $border-left-width solid map_get($ib-colors-list-lt, $border-left);
+            @include media-breakpoint-up(md)
+            {
+                border-left: $border-left-width solid map_get($ib-colors-list-lt, $border-left);
+            }
         }
 
     }

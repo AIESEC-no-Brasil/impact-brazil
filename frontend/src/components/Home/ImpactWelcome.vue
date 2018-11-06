@@ -65,47 +65,22 @@
 			showQuestions()
 			{
 				this.showingQuestions = true;
-				this.$emit('showing-questions');
+				this.$store.commit('showingQuestions', true);
 			},
 			hideQuestions()
 			{
 				this.showingQuestions = false;
-				this.$emit('not-showing-questions');
+				this.$store.commit('showingQuestions', false);
 			}
-		}
+		},
 	};
 </script>
 
 <style lang="scss" scoped>
+    @import "../../../node_modules/bootstrap/scss/functions";
+    @import "../../../node_modules/bootstrap/scss/variables";
+    @import "../../../node_modules/bootstrap/scss/mixins/breakpoints";
     @import '../../assets/colors';
-
-    /*#header
-    {
-        height: 100vh;
-        overflow: hidden;
-    }
-
-    #header video
-    {
-        position: fixed;
-        top: 0;
-        left: 0;
-
-        @media (min-aspect-ratio: 16/9)
-        {
-            width: 100%;
-            height: 100%;
-        }
-
-        @media (max-aspect-ratio: 16/9)
-        {
-            width: 100%;
-            height: 100%;
-        }
-
-        z-index: -9000;
-        overflow: hidden;
-    }*/
 
     .stop-scrolling
     {
@@ -153,7 +128,7 @@
             height: 100%;
         }
 
-        @media (max-aspect-ratio: 16/9)
+        @include media-breakpoint-down(sm)
         {
             height: 45vh;
         }
@@ -168,7 +143,7 @@
         transform: translateX(-50%);
         border-spacing: 10px;
 
-        @media (max-aspect-ratio: 16/9)
+        @include media-breakpoint-down(sm)
         {
             bottom: 20%;
         }

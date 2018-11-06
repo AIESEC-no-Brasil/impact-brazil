@@ -45,10 +45,9 @@
 					{
 						// Auto detect the entity!
 						let entities = await axios.get(config.api + config.endpoints.entities);
-						let myEntity = await axios.get(config.ipAPI);
+						let myEntity = await axios.get(config.api + config.endpoints.ip);
 
-						// FIXME: DEBUG ONLY!!!
-						//entityPartnerID = 1553;
+						// TODO: what if the country is not found?
 						entityPartnerID = entities.data.find(entity => entity.name === myEntity.data.country).id;
 
 						// Don't forget to route

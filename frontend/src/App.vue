@@ -6,7 +6,7 @@
                 <router-view/>
             </keep-alive>
         </transition>
-        <Footer/>
+        <Footer v-if="!$store.state.showingQuestions"/>
 
         <User/>
         <Errors/>
@@ -75,6 +75,8 @@
     body
     {
         background-color: #f5f5f5;
+        position: relative;
+        height: 100%;
     }
 
     html
