@@ -9,12 +9,33 @@
                        class="product"
                        v-for="product in products"
                        :key="product.id">
-                    <img :src="logoDirs.products + product.logo"
-                         :title="product.name"
-                         :alt="product.name"/>
-                    <div class="description">{{product.description}}</div>
-                    <div class="detail">
-                        {{markdown(product.detail)}}
+                    <div class="product-header">
+                        <img :src="logoDirs.products + product.logo"
+                             :title="product.name"
+                             :alt="product.name"/>
+                        <div class="description">{{product.description}}</div>
+                    </div>
+                    <div class="project" v-for="project in getDataset(product.gis_id)" :key="project.id">
+                        <div class="project-title">{{project.name}}</div>
+                        <div class="project-image"
+                             :style="videoThumb(project.thumbnail)"
+                             @click="showVideo(project.video_link)">
+                            <div></div>
+                        </div>
+                        <b-container fluid>
+                            <b-row>
+                                <b-col cols="12" md="8" class="no-padding">
+                                    <div class="project-desc">
+                                        {{project.description}}
+                                    </div>
+                                </b-col>
+                                <b-col cols="12" md="4" class="no-padding text-right">
+                                    <router-link to="/" class="project-apply">
+                                        Apply &raquo;
+                                    </router-link>
+                                </b-col>
+                            </b-row>
+                        </b-container>
                     </div>
                 </b-col>
             </b-row>
@@ -62,7 +83,6 @@
 			bContainer,
 			bCol,
 			bRow,
-			Nl2br,
 		},
 		data()
 		{
@@ -115,14 +135,27 @@
 			},
 			markdown(text)
 			{
+				if (typeof text !== "string") return;
 				let md = new MarkdownIt();
 				return md.render(text);
+			},
+			videoThumb(img)
+			{
+				return {
+					backgroundImage: `url('${config.videos.projectThumbDir}${img === null ? config.videos.defaultProjectThumb : img}')`
+				};
+			},
+			showVideo(url = false)
+			{
+				this.$refs.videomodal.showVideo(url);
 			},
 		}
 	};
 </script>
 
 <style lang="scss" scoped>
+    @import "../assets/colors";
+
     .title
     {
         text-align: center;
@@ -133,7 +166,10 @@
 
     .product
     {
-        text-align: center;
+        .product-header
+        {
+            text-align: center;
+        }
         img
         {
             max-width: 300px;
@@ -144,6 +180,7 @@
         {
             font-family: PierSans, sans-serif;
             font-size: 20px;
+            margin-bottom: 20px;
         }
 
         .projects
@@ -159,5 +196,60 @@
                 cursor: pointer;
             }
         }
+
+        .project
+        {
+
+            .project-image
+            {
+                background-position: center;
+                background-size: cover;
+                width: 100%;
+                height: 200px;
+                cursor: pointer;
+
+                div
+                {
+                    background-image: url('../assets/play-button.png');
+                    width: 100px;
+                    height: 100px;
+                    background-size: 100%;
+                    position: relative;
+                    top: 50px;
+                    margin: auto;
+                }
+            }
+            .project-title
+            {
+                font-size: 24px;
+                font-family: PierSansBold, sans-serif;
+            }
+            .project-desc
+            {
+                margin: 4px 4px 0 0;
+            }
+            .project-apply
+            {
+                margin: 4px 0;
+                padding: 8px 16px;
+
+                background-color: $ib-orange-dk;
+                display: inline-block;
+                font-family: PierSansBold, sans-serif;
+                color: #fff;
+                font-size: 24px;
+                text-decoration: none;
+                transition: background-color 0.3s;
+            }
+            .project-apply:hover
+            {
+                background-color: $ib-orange-lt;
+            }
+        }
+    }
+
+    .no-padding
+    {
+        padding: 0;
     }
 </style>

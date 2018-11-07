@@ -10,6 +10,8 @@ const config = {
 		defaultLCThumb:            "default_lc_thumb.jpg",
 		entiyPartnerThumbDir:      "/static/videothumbs/entity_partners/",
 		defaultEntityPartnerThumb: "default_ep_thumb.jpg",
+		projectThumbDir:           "/static/videothumbs/projects/",
+		defaultProjectThumb:       "default_project_thumb.jpg",
 	},
 	logos:              {
 		products:      "/static/images/products/",

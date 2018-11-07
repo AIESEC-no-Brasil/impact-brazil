@@ -51,7 +51,7 @@ class SubproductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Subproduct
-        fields = ('id', 'name', 'gis_id', 'lc_set', 'logo')
+        fields = ('id', 'name', 'description', 'gis_id', 'lc_set', 'logo', 'thumbnail', 'video_link')
 
 
 class SDGSerializer(serializers.ModelSerializer):
@@ -59,7 +59,7 @@ class SDGSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SDG
-        fields = ('id', 'name', 'gis_id', 'lc_set', 'logo')
+        fields = ('id', 'name', 'description', 'gis_id', 'lc_set', 'logo', 'thumbnail', 'video_link')
 
 
 class EntityPartnerSerializer(serializers.ModelSerializer):

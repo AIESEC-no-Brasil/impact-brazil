@@ -49,6 +49,7 @@ class SDG(models.Model):
     number = models.IntegerField('SDG Number')
     name = models.CharField('SDG Name', max_length=50)
     gis_id = models.IntegerField('SDG ID on GIS', unique=True)
+    description = models.TextField('SDG Description', blank=True)
     logo = models.TextField('SDG Logo', blank=True)
     video_link = models.CharField('Video ID (YouTube)', max_length=256, blank=True)
     thumbnail = models.CharField('Thumbnail Filename (.jpg)', blank=True, max_length=256)
@@ -65,6 +66,7 @@ class Subproduct(models.Model):
     gis_id = models.IntegerField('Subproduct ID on GIS', unique=True)
     product = models.ForeignKey(Product, to_field='gis_id', on_delete=models.SET_NULL, null=True)
     logo = models.TextField('Subproduct Logo', blank=True)
+    description = models.TextField('Subproduct Description', blank=True)
     video_link = models.CharField('Video ID (YouTube)', max_length=256, blank=True)
     thumbnail = models.CharField('Thumbnail Filename (.jpg)', blank=True, max_length=256)
 
