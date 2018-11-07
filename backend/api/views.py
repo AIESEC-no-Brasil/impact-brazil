@@ -131,7 +131,7 @@ class LCDetails(generics.RetrieveAPIView):
 
 # Get list of products
 class ProductList(generics.ListAPIView):
-    queryset = Product.objects.all()
+    queryset = Product.objects.all().order_by('gis_id')
     serializer_class = ProductSerializer
 
 
@@ -157,7 +157,7 @@ class SubproductDetail(generics.RetrieveAPIView):
 
 # Get list of SDGs
 class SDGList(generics.ListAPIView):
-    queryset = SDG.objects.all()
+    queryset = SDG.objects.all().order_by('number')
     serializer_class = SDGSerializer
 
 

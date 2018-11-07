@@ -2,7 +2,7 @@
     <div class="section">
         <div class="title">Projects</div>
 
-        <b-container fluid>
+        <b-container fluid v-if="!loading">
             <b-row>
                 <b-col cols="12"
                        md="4"
@@ -40,33 +40,16 @@
                 </b-col>
             </b-row>
         </b-container>
-
+        <div class="fullscreen-loading" v-else>
+            <Loading center dark/>
+        </div>
         <VideoModal ref="videomodal"/>
-
-        <!--<div class="projects">
-                        <span v-for="project in getDataset(product.gis_id)">
-                            <img :key="project.id"
-                                 :id="'proj' + project.gis_id"
-                                 :src="[null, logoDirs.sdgs, logoDirs.subproductsGT, null, null, logoDirs.subproductsGE][product.gis_id] + project.logo"
-                                 role="button"/>
-
-                                <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur at consequatur
-                                    eligendi error iure nemo sed soluta temporibus. Doloribus ea fugiat harum illum natus odit
-                                    provident quidem, reiciendis sed similique?
-                                </div>
-                                <div>Aliquid, aspernatur deleniti in nisi quae reprehenderit vero! A accusamus architecto
-                                    beatae, culpa, cum cupiditate dolore, doloremque enim est illum laudantium nam nisi odio
-                                    praesentium quod quos rem similique veritatis?
-                                </div>
-                                <a href="#">APPLY NOW &rarr;</a>
-
-                        </span>
-                    </div>-->
     </div>
 </template>
 
 <script>
 	import VideoModal from '../components/VideoModal.vue';
+	import Loading from '../components/Loading.vue';
 
 	import bContainer from 'bootstrap-vue/es/components/layout/container';
 	import bCol from 'bootstrap-vue/es/components/layout/col';
@@ -80,6 +63,7 @@
 		name:       "Projects",
 		components: {
 			VideoModal,
+			Loading,
 			bContainer,
 			bCol,
 			bRow,
@@ -92,6 +76,7 @@
 				subproductsGT: [],
 				subproductsGE: [],
 				logoDirs:      config.logosHD,
+				loading:       true,
 			};
 		},
 		async mounted()
@@ -110,7 +95,6 @@
 						axios.get(config.api + config.endpoints.subproductsGT),
 						axios.get(config.api + config.endpoints.subproductsGE)
 					]);
-					[this.products, this.sdgs, this.subproductsGT, this.subproductsGE] = [productsData.data, sdgsData.data, subproductsGTData.data, subproductsGEData.data];
 				}
 				catch (err)
 				{
@@ -118,6 +102,8 @@
 					this.$root.$emit('error');
 					return false;
 				}
+				[this.products, this.sdgs, this.subproductsGT, this.subproductsGE] = [productsData.data, sdgsData.data, subproductsGTData.data, subproductsGEData.data];
+				this.loading = false;
 			},
 			getDataset(product)
 			{
@@ -129,7 +115,7 @@
 					case 2:
 						return this.subproductsGT;
 
-					case 3:
+					case 5:
 						return this.subproductsGE;
 				}
 			},
@@ -142,7 +128,7 @@
 			videoThumb(img)
 			{
 				return {
-					backgroundImage: `url('${config.videos.projectThumbDir}${img === null ? config.videos.defaultProjectThumb : img}')`
+					backgroundImage: `url('${config.videos.projectThumbDir}${img ? img : config.videos.defaultProjectThumb}')`
 				};
 			},
 			showVideo(url = false)
@@ -199,6 +185,7 @@
 
         .project
         {
+            margin-bottom: 20px;
 
             .project-image
             {
