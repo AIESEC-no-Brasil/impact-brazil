@@ -13,9 +13,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.serializers import ValidationError
 
-from api.models import EntityPartner, LC, Product, Subproduct, SDG, Opportunity, Focus, Analytic, Entity
-from api.serializers import LCSerializer, SubproductSerializer, ProductSerializer, SDGSerializer, \
-    EntityPartnerSerializer, OpportunitySerializer
+from api.models import *
+from api.serializers import *
 
 
 # Get the list of entities, prioritizing country partners
@@ -196,6 +195,17 @@ class EntityPartnerDetails(APIView):
             partnership_details['no_visa'] = True
 
         return Response(partnership_details)
+
+
+# Get list of cities
+class CityList(generics.ListAPIView):
+    queryset = City.objects.all()
+    serializer_class = CitySerializerMini
+
+
+class CityDetail(generics.RetrieveAPIView):
+    queryset = City.objects.all()
+    serializer_class = CitySerializer
 
 
 # Login with API

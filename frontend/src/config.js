@@ -33,6 +33,8 @@ const config = {
 		sdg:           id => `sdg/${id}.json`,
 		subproduct:    id => `subproduct/${id}.json`,
 		opportunities: "opportunities.json",
+		cities:        "cities.json",
+		city:          id => `city/${id}.json`,
 		login:         "login.json",
 		apply:         "apply.json",
 		ip:            "ip.json",

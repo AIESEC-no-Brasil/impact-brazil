@@ -106,6 +106,7 @@
         height: 38px;
         max-height: 50px;
         position: fixed;
+        top: 0;
         width: 100%;
         z-index: 1000;
         background-color: $ib-blue-dk;

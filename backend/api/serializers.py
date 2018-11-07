@@ -1,19 +1,41 @@
 from django.db.models import Min, Max
 from rest_framework import serializers
-from .models import LC, Product, SDG, Subproduct, EntityPartner, Opportunity, ResponseTime, StandardsDelivery
+from .models import *
 
 
 class LCSerializer(serializers.ModelSerializer):
     class Meta:
         model = LC
         fields = (
-            'id', 'reference_name', 'city', 'gis_id', 'video_link', 'thumbnail', 'products', 'subproducts', 'sdgs')
+            'id', 'reference_name', 'city_name', 'gis_id', 'video_link', 'thumbnail', 'products', 'subproducts', 'sdgs')
 
 
 class LCSerializerMini(serializers.ModelSerializer):
     class Meta:
         model = LC
-        fields = ('id', 'reference_name', 'city', 'gis_id', 'video_link', 'thumbnail')
+        fields = ('id', 'reference_name', 'city_name', 'gis_id', 'video_link', 'thumbnail')
+
+
+class LCSerializerMicro(serializers.ModelSerializer):
+    class Meta:
+        model = LC
+        fields = ('id', 'reference_name', 'gis_id')
+
+
+class CitySerializer(serializers.ModelSerializer):
+    lc_set = LCSerializerMicro(many=True)
+
+    class Meta:
+        model = City
+        fields = ('id', 'name', 'mapX', 'mapY', 'short_desc', 'video_link', 'details', 'lc_set')
+
+
+class CitySerializerMini(serializers.ModelSerializer):
+    lc_set = LCSerializerMicro(many=True)
+
+    class Meta:
+        model = City
+        fields = ('id', 'name', 'mapX', 'mapY', 'short_desc', 'lc_set')
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -21,7 +43,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('id', 'name', 'description', 'shortname', 'gis_id', 'lc_set', 'logo')
+        fields = ('id', 'name', 'description', 'shortname', 'details', 'gis_id', 'lc_set', 'logo')
 
 
 class SubproductSerializer(serializers.ModelSerializer):
@@ -70,7 +92,11 @@ class OpportunitySerializer(serializers.ModelSerializer):
             min = rating_range.aggregate(Min('standards_delivery_percent'))['standards_delivery_percent__min']
             max = rating_range.aggregate(Max('standards_delivery_percent'))['standards_delivery_percent__max']
             rating = rating_range.get(lc=obj.lc)
-            adjusted_rating = round(round(((rating.standards_delivery_percent - min) / (max - min)) * 10) / 2)
+
+            try:
+                adjusted_rating = round(round(((rating.standards_delivery_percent - min) / (max - min)) * 10) / 2)
+            except ZeroDivisionError:
+                adjusted_rating = 5
 
             return {"rating": adjusted_rating, "responses": rating.responses}
 

@@ -3,7 +3,10 @@
         <Navigation/>
         <transition name="fade">
             <keep-alive include="Opportunities">
-                <router-view/>
+                <router-view v-if="!$store.state.pageLoading"/>
+                <div class="fullscreen-loading" v-else>
+                    <Loading center dark/>
+                </div>
             </keep-alive>
         </transition>
         <Footer v-if="!$store.state.showingQuestions"/>
@@ -18,6 +21,7 @@
 	import Errors from './components/Global/Errors.vue';
 	import User from './components/Global/User.vue';
 	import Footer from './components/Global/Footer.vue';
+	import Loading from './components/Loading.vue';
 
 	import 'bootstrap/dist/css/bootstrap.css';
 	import 'bootstrap-vue/dist/bootstrap-vue.css';
@@ -28,7 +32,8 @@
 			Navigation,
 			Errors,
 			Footer,
-			User
+			User,
+			Loading,
 		},
 	};
 </script>
@@ -63,7 +68,7 @@
     b
     {
         font-family: PierSansBold, sans-serif;
-        padding: 0 4px;
+        padding: 0 4px 0 0;
     }
 
     body, html
@@ -90,6 +95,11 @@
         padding: 44px 24px;
         font-family: PierSansLight, sans-serif;
         color: #353535;
+    }
+
+    .fullscreen-loading
+    {
+        margin: 40vh 0 40vh 0;
     }
 
     .fade-enter-active, .fade-leave-active

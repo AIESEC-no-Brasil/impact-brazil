@@ -79,5 +79,10 @@
         {
             font-size: 10px;
         }
+
+        .credit
+        {
+            margin-bottom: 40px;
+        }
     }
 </style>

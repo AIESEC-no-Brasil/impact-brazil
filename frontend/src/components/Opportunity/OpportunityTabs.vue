@@ -42,10 +42,10 @@
                     </a>
                 </li>
                 <li style='margin-top: 10px;'>
-                    <a @click="changeTab('visa')"
+                    <a @click="changeTab('city')"
                        role="button"
-                       :class="tab === 'visa' ? 'active-tab' : ''">
-                        Learn more about {{opportunity.
+                       :class="tab === 'city' ? 'active-tab' : ''">
+                        Learn more about CITY
                     </a>
                 </li>
             </ul>

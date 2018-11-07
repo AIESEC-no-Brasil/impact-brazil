@@ -1,43 +1,57 @@
 <template>
     <div class="section">
-        <div class="title">Our Projects</div>
-        <div class="product"
-             v-for="product in products"
-             :key="product.id">
-            <img :src="logoDirs.products + product.logo"
-                 :title="product.name"
-                 :alt="product.name"/>
-            <div class="description">{{product.description}}</div>
-            <div class="projects">
-                <span v-for="project in getDataset(product.gis_id)">
-                    <img :key="project.id"
-                         :id="'proj' + project.gis_id"
-                         :src="[null, logoDirs.sdgs, logoDirs.subproductsGT, null, null, logoDirs.subproductsGE][product.gis_id] + project.logo"
-                         role="button"/>
-                    <b-popover :target="'proj' + project.gis_id"
-                               :title="project.name"
-                               triggers="hover focus"
-                               placement="bottom">
-                        <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur at consequatur
-                            eligendi error iure nemo sed soluta temporibus. Doloribus ea fugiat harum illum natus odit
-                            provident quidem, reiciendis sed similique?
-                        </div>
-                        <div>Aliquid, aspernatur deleniti in nisi quae reprehenderit vero! A accusamus architecto
-                            beatae, culpa, cum cupiditate dolore, doloremque enim est illum laudantium nam nisi odio
-                            praesentium quod quos rem similique veritatis?
-                        </div>
-                        <a href="#">APPLY NOW &rarr;</a>
-                    </b-popover>
-                </span>
-            </div>
-        </div>
+        <div class="title">Projects</div>
+
+        <b-container fluid>
+            <b-row>
+                <b-col cols="12"
+                       md="4"
+                       class="product"
+                       v-for="product in products"
+                       :key="product.id">
+                    <img :src="logoDirs.products + product.logo"
+                         :title="product.name"
+                         :alt="product.name"/>
+                    <div class="description">{{product.description}}</div>
+                    <div class="detail">
+                        {{markdown(product.detail)}}
+                    </div>
+                </b-col>
+            </b-row>
+        </b-container>
+
         <VideoModal ref="videomodal"/>
+
+        <!--<div class="projects">
+                        <span v-for="project in getDataset(product.gis_id)">
+                            <img :key="project.id"
+                                 :id="'proj' + project.gis_id"
+                                 :src="[null, logoDirs.sdgs, logoDirs.subproductsGT, null, null, logoDirs.subproductsGE][product.gis_id] + project.logo"
+                                 role="button"/>
+
+                                <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur at consequatur
+                                    eligendi error iure nemo sed soluta temporibus. Doloribus ea fugiat harum illum natus odit
+                                    provident quidem, reiciendis sed similique?
+                                </div>
+                                <div>Aliquid, aspernatur deleniti in nisi quae reprehenderit vero! A accusamus architecto
+                                    beatae, culpa, cum cupiditate dolore, doloremque enim est illum laudantium nam nisi odio
+                                    praesentium quod quos rem similique veritatis?
+                                </div>
+                                <a href="#">APPLY NOW &rarr;</a>
+
+                        </span>
+                    </div>-->
     </div>
 </template>
 
 <script>
 	import VideoModal from '../components/VideoModal.vue';
-	import bPopover from 'bootstrap-vue/es/components/popover/popover';
+
+	import bContainer from 'bootstrap-vue/es/components/layout/container';
+	import bCol from 'bootstrap-vue/es/components/layout/col';
+	import bRow from 'bootstrap-vue/es/components/layout/row';
+
+	import MarkdownIt from 'markdown-it';
 	import axios from 'axios';
 	import {config} from '../config';
 
@@ -45,7 +59,10 @@
 		name:       "Projects",
 		components: {
 			VideoModal,
-			bPopover
+			bContainer,
+			bCol,
+			bRow,
+			Nl2br,
 		},
 		data()
 		{
@@ -95,8 +112,12 @@
 					case 3:
 						return this.subproductsGE;
 				}
-			}
-
+			},
+			markdown(text)
+			{
+				let md = new MarkdownIt();
+				return md.render(text);
+			},
 		}
 	};
 </script>

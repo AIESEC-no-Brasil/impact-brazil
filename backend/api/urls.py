@@ -16,6 +16,8 @@ urlpatterns = [
     path('entity_partners/', views.EntityPartnerList.as_view()),
     path('entity_partners/<int:pk>/', views.EntityPartnerDetails.as_view()),
     path('opportunities/', views.OpportunityList.as_view()),
+    path('cities/', views.CityList.as_view()),
+    path('city/<int:pk>', views.CityDetail.as_view()),
     path('login/', views.Login.as_view()),
     path('apply/', views.Apply.as_view()),
     path('ip/', views.IP.as_view())

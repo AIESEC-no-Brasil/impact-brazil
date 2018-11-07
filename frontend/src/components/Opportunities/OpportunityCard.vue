@@ -10,7 +10,7 @@
                 <b-container fluid class="ml-md-3 opportunity-desc opportunity-card">
                     <b-row>
                         <b-col cols="12" md="8">
-                            <div class="city">{{opp.lc.city}}</div>
+                            <div class="city">{{opp.lc.city_name}}</div>
                             <div class="title text-truncate" :title="opp.title">{{opp.title}}</div>
                             <div class="organization text-truncate" :title="opp.organization_name">
                                 {{opp.organization_name}}

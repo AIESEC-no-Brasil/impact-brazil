@@ -1,6 +1,6 @@
 <template>
     <div id="about">
-        <ImpactDescription v-show="!showingQuestions"/>
+        <ImpactDescription/>
     </div>
 </template>
 

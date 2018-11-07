@@ -31,7 +31,12 @@ export default new Router({
 		{
 			path:      '/projects',
 			name:      'projects',
-			component: () => import ('./views/Projects.vue')
+			component: () => import('./views/Projects.vue')
+		},
+		{
+			path:      '/cities',
+			name:      'cities',
+			component: () => import('./views/Cities.vue'),
 		},
 		{
 			path:      '/404',

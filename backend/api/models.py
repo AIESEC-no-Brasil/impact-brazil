@@ -3,7 +3,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
-# TOOD: Long term - create indices
+# TODO Long term - indexes
 
 # Country partners
 class EntityPartner(models.Model):
@@ -37,6 +37,7 @@ class Product(models.Model):
     name = models.CharField('Product Name', max_length=50)
     shortname = models.CharField('Product Short Name', max_length=50)
     description = models.TextField('Product Description')
+    details = models.TextField('Long Description')
     gis_id = models.IntegerField('Product ID on GIS', unique=True)
     logo = models.TextField('Product Logo Filename', blank=True)
 
@@ -49,6 +50,8 @@ class SDG(models.Model):
     name = models.CharField('SDG Name', max_length=50)
     gis_id = models.IntegerField('SDG ID on GIS', unique=True)
     logo = models.TextField('SDG Logo', blank=True)
+    video_link = models.CharField('Video ID (YouTube)', max_length=256, blank=True)
+    thumbnail = models.CharField('Thumbnail Filename (.jpg)', blank=True, max_length=256)
 
     def __str__(self):
         return f'{self.number}: {self.name}'
@@ -62,15 +65,34 @@ class Subproduct(models.Model):
     gis_id = models.IntegerField('Subproduct ID on GIS', unique=True)
     product = models.ForeignKey(Product, to_field='gis_id', on_delete=models.SET_NULL, null=True)
     logo = models.TextField('Subproduct Logo', blank=True)
+    video_link = models.CharField('Video ID (YouTube)', max_length=256, blank=True)
+    thumbnail = models.CharField('Thumbnail Filename (.jpg)', blank=True, max_length=256)
 
     def __str__(self):
         return f'{self.name} ({self.product.shortname})'
 
 
+class City(models.Model):
+    name = models.CharField(max_length=255)
+    mapX = models.IntegerField("Map X")
+    mapY = models.IntegerField("Map Y")
+    short_desc = models.TextField("Tagline (Short)")
+    details = models.TextField("Details (Long)")
+    video_link = models.CharField('Video ID (YouTube)', max_length=256, blank=True)
+    thumbnail = models.CharField('Thumbnail Filename (.jpg)', blank=True, max_length=256)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "Cities"
+
+
 class LC(models.Model):
     name = ''  # Get this from GIS
     reference_name = models.CharField('LC Name', max_length=50)
-    city = models.CharField('City Name', max_length=50)
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
+    city_name = models.CharField('City Name', max_length=50)
     gis_id = models.IntegerField('LC ID on GIS', unique=True)
     products = models.ManyToManyField(Product, blank=True)
     subproducts = models.ManyToManyField(Subproduct, blank=True)
@@ -177,7 +199,3 @@ class StandardsDelivery(models.Model):
         unique_together = ('lc', 'product')
         verbose_name = "Standard delivery percentage"
         verbose_name_plural = "Standard delivery percentages"
-
-
-class City(models.Model):
-    name = models.CharField(max_length=255)

@@ -6,7 +6,7 @@
             <b-row>
                 <b-col cols="12" md="4">
                     <div class="prod gv">
-                        <img src="/static/images/products/gv-logo-hd.png"
+                        <img src="/static/images/products/hd/gv-logo.png"
                              title="Global Volunteer"
                              alt="Global Volunteer">
                         Ambitious enough to believe you can make a positive impact in Brazil? Well, we believe you
@@ -25,7 +25,7 @@
                 </b-col>
                 <b-col cols="12" md="4">
                     <div class="prod gt">
-                        <img src="/static/images/products/gt-logo-hd.png"
+                        <img src="/static/images/products/hd/gt-logo.png"
                              title="Global Talent"
                              alt="Global Talent">
                         Searching for the next opportunity to level yourself up and gain professional experience?
@@ -44,7 +44,7 @@
                 </b-col>
                 <b-col cols="12" md="4">
                     <div class="prod ge">
-                        <img src="/static/images/products/ge-logo-hd.png"
+                        <img src="/static/images/products/hd/ge-logo.png"
                              title="Global Entrepreneur"
                              alt="Global Entrepreneur">
                         Does a dynamic, fast-paced work environment excite you? Begin your entrepreneurial journey with an internship at a startup in Brazil!

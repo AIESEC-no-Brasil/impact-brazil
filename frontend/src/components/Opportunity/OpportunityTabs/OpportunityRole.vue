@@ -14,7 +14,9 @@
             <span style='font-size: 1.2em'>{{opportunity.branch.company.name}}</span><br>
             {{opportunity.branch.address_detail.city}}, {{opportunity.branch.address_detail.country}}
         </o-row>
-        <o-row title="Role description" fullspan>{{opportunity.description}}</o-row>
+        <o-row title="Role description" fullspan>
+            {{markdown(opportunity.description)}}
+        </o-row>
         <o-row title="Main activities" fullspan>
             <ul style="margin-left: 24px;">
                 <li v-for="activity in opportunity.role_info.learning_points_list">{{activity}}</li>
@@ -27,7 +29,7 @@
 <script>
 	import OpportunityDetailRow from '../OpportunityDetailRow.vue';
 	import Loading from '../../Loading.vue';
-	import dateFormat from 'dateformat';
+	import MarkdownIt from 'markdown-it';
 
 
 	export default {
@@ -40,6 +42,13 @@
 			opportunity: Object,
 			extra:       Object
 		},
+		methods:    {
+			markdown(text)
+			{
+				let md = new MarkdownIt();
+				return md.render(text);
+			},
+		}
 	};
 </script>
 
