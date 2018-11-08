@@ -19,9 +19,7 @@
     </div>
     <div id="loading" v-else>
         <div id="fake-navbar"></div>
-        <div class="fullscreen-loading">
-            <Loading dark center></Loading>
-        </div>
+        <Loading fullscreen dark center/>
     </div>
 </template>
 

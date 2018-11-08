@@ -1,10 +1,14 @@
 <!--suppress XmlDuplicatedId -->
 <template>
-    <div v-if="entityName !== ''"
-         id="invite"
-         @mousedown="$emit('show-video', entityVideo)">
-        Inviting <span>{{entityName}}</span> to Impact Brazil
-        <div v-if="entityVideo !== null" id="ey-banner" :style="entityThumb">
+    <div v-if="noVisa">NO VISA</div>
+    <div v-else-if="entityName !== ''"
+         id="invite">
+        <div class="invitation-text">Inviting <span>{{entityName}}</span> to Impact Brazil</div>
+        <div class="change-entity-text">Not from {{entityName}}? <a href="#">Click here</a> to change.</div>
+        <div v-if="entityVideo !== null"
+             id="ey-banner"
+             :style="entityThumb"
+             @mousedown="$emit('show-video', entityVideo)">
             <div></div>
         </div>
     </div>
@@ -23,6 +27,9 @@
 		components: {
 			Loading
 		},
+		props:      {
+			noVisa: Boolean
+		},
 		data()
 		{
 			return {
@@ -32,15 +39,12 @@
 			};
 		},
 		methods:    {
-			async loadInvite()
-			{
+			loadInvite: async function () {
 				let entityPartner, entityPartnerID;
 				try
 				{
-					if (this.$route.query.entity)
-						entityPartnerID = this.$route.query.entity;
-					else if (this.$store.state.options.entity)
-						entityPartnerID = this.$store.state.options.entity;
+					if (this.$session.get('entity'))
+						entityPartnerID = this.$session.get('entity');
 					else
 					{
 						// Auto detect the entity!
@@ -50,9 +54,13 @@
 						// TODO: what if the country is not found?
 						entityPartnerID = entities.data.find(entity => entity.name === myEntity.data.country).id;
 
+						// Store the entity in the session
+						this.$session.set('entity', entityPartnerID);
+
 						// Don't forget to route
 						this.$router.push({path: 'opportunities', query: {entity: entityPartnerID}});
 					}
+
 					entityPartner = await axios.get(config.api + config.endpoints.entityPartner(entityPartnerID));
 				}
 				catch (err)
@@ -62,13 +70,7 @@
 					return false;
 				}
 
-				if (entityPartner.data.gis_id === 1606)
-				{
-					this.$store.commit('brazilian', true);
-					this.$store.commit('noVisa', true);
-				}
-
-				if (entityPartner.data.no_visa)
+				if (entityPartner.data.gis_id === config.gisBrazilID || entityPartner.data.no_visa)
 					this.$store.commit('noVisa', true);
 
 				this.entityName = entityPartner.data['name'];
@@ -109,6 +111,11 @@
         }
     }
 
+    .change-entity-text
+    {
+        font-size: 10px;
+    }
+
     #ey-banner
     {
         width: calc(100% + 48px);
@@ -132,6 +139,4 @@
             margin: auto;
         }
     }
-
-
 </style>

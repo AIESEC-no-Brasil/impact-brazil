@@ -49,6 +49,11 @@
 			{
 				this.hideQuestions();
 
+				// Entity is not part of answers, so let's put that in a session varaible
+                this.$session.set('entity', answers.entity);
+                delete answers.entity;
+
+                // Figure out which one of the unnecessary answers we need to delete
 				if (answers.subproductOrSdg === 'sdg')
 					delete answers.subproduct;
 				else
@@ -57,7 +62,6 @@
 
 				this.$store.commit('queueOptReload');
 				this.$store.commit('noVisa', false);
-				this.$store.commit('brazilian', false);
 				this.$store.commit('options', {});
 				this.$store.commit('optquery', {});
 				this.$router.push({path: 'opportunities', query: answers});

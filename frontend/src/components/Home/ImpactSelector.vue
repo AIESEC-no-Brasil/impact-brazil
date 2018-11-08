@@ -226,39 +226,50 @@
 			async loadLists()
 			{
 				// Create a function to load data into {id, text} format
-				async function loadData(vm, url, idKey, textKey, imageKey = false, imageW = 0, imageDir = "/static/images/")
+				async function loadData(vm, listName, url, idKey, textKey, imageKey = false, imageW = 0, imageDir = "/static/images/")
 				{
 					let data;
-					try
+					let storedList = vm.$store.getters.getList(listName);
+
+					if (storedList && storedList.length > 0)
+						data = storedList;
+					else
 					{
-						data = await axios.get(url);
-					}
-					catch (err)
-					{
-						console.error(err);
-						vm.$root.$emit('error');
-						return false;
+						try
+						{
+							data = await axios.get(url);
+						}
+						catch (err)
+						{
+							console.error(err);
+							vm.$root.$emit('error');
+							return false;
+						}
+
+						// Store this list
+						this.$store.commit('setList', {list: listName, arr: data.data});
+						data = data.data;
 					}
 					let loadedData = [];
 					let loadedDataWithImages = [];
 
-					for (let k in data.data)
+					for (let k in data)
 					{
-						if (data.data.hasOwnProperty(k))
+						if (data.hasOwnProperty(k))
 						{
-							loadedData.push({id: data.data[k][idKey], text: data.data[k][textKey]});
+							loadedData.push({id: data[k][idKey], text: data[k][textKey]});
 
 							if (imageKey !== false)
 							{
 								// Load the image list
 								loadedDataWithImages.push({
-									id:   data.data[k][idKey],
-									text: `<img src='${imageDir}${data.data[k][imageKey]}' style='width: ${imageW}px'> ${data.data[k][textKey]}`
+									id:   data[k][idKey],
+									text: `<img src='${imageDir}${data[k][imageKey]}' style='width: ${imageW}px'> ${data[k][textKey]}`
 								});
 
 								// Preload the image in a hidden element
 								let preload = new Image();
-								preload.src = data.data[k][imageKey];
+								preload.src = data[k][imageKey];
 								if (vm.$refs['image-preloader'] !== undefined)
 									vm.$refs['image-preloader'].appendChild(preload);
 							}
@@ -273,7 +284,7 @@
 				}
 
 				// Load entities list
-				let entityList = await loadData(this, config.api + config.endpoints.entities, 'id', 'name');
+				let entityList = await loadData(this, 'entities', config.api + config.endpoints.entities, 'id', 'name');
 				if (entityList === false)
 					return false;
 
@@ -290,14 +301,13 @@
 				let loadList = ["products", "sdgs", "subproductsGT", "subproductsGE"];
 
 				loadList.forEach(async (load) => {
-					let {textOnly, withImages} = await loadData(this, config.api + config.endpoints[load], 'gis_id', (load === 'products' ? 'description' : 'name'), 'logo', 90, config.logos[load]);
+					let {textOnly, withImages} = await loadData(this, loadList, config.api + config.endpoints[load], 'gis_id', (load === 'products' ? 'description' : 'name'), 'logo', 90, config.logos[load]);
 
 					if (textOnly === false || withImages === false)
 						return false;
 
 					this.lists[load] = textOnly;
 					this.lists[load + 'WithImages'] = withImages;
-
 				});
 			}
 		}

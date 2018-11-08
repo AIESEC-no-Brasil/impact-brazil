@@ -4,9 +4,7 @@
         <transition name="fade">
             <keep-alive include="Opportunities">
                 <router-view v-if="!$store.state.pageLoading"/>
-                <div class="fullscreen-loading" v-else>
-                    <Loading center dark/>
-                </div>
+                <Loading v-else fullscreen center dark/>
             </keep-alive>
         </transition>
         <Footer v-if="!$store.state.showingQuestions"/>
@@ -95,11 +93,6 @@
         padding: 44px 24px;
         font-family: PierSansLight, sans-serif;
         color: #353535;
-    }
-
-    .fullscreen-loading
-    {
-        margin: 40vh 0 40vh 0;
     }
 
     .fade-enter-active, .fade-leave-active

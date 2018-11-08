@@ -1,9 +1,8 @@
 <template>
     <div class="section" id="opportunities">
-        <OpportunityInvite v-if="!$store.state.noVisa"
+        <OpportunityInvite :no-visa="noVisa"
                            @show-video="showVideo"/>
-        <OpportunityList :no-visa="$store.state.noVisa"
-                         :i-am-from-brazil="$store.state.iAmFromBrazil"
+        <OpportunityList :no-visa="noVisa"
                          @show-video="showVideo"/>
         <VideoModal ref="videomodal"/>
     </div>
@@ -27,6 +26,12 @@
 			return {
 				defaultVideoURL: config.defaultVideoURL
 			};
+		},
+		computed:   {
+			noVisa()
+			{
+				return this.$store.state.noVisa;
+			}
 		},
 		methods:    {
 			showVideo(url = false)

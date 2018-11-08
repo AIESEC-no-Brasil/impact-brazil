@@ -3,16 +3,23 @@
     <div id="opportunity-list-root">
         <OpportunityOptions v-if="!$store.state.noVisa"
                             @options-changed="optionsChanged"/>
+
         <div v-if="missingOpts && !$store.state.iAmFromBrazil && !$store.state.noVisa" id="no-opps-available">
             <i class="material-icons">settings</i><br>
-            To get started, please select your filters from the top right.
+            To get started, please select at least a product or a city from the top right.<br>
+            You can keep customizing the filters to suit your needs better.<br>
+            Not sure what product is best for you?
+            <router-link to="/about">Read more about our products</router-link>
+            !
         </div>
-        <div v-else-if="$store.state.iAmFromBrazil" id="no-opps-available">
+
+        <div v-else-if="iAmFromBrazil" id="no-opps-available">
             <i class="material-icons">location_on</i><br>
             Hello! This website is meant for internationals who are searching for opportunities in Brazil.<br>
             If you are a Brazilian and you want to find opportunities internationally, please visit <a
                 href="https://aiesec.org.br">our national website</a>.
         </div>
+
         <div v-else-if="$store.state.noVisa" id="no-opps-available">
             <i class="material-icons">location_off</i><br>
             Sorry, due to Visa regulations, we do not have any opportunities to show you right now.<br>
@@ -20,6 +27,7 @@
             <router-link to="/contact">get in touch</router-link>
             if you would like to know more.
         </div>
+
         <div v-else-if="oppList.length > 0 && !noOpps" id="opportunities-list">
             <OpportunityCard v-for="opp in oppList"
                              :ref="opp.id"
@@ -62,6 +70,12 @@
 				missingOpts: false,
 			};
 		},
+		computed:   {
+			iAmFromBrazil()
+			{
+				return this.$session.get('entity') === config.gisBrazilID;
+			}
+		},
 		methods:    {
 			showVideo(url)
 			{
@@ -79,8 +93,8 @@
 				this.missingOpts = false;
 
 				// Configure the options
-				let {entity, product} = this.$route.query;
-				let options = {entity, product};
+				let product = this.$route.query.product;
+				let options = {product};
 
 				if (this.$route.query.start_date && this.$route.query.end_date)
 				{
@@ -106,19 +120,22 @@
 				else if (this.$route.query.subproduct)
 					options.subproduct = this.$route.query.subproduct;
 
+				if (this.$route.query.lc)
+					options.lc = this.$route.query.lc;
+
+				if (this.$route.query.q)
+					options.q = this.$route.query.q;
+
 				// Convert objects to proper datatype
 				for (let k in options)
 				{
-					if (k.indexOf("date") === -1)
+					if (k.indexOf("date") === -1 && k !== "q")
 						options[k] = parseInt(options[k]);
 				}
 				this.$store.commit('options', options);
 
 				// Check if all required parameters are set
-				if (!(options.entity && options.product && options.start_date)
-					|| !(options.sdg || options.subproduct)
-					|| ((options.product === 5 || options.product === 2) && !options.subproduct)
-					|| (options.product === 1 && !options.sdg))
+				if (!options.product && !options.lc)
 				{
 					//console.error("All required parameters not set");
 					this.missingOpts = true;

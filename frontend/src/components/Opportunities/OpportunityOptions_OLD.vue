@@ -5,15 +5,32 @@
             "Brazil" : this.selections.products}}</b>
         </div>
         <div id="options-right">
-            <!--div id="searchbox">
-                <b-form-input size="sm" placeholder="Search" v-model="search" @change="searchHandler"/>
-            </div--> <!-- TODO: figure out why q broke -->
+            <span id="daterange">
+                <DatePicker range
+                            range-separator="-"
+                            width="0"
+                            lang="en"
+                            ref="daterange"
+                            @change="changeDate"/>
+            </span>
+            <b-dropdown id="month"
+                        ref="month"
+                        variant="transparent"
+                        right
+                        size="sm"
+                        :text="selections.months">
+                <b-dropdown-item @click="chooseDateRange">Select a date range</b-dropdown-item>
+                <b-dropdown-item v-for="month in lists.months"
+                                 :key="month.id"
+                                 @click="changeOption('month', month.id)">
+                    {{month.text}}
+                </b-dropdown-item>
+            </b-dropdown>
             <b-dropdown id="prog"
                         variant="transparent"
                         right
                         size="sm"
                         :text="selections.products">
-                <b-dropdown-item @click="removeOption('product', 'All products')">All products</b-dropdown-item>
                 <b-dropdown-item v-for="product in lists.products"
                                  :key="product.id"
                                  @click="changeOption('product', product.id)">
@@ -26,8 +43,7 @@
                         right
                         size="sm"
                         :text="selections.sdgs"
-                        v-if="$store.state.options.product===1">
-                <b-dropdown-item @click="removeOption('sdg', 'All projects')">All projects</b-dropdown-item>
+                        v-if="product===1">
                 <b-dropdown-item v-for="sdg in lists.sdgs"
                                  :key="sdg.id"
                                  @click="changeOption('sdg', sdg.id)">
@@ -40,8 +56,7 @@
                         right
                         size="sm"
                         :text="selections.subproductsGT"
-                        v-if="$store.state.options.product===2">
-                <b-dropdown-item @click="removeOption('subproduct', 'All fields')">All fields</b-dropdown-item>
+                        v-if="product===2">
                 <b-dropdown-item v-for="subproduct in lists.subproductsGT"
                                  :key="subproduct.id"
                                  @click="changeOption('subproduct', subproduct.id)">
@@ -54,47 +69,11 @@
                         right
                         size="sm"
                         :text="selections.subproductsGE"
-                        v-if="$store.state.options.product===5">
-                <b-dropdown-item @click="removeOption('subproduct', 'All fields')">All fields</b-dropdown-item>
+                        v-if="product===5">
                 <b-dropdown-item v-for="subproduct in lists.subproductsGE"
                                  :key="subproduct.id"
                                  @click="changeOption('subproduct', subproduct.id)">
                     {{subproduct.text}}
-                </b-dropdown-item>
-            </b-dropdown>
-            <span id="daterange">
-                            <DatePicker range
-                                        range-separator="-"
-                                        width="0"
-                                        lang="en"
-                                        ref="daterange"
-                                        @change="changeDate"/>
-                        </span>
-            <b-dropdown id="month"
-                        ref="month"
-                        variant="transparent"
-                        right
-                        size="sm"
-                        :text="selections.months">
-                <b-dropdown-item @click="removeOption('month', 'Anytime')">Anytime</b-dropdown-item>
-                <b-dropdown-item @click="chooseDateRange">Select a date range</b-dropdown-item>
-                <b-dropdown-item v-for="month in lists.months"
-                                 :key="month.id"
-                                 @click="changeOption('month', month.id)">
-                    {{month.text}}
-                </b-dropdown-item>
-            </b-dropdown>
-            <b-dropdown id="lc"
-                        ref="lc"
-                        variant="transparent"
-                        right
-                        size="sm"
-                        :text="selections.lcs">
-                <b-dropdown-item @click="removeOption('lc', 'All cities')">All cities</b-dropdown-item>
-                <b-dropdown-item v-for="lc in lists.lcs"
-                                 :key="lc.id"
-                                 @click="changeOption('lc', lc.id)">
-                    {{lc.text}}
                 </b-dropdown-item>
             </b-dropdown>
         </div>
@@ -107,8 +86,6 @@
 <script>
 	import bDropdown from 'bootstrap-vue/es/components/dropdown/dropdown';
 	import bDropdownItem from 'bootstrap-vue/es/components/dropdown/dropdown-item';
-	import bFormInput from 'bootstrap-vue/es/components/form-input/form-input';
-
 	import axios from 'axios';
 	import {config} from '../../config';
 	import {monthList} from '../../functions/month-list';
@@ -121,41 +98,29 @@
 		components: {
 			bDropdown,
 			bDropdownItem,
-			bFormInput,
 			Loading,
 			DatePicker,
 		},
 		data()
 		{
 			return {
-				lists:         {
+				lists:      {
 					months:        [],
 					products:      [],
 					sdgs:          [],
 					subproductsGT: [],
 					subproductsGE: [],
-					lcs:           [],
 				},
-				selections:    {
-					months:        "Anytime",
-					products:      "All products",
-					sdgs:          "All projects",
-					subproductsGT: "All fields",
-					subproductsGE: "All fields",
-					lcs:           "All cities",
+				selections: {
+					months:        "Choose month",
+					products:      "Choose product",
+					sdgs:          "Choose project",
+					subproductsGT: "Choose field",
+					subproductsGE: "Choose field"
 				},
-				search:        "",
-				customDate:    false,
-				ready:         false,
-				selectionList: [
-					{option: "month", list: "months"},
-					{option: "product", list: "products"},
-					{option: "subproduct", list: "subproductsGT"},
-					{option: "subproduct", list: "subproductsGE"},
-					{option: "sdg", list: "sdgs"},
-					{option: "lc", list: "lcs"},
-				],
-				searchTimer:   null,
+				product:    0,
+				customDate: false,
+				ready:      false,
 			};
 		},
 		computed:   {
@@ -176,33 +141,29 @@
 		methods:    {
 			async loadOptions()
 			{
-				async function loadData(vm, listName, url, idKey, textKey)
+				async function loadData(vm, url, idKey, textKey)
 				{
 					let data;
-					let storedList = vm.$store.getters.getList(listName);
-
-					if (storedList && storedList.length > 0)
-						data = storedList;
-					else
+					try
 					{
-						try
-						{
-							data = await axios.get(url);
-						}
-						catch (err)
-						{
-							console.error(err);
-							vm.$root.$emit('error');
-							return false;
-						}
-						data = data.data;
-						vm.$store.commit('setList', {list: listName, arr: data});
+						data = await axios.get(url);
+					}
+					catch (err)
+					{
+						console.error(err);
+						vm.$root.$emit('error');
+						return false;
 					}
 					let loadedData = [];
 
-					for (let k in data)
-						if (data.hasOwnProperty(k))
-							loadedData.push({id: data[k][idKey], text: data[k][textKey]});
+					for (let k in data.data)
+					{
+						if (data.data.hasOwnProperty(k))
+						{
+							loadedData.push({id: data.data[k][idKey], text: data.data[k][textKey]});
+
+						}
+					}
 
 					return loadedData;
 				}
@@ -213,14 +174,14 @@
 					this.lists.months.push({id: ((i + month) % 12) + 1, text: months[i]});
 
 				// Now handle dynamics
-				let loadList = ["products", "sdgs", "subproductsGT", "subproductsGE", "lcs"];
+				let loadList = ["products", "sdgs", "subproductsGT", "subproductsGE"];
 
 				let promiseArray = [];
 				for (let i in loadList)
-					promiseArray.push(loadData(this, loadList[i], config.api + config.endpoints[loadList[i]], 'gis_id', (loadList[i] === 'lcs' ? 'reference_name' : 'name')));
+					promiseArray.push(loadData(this, config.api + config.endpoints[loadList[i]], 'gis_id', 'name'));
 
-				let [products, sdgs, subproductsGT, subproductsGE, lcs] = await Promise.all(promiseArray);
-				this.lists = {...this.lists, products, sdgs, subproductsGT, subproductsGE, lcs};
+				let [products, sdgs, subproductsGT, subproductsGE] = await Promise.all(promiseArray);
+				this.lists = {...this.lists, products, sdgs, subproductsGT, subproductsGE};
 				this.ready = true;
 
 				this.setSelections();
@@ -228,7 +189,12 @@
 			setSelections()
 			{
 				if (!this.ready) return;
-				let selectionList = this.selectionList;
+				let selectionList = [
+					{option: "product", list: "products"},
+					{option: "subproduct", list: "subproductsGT"},
+					{option: "subproduct", list: "subproductsGE"},
+					{option: "sdg", list: "sdgs"}
+				];
 
 				selectionList.forEach((selection) => {
 					if (this.options[selection.option])
@@ -240,24 +206,9 @@
 					}
 				});
 
-				// Fix product
-				switch (this.options.product)
-				{
-					case 1:
-						this.selections.subproductsGT = "All fields";
-						this.selections.subproductsGE = "All fields";
-						break;
-
-					case 2:
-						this.selections.sdgs = "All projects";
-						this.selections.subproductsGE = "All fields";
-						break;
-
-					case 5:
-						this.selections.subproductsGT = "All fields";
-						this.selections.sdgs = "All fields";
-						break;
-				}
+				// Special case for products
+				if (this.product > 0)
+					this.selections['products'] = this.lists['products'].find(x => x.id === this.product).text;
 
 				// Special case for months - get it directly from the query string
 				if (this.$route.query.month)
@@ -265,17 +216,45 @@
 				else if (this.$route.query.start_date && this.$route.query.end_date)
 					this.selections['months'] = `${this.$route.query.start_date} - ${this.$route.query.end_date}`;
 				else
-					this.selections['months'] = "Anytime";
+					this.selections['months'] = "Select month";
 			},
 			changeOption(opt, val)
 			{
+				// Did we change the product? Then we need to choose the SDG/subproduct
+				if (opt === 'product')
+				{
+					this.product = val;
+					this.setSelections();
+
+					this.$nextTick(() => {
+						switch (this.product)
+						{
+							case 1:
+								this.$refs.sdg.show();
+								break;
+
+							case 2:
+								this.$refs.subproductGT.show();
+								break;
+
+							case 5:
+								this.$refs.subproductGE.show();
+								break;
+						}
+					});
+
+					return;
+				}
+
+				// Handle it
 				let queryString = Object.assign({}, this.$route.query);
 				queryString[opt] = `${val}`;
+				queryString['product'] = `${this.product}`;
 
 				// Remove unnecessary items
-				if (queryString.product && parseInt(queryString.product) === 1)
+				if (this.product === 1)
 					delete queryString['subproduct'];
-				else if (queryString.product && (parseInt(queryString.product) === 2 || parseInt(queryString.product) === 5))
+				else if (this.product === 2 || this.product === 5)
 					delete queryString['sdg'];
 
 				// If we're chosing a month, no longer need to care about customRange
@@ -288,50 +267,8 @@
 				}
 
 				this.$router.push({path: 'opportunities', query: queryString});
-				this.$store.commit('optquery', queryString);
 				this.$emit('options-changed');
-			},
-			removeOption(opt, text)
-			{
-				let selectionList = this.selectionList, currentSelection;
-				try
-				{
-					currentSelection = selectionList.find(x => x.option === opt).list;
-				}
-				catch (err)
-				{
-					return;
-				}
-				let queryString = Object.assign({}, this.$route.query);
-				delete queryString[opt];
-
-				if (opt === 'month')
-				{
-					delete queryString['start_date'];
-					delete queryString['end_date'];
-				}
-				this.selections[currentSelection] = text;
-
-				this.$router.push({path: 'opportunities', query: queryString});
 				this.$store.commit('optquery', queryString);
-				this.$emit('options-changed');
-			},
-			searchHandler()
-			{
-				clearTimeout(this.searchTimer);
-				this.searchTimer = setTimeout(this.changeSearch, 600);
-			},
-			changeSearch()
-			{
-				let queryString = Object.assign({}, this.$route.query);
-				if (this.search.length > 0)
-					queryString.q = this.search;
-				else
-					delete queryString.q;
-
-				this.$router.push({path: 'opportunities', query: queryString});
-				this.$store.commit('optquery', queryString);
-				this.$emit('options-changed');
 			},
 			changeDate(evt)
 			{
@@ -355,13 +292,14 @@
 		watch:      {
 			options(newOpts, oldOpts)
 			{
+				this.product = this.options.product;
 				this.setSelections();
 			}
 		},
 		async mounted()
 		{
 			this.loadOptions();
-			if (this.$route.query.product)
+			if (this.$route.query.entity || this.$route.query.product)
 				this.$root.$emit('options-changed', this.$route.query);
 		}
 	};
@@ -400,13 +338,5 @@
         {
             display: none;
         }
-    }
-
-    #searchbox
-    {
-        display: inline-block;
-        width: 120px;
-        position: relative;
-        top: 1px;
     }
 </style>

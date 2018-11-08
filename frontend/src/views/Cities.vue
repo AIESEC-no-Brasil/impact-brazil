@@ -4,8 +4,8 @@
         <b-container>
             <b-row>
                 <b-col cols="12" lg="6" md="7">
-                    <Map :cities="cities"
-                         @city-clicked="loadCity"/>
+                    <CityMap :cities="cities"
+                             @city-clicked="loadCity"/>
                 </b-col>
                 <b-col cols="12" lg="6" md="5">
                     <CityInfo :cities="cities"
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-	import Map from '../components/Cities/Map.vue';
+	import CityMap from '../components/Cities/CityMap.vue';
 	import CityInfo from '../components/Cities/CityInfo.vue';
 	import bContainer from 'bootstrap-vue/es/components/layout/container';
 	import bCol from 'bootstrap-vue/es/components/layout/col';
@@ -29,7 +29,7 @@
 	export default {
 		name:       "Cities",
 		components: {
-			Map,
+			CityMap,
 			CityInfo,
 			bContainer,
 			bCol,

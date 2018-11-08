@@ -14,7 +14,7 @@
 	import {config} from '../../config';
 
 	export default {
-		name:    "Map",
+		name:    "CityMap",
 		data()
 		{
 			return {
@@ -146,6 +146,12 @@
 
     @media screen and (max-width: 767.98px)
     {
+        /* Maybe? */
+        #map >>> .citydesc
+        {
+            display: none;
+        }
+        
         #map >>> .subdesc
         {
             display: none;

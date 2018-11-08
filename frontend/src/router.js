@@ -39,6 +39,11 @@ export default new Router({
 			component: () => import('./views/Cities.vue'),
 		},
 		{
+			path:      '/contact',
+			name:      'contact',
+			component: () => import('./views/Contact.vue')
+		},
+		{
 			path:      '/404',
 			name:      '404',
 			component: () => import('./views/Error404.vue')

@@ -40,9 +40,7 @@
                 </b-col>
             </b-row>
         </b-container>
-        <div class="fullscreen-loading" v-else>
-            <Loading center dark/>
-        </div>
+        <Loading v-else fullscreen center dark/>
         <VideoModal ref="videomodal"/>
     </div>
 </template>

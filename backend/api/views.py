@@ -47,7 +47,6 @@ class EntityList(APIView):
 
 # Get the list of opportunities by parameter
 class OpportunityList(APIView):
-    # FIXME: if no opportunities are present, it breaks
     def get(self, request, format=None):
         # We don't actually need entity here, commenting this out for now
         # entity = self.request.query_params.get('entity', None)
@@ -67,11 +66,10 @@ class OpportunityList(APIView):
         sdg = self.request.query_params.get('sdg', None)
         subproduct = self.request.query_params.get('subproduct', None)
 
-        # SDG with product = 1 only
-        if product == 1 and subproduct is not None:
+        if product is not None and (int(product) == 1 and subproduct is not None):
             raise exceptions.ParseError('subproduct not supported with this product')
 
-        elif product != 1 and sdg is not None:
+        elif product is not None and (int(product) != 1 and sdg is not None):
             raise exceptions.ParseError('sdg not supported with this product')
 
         # Build a list of one opportunity per LC, that opportunity will be the one satisfying all conditions and having

@@ -4,6 +4,7 @@ const config = {
 	gisTokenAPI:        token => `https://gis-api.aiesec.org/graphql?access_token=${token}`,
 	youtubeURL:         url => `https://www.youtube.com/embed/${url}?enablejsapi=1`,
 	defaultVideoURL:    "https://www.youtube.com/embed/CckIMe0VT2k?enablejsapi=1",
+	gisBrazilID:        1606,
 	defaultMonthOffset: 6,
 	videos:             {
 		lcThumbDir:                "/static/videothumbs/lcs/",
@@ -35,6 +36,7 @@ const config = {
 		sdg:           id => `sdg/${id}.json`,
 		subproduct:    id => `subproduct/${id}.json`,
 		opportunities: "opportunities.json",
+		lcs:           "lcs.json",
 		cities:        "cities.json",
 		city:          id => `city/${id}.json`,
 		login:         "login.json",

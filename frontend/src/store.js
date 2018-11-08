@@ -5,21 +5,35 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
 	state:     {
+		// This is accessed by a bunch of components, so it's easier to just store it here
 		showingQuestions: false,
-		noVisa:           false,
-		iAmFromBrazil:    false,
-		options:          {},
-		optquery:         {},
-		optReloadQueued:  {invite: false, list: false},
-		pageLoading:      false,
+		
+		// We store these in $store because we don't want the opportunity page to ever reload
+		noVisa:          false,
+		options:         {},
+		optquery:        {},
+		optReloadQueued: {invite: false, list: false},
+		
+		// This is the global page loading variable, run before each router change
+		pageLoading: false,
+		
+		// Since we need these on almost every page, it's better to put them in the store
+		lists: {
+			entities:      [],
+			products:      [],
+			sdgs:          [],
+			subproductsGT: [],
+			subproductsGE: [],
+			lcs:           [],
+		},
 	},
 	getters:   {
-		showingQuestions: state => state.showingQuestions
+		showingQuestions: state => state.showingQuestions,
+		getList:          state => list => state.lists[list],
 	},
 	mutations: {
 		showingQuestions: (state, sQ) => state.showingQuestions = sQ,
 		noVisa:           (state, noVisa) => state.noVisa = noVisa,
-		brazilian:        (state, brazilian) => state.iAmFromBrazil = brazilian,
 		options:          (state, options) => state.options = options,
 		optquery:         (state, optquery) => state.optquery = optquery,
 		queueOptReload:   state => state.optReloadQueued = {invite: true, list: true},
@@ -27,5 +41,6 @@ export default new Vuex.Store({
 		listLoaded:       state => state.optReloadQueued.list = false,
 		pageLoading:      state => state.pageLoading = true,
 		pageLoaded:       state => state.pageLoading = false,
+		setList:          (state, payload) => state.lists[payload.list] = payload.arr,
 	}
 });

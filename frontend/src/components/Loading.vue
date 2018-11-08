@@ -1,5 +1,5 @@
 <template>
-    <div :class="[dark ? 'dark' : '', 'spinner', center ? 'center' : '', small ? 'small' : '']">
+    <div :class="[dark ? 'dark' : '', 'spinner', center ? 'center' : '', small ? 'small' : '', fullscreen ? 'fullscreen' : '']">
         <div class="bounce1"></div>
         <div class="bounce2"></div>
         <div class="bounce3"></div>
@@ -10,9 +10,10 @@
 	export default {
 		name:  "Loading",
 		props: {
-			center: Boolean,
-			dark:   Boolean,
-			small:  Boolean
+			center:     Boolean,
+			dark:       Boolean,
+			small:      Boolean,
+			fullscreen: Boolean
 		}
 	};
 </script>
@@ -60,6 +61,13 @@
         width: 8px;
         height: 8px;
     }
+
+    .fullscreen
+    {
+        margin-top: 40vh;
+        margin-bottom: 40vh;
+    }
+
     .spinner .bounce1
     {
         -webkit-animation-delay: -0.32s;
