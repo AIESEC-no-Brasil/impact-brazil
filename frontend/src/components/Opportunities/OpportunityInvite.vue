@@ -1,41 +1,70 @@
 <!--suppress XmlDuplicatedId -->
 <template>
-    <div v-if="noVisa">NO VISA</div>
-    <div v-else-if="entityName !== ''"
-         id="invite">
-        <div class="invitation-text">Inviting <span>{{entityName}}</span> to Impact Brazil</div>
-        <div class="change-entity-text">Not from {{entityName}}? <a href="#">Click here</a> to change.</div>
-        <div v-if="entityVideo !== null"
-             id="ey-banner"
-             :style="entityThumb"
-             @mousedown="$emit('show-video', entityVideo)">
-            <div></div>
+    <div>
+        <div v-if="noVisa" id="invite">
+            We have detected that you are from {{entityName}}.<br>
+            Is this not where you are from? <a href="#" @click="showEntityDialog">Click here</a> to change.
         </div>
-    </div>
-    <div v-else id="invite">
-        <Loading center dark/>
+        <div v-else-if="entityName !== ''"
+             id="invite">
+            <div class="invitation-text">Inviting <span>{{entityName}}</span> to Impact Brazil</div>
+            <div class="change-entity-text">Not from {{entityName}}? <a href="#" @click="showEntityDialog">Click
+                here</a> to change.
+            </div>
+            <div v-if="entityVideo !== null"
+                 id="ey-banner"
+                 :style="entityThumb"
+                 @mousedown="$emit('show-video', entityVideo)">
+                <div></div>
+            </div>
+        </div>
+        <div v-else id="invite">
+            <Loading center dark/>
+        </div>
+        <SweetModal modal-theme="dark"
+                    overlay-theme="dark"
+                    ref="changeEntity"
+                    id="video-modal"
+                    title="Choose your country/territory">
+            Where are you from?<br>
+            <select title="entity" v-if="entityList.length > 0" v-model="entitySelection">
+                <option v-for="entity in entityList"
+                        :key="entity.id"
+                        :value="entity.id">
+                    {{entity.name}}
+                </option>
+            </select>
+            <select title="entity" v-else>
+                <option>Loading...</option>
+            </select>
+            <button v-if="entityList.length > 0" @click="setEntity(entitySelection)">Submit</button>
+        </SweetModal>
     </div>
 </template>
 
 <script>
 	import Loading from '../Loading';
+	import {SweetModal} from 'sweet-modal-vue';
 	import axios from 'axios';
 	import {config} from '../../config';
 
 	export default {
 		name:       "OpportunityInvite",
 		components: {
-			Loading
+			Loading,
+			SweetModal
 		},
 		props:      {
-			noVisa: Boolean
+			noVisa: Boolean,
 		},
 		data()
 		{
 			return {
-				entityName:  "",
-				entityVideo: false,
-				entityThumb: {backgroundImage: "url('')"}
+				entityName:      "",
+				entityVideo:     false,
+				entityThumb:     {backgroundImage: "url('')"},
+				entityList:      [],
+				entitySelection: -1,
 			};
 		},
 		methods:    {
@@ -56,9 +85,6 @@
 
 						// Store the entity in the session
 						this.$session.set('entity', entityPartnerID);
-
-						// Don't forget to route
-						this.$router.push({path: 'opportunities', query: {entity: entityPartnerID}});
 					}
 
 					entityPartner = await axios.get(config.api + config.endpoints.entityPartner(entityPartnerID));
@@ -82,6 +108,35 @@
 
 				// We don't need to reload any more
 				this.$store.commit('inviteLoaded');
+			},
+			async showEntityDialog()
+			{
+				this.$refs.changeEntity.open();
+
+				let storedEntityList = this.$store.getters.getList('entities');
+				if (storedEntityList.length > 0)
+					this.entityList = storedEntityList;
+				else
+				{
+					let entityList;
+					try
+					{
+						entityList = await axios.get(config.api + config.endpoints.entities);
+					}
+					catch (err)
+					{
+						console.error(err);
+						this.$root.$emit('error');
+						return false;
+					}
+					this.$store.commit('setList', {list: 'entities', arr: entityList.data});
+					this.entityList = entityList.data;
+				}
+			},
+			setEntity(ey)
+			{
+				this.$session.set('entity', ey);
+				window.location.reload();
 			}
 		},
 		async mounted()

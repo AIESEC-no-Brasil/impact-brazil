@@ -4,7 +4,7 @@
         <OpportunityOptions v-if="!$store.state.noVisa"
                             @options-changed="optionsChanged"/>
 
-        <div v-if="missingOpts && !$store.state.iAmFromBrazil && !$store.state.noVisa" id="no-opps-available">
+        <div v-if="missingOpts && !iAmFromBrazil && !$store.state.noVisa" id="no-opps-available">
             <i class="material-icons">settings</i><br>
             To get started, please select at least a product or a city from the top right.<br>
             You can keep customizing the filters to suit your needs better.<br>
@@ -93,8 +93,9 @@
 				this.missingOpts = false;
 
 				// Configure the options
-				let product = this.$route.query.product;
-				let options = {product};
+				let options = {};
+				if (this.$route.query.product)
+					options.product = this.$route.query.product;
 
 				if (this.$route.query.start_date && this.$route.query.end_date)
 				{
@@ -131,6 +132,12 @@
 				{
 					if (k.indexOf("date") === -1 && k !== "q")
 						options[k] = parseInt(options[k]);
+				}
+				// Remove all NaNs
+				for (let k in options)
+				{
+					if (isNaN(options[k]))
+						delete options[k];
 				}
 				this.$store.commit('options', options);
 
@@ -204,7 +211,11 @@
 		async activated()
 		{
 			if (this.$store.state.optReloadQueued.list)
+			{
+				this.oppList = [];
+				this.noOpps = false;
 				this.loadOpps();
+			}
 		}
 	};
 </script>

@@ -141,7 +141,7 @@ class OpportunityList(APIView):
 
 # Get list of LCs
 class LCList(generics.ListAPIView):
-    queryset = LC.objects.all()
+    queryset = LC.objects.all().order_by('reference_name')
     serializer_class = LCSerializer
 
 

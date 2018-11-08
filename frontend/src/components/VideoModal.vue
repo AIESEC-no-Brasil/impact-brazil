@@ -58,6 +58,6 @@
     #youtube
     {
         width: 100%;
-        height: calc(80vw * 0.5625);
+        height: calc(70vw * 0.5625);
     }
 </style>

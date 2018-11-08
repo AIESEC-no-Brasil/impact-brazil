@@ -7,7 +7,7 @@
                 <b-col cols="12"
                        md="4"
                        class="product"
-                       v-for="product in products"
+                       v-for="product in lists.products"
                        :key="product.id">
                     <div class="product-header">
                         <img :src="logoDirs.products + product.logo"
@@ -30,9 +30,10 @@
                                     </div>
                                 </b-col>
                                 <b-col cols="12" md="4" class="no-padding text-right">
-                                    <router-link to="/" class="project-apply">
+                                    <a @click="goToOpportunity(product.gis_id, project.gis_id)"
+                                       class="project-apply">
                                         Apply &raquo;
-                                    </router-link>
+                                    </a>
                                 </b-col>
                             </b-row>
                         </b-container>
@@ -69,12 +70,14 @@
 		data()
 		{
 			return {
-				products:      [],
-				sdgs:          [],
-				subproductsGT: [],
-				subproductsGE: [],
-				logoDirs:      config.logosHD,
-				loading:       true,
+				lists:    {
+					products:      [],
+					sdgs:          [],
+					subproductsGT: [],
+					subproductsGE: [],
+				},
+				logoDirs: config.logosHD,
+				loading:  true,
 			};
 		},
 		async mounted()
@@ -84,23 +87,30 @@
 		methods:    {
 			async loadProjects()
 			{
-				let productsData, sdgsData, subproductsGTData, subproductsGEData;
-				try
+				let lists = ["products", "sdgs", "subproductsGT", "subproductsGE"];
+				for (let i in lists)
 				{
-					[productsData, sdgsData, subproductsGTData, subproductsGEData] = await Promise.all([
-						axios.get(config.api + config.endpoints.products),
-						axios.get(config.api + config.endpoints.sdgs),
-						axios.get(config.api + config.endpoints.subproductsGT),
-						axios.get(config.api + config.endpoints.subproductsGE)
-					]);
+					let list = lists[i];
+					let storedList = this.$store.getters.getList(list);
+					if (storedList.length > 0)
+						this.lists[list] = storedList;
+					else
+					{
+						let fetchedList;
+						try
+						{
+							fetchedList = await axios.get(config.api + config.endpoints[list]);
+						}
+						catch (err)
+						{
+							console.error(err);
+							this.$root.$emit('error');
+							return false;
+						}
+						this.lists[list] = fetchedList.data;
+						this.$store.commit('setList', {list, arr: fetchedList.data});
+					}
 				}
-				catch (err)
-				{
-					console.error(err);
-					this.$root.$emit('error');
-					return false;
-				}
-				[this.products, this.sdgs, this.subproductsGT, this.subproductsGE] = [productsData.data, sdgsData.data, subproductsGTData.data, subproductsGEData.data];
 				this.loading = false;
 			},
 			getDataset(product)
@@ -108,14 +118,31 @@
 				switch (product)
 				{
 					case 1:
-						return this.sdgs;
+						return this.lists.sdgs;
 
 					case 2:
-						return this.subproductsGT;
+						return this.lists.subproductsGT;
 
 					case 5:
-						return this.subproductsGE;
+						return this.lists.subproductsGE;
 				}
+			},
+			goToOpportunity(product, project)
+			{
+				this.$store.commit('queueOptReload');
+
+				let query = {product};
+				switch (product)
+				{
+					case 1:
+						query.sdg = project;
+						break;
+					case 2:
+					case 5:
+						query.subproduct = project;
+						break;
+				}
+				this.$router.push({path: 'opportunities', query});
 			},
 			markdown(text)
 			{
@@ -218,6 +245,7 @@
                 margin: 4px 0;
                 padding: 8px 16px;
 
+                cursor: pointer;
                 background-color: $ib-orange-dk;
                 display: inline-block;
                 font-family: PierSansBold, sans-serif;
