@@ -4,6 +4,7 @@ from datetime import datetime
 from builtins import str
 
 import requests
+from django.contrib.postgres.search import SearchVector
 from django.core import serializers
 from django.db.models import Max
 from django.shortcuts import render, get_object_or_404
@@ -48,16 +49,17 @@ class EntityList(APIView):
 class OpportunityList(APIView):
     # FIXME: if no opportunities are present, it breaks
     def get(self, request, format=None):
-        entity = self.request.query_params.get('entity', None)
+        # We don't actually need entity here, commenting this out for now
+        # entity = self.request.query_params.get('entity', None)
         start_date = self.request.query_params.get('start_date', None)
         end_date = self.request.query_params.get('end_date', None)
+        lc = self.request.query_params.get('lc', None)
         product = self.request.query_params.get('product', None)
+        q = self.request.query_params.get('q', None)
 
-        if None in (entity, start_date, product):
-            raise exceptions.ParseError('entity, start_date and product must be set')
-
-        if end_date is None:
-            end_date = "2099-12-31"  # TODO: There's probably a better way of doing this
+        # Product must be specified
+        if product is None and lc is None:
+            raise exceptions.ParseError('Either product or lc must be specified')
 
         # Prevent opportunities that have closed from showing
         today = datetime.now()
@@ -65,54 +67,76 @@ class OpportunityList(APIView):
         sdg = self.request.query_params.get('sdg', None)
         subproduct = self.request.query_params.get('subproduct', None)
 
-        if sdg is None and subproduct is None:
-            raise exceptions.ParseError('Either sdg or subproduct must be set')
+        # SDG with product = 1 only
+        if product == 1 and subproduct is not None:
+            raise exceptions.ParseError('subproduct not supported with this product')
 
-        sdg_or_subproduct = 'sdg' if subproduct is None else 'subproduct'
+        elif product != 1 and sdg is not None:
+            raise exceptions.ParseError('sdg not supported with this product')
 
         # Build a list of one opportunity per LC, that opportunity will be the one satisfying all conditions and having
         # the highest number of available_openings
 
-        # First, get all LCs & matching opportunities
-        if sdg_or_subproduct == 'subproduct':
-            # lcs = LC.objects.filter(products__gis_id=product, subproducts__gis_id=subproduct)
-            opportunities_list = Opportunity.objects.filter(product__gis_id=product, subproduct__gis_id=subproduct,
-                                                            start_date__gte=start_date, start_date__lte=end_date,
-                                                            close_date__gt=today)
+        # First, get all valid opportunities, then apply filters
+        opportunities_list = Opportunity.objects.filter(close_date__gt=today)
+
+        if product is not None:
+            opportunities_list = opportunities_list.filter(product__gis_id=product)
+
+        if start_date is not None:
+            opportunities_list = opportunities_list.filter(start_date__gte=start_date)
+
+        if end_date is not None:
+            opportunities_list = opportunities_list.filter(start_date__lte=end_date)
+
+        if lc is not None:
+            opportunities_list = opportunities_list.filter(lc__gis_id=lc)
+
+        # The above check should have taken care of subproduct vs sdg anyway, so we don't need to check again
+        if sdg is not None:
+            opportunities_list = opportunities_list.filter(sdg__gis_id=sdg)
+
+        if subproduct is not None:
+            opportunities_list = opportunities_list.filter(subproduct__gis_id=subproduct)
+
+        # Finally, run the 'q'
+        if q is not None:
+            opportunities_list = opportunities_list.annotate(
+                search=SearchVector('title', 'lc__reference_name', 'product__name', 'sdg__name', 'subproduct__name',
+                                    'organization_name', 'location')).filter(search=q)
+
+        # The below logic is only if LC is not specified
+        if lc is None:
+            opportunities_list = opportunities_list.distinct('lc_id').order_by('lc_id', '-available_openings')
+
+            # Reorder according to focus in reverse so we iterate through it backwards
+            focus_qs = Focus.objects.filter(product__gis_id=product).order_by('-rank').values('lc__id')
+            focuses = []
+
+            # Also reorder according to analytics, but remember that if lc1 in focus f1 > lc2 in focus f2
+            # but lc in focus k2 has n2 approvals < n1 approvals of lc1, then we still show lc1 > lc2 because
+            # focus is more important than approvals
+            analytics_qs = Analytic.objects.filter(product__gis_id=product).order_by('number').values('lc__id')
+            analytics = []
+
+            # We need to build the lists
+            for focus in focus_qs:
+                focuses.append(focus['lc__id'])
+
+            for analytic in analytics_qs:
+                analytics.append(analytic['lc__id'])
+
+            # Build final list
+            opportunities_list_ordered = list(opportunities_list)
+
+            for rankparam in [analytics, focuses]:
+                for rank in rankparam:
+                    for opportunity in opportunities_list:
+                        if opportunity.lc_id == rank:
+                            opportunities_list_ordered.remove(opportunity)
+                            opportunities_list_ordered = [opportunity] + opportunities_list_ordered
         else:
-            # lcs = LC.objects.filter(products__gis_id=product, sdgs__gis_id=sdg)
-            opportunities_list = Opportunity.objects.filter(product__gis_id=product, sdg__gis_id=sdg,
-                                                            start_date__gte=start_date, start_date__lte=end_date,
-                                                            close_date__gt=today)
-
-        # Now, for every LC, get one opportunity
-        opportunities_list = opportunities_list.distinct('lc_id').order_by('lc_id', '-available_openings')
-
-        # Reorder according to focus in reverse so we iterate through it backwards
-        focus_qs = Focus.objects.filter(product__gis_id=product).order_by('-rank').values('lc__id')
-        focuses = []
-
-        # Also reorder according to analytics, but remember that if lc1 in focus f1 > lc2 in focus f2 but lc in focus k2
-        # has n2 approvals < n1 approvals of lc1, then we still show lc1 > lc2 because focus > approvals
-        analytics_qs = Analytic.objects.filter(product__gis_id=product).order_by('number').values('lc__id')
-        analytics = []
-
-        # We need to build the lists
-        for focus in focus_qs:
-            focuses.append(focus['lc__id'])
-
-        for analytic in analytics_qs:
-            analytics.append(analytic['lc__id'])
-
-        # Build final list
-        opportunities_list_ordered = list(opportunities_list)
-
-        for rankparam in [analytics, focuses]:
-            for rank in rankparam:
-                for opportunity in opportunities_list:
-                    if opportunity.lc_id == rank:
-                        opportunities_list_ordered.remove(opportunity)
-                        opportunities_list_ordered = [opportunity] + opportunities_list_ordered
+            opportunities_list_ordered = list(opportunities_list.order_by('-available_openings', 'close_date'))
 
         return Response(OpportunitySerializer(opportunities_list_ordered, many=True).data)
 
