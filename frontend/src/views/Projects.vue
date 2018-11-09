@@ -31,7 +31,7 @@
                                 </b-col>
                                 <b-col cols="12" md="4" class="no-padding text-right">
                                     <a @click="goToOpportunity(product.gis_id, project.gis_id)"
-                                       class="project-apply">
+                                       class="orange-button">
                                         Apply &raquo;
                                     </a>
                                 </b-col>
@@ -239,24 +239,6 @@
             .project-desc
             {
                 margin: 4px 4px 0 0;
-            }
-            .project-apply
-            {
-                margin: 4px 0;
-                padding: 8px 16px;
-
-                cursor: pointer;
-                background-color: $ib-orange-dk;
-                display: inline-block;
-                font-family: PierSansBold, sans-serif;
-                color: #fff;
-                font-size: 24px;
-                text-decoration: none;
-                transition: background-color 0.3s;
-            }
-            .project-apply:hover
-            {
-                background-color: $ib-orange-lt;
             }
         }
     }

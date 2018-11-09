@@ -2,9 +2,23 @@
     <div class="cityinfo" v-if="cityId === 0">
         <div class="title">About this City</div>
         <div class="citydesc">Click on a city to get started.</div>
+        <div v-if="cities">
+            <ul style='margin-left: 20px;'>
+                <li v-for="city in cities">
+                    <a href="#" @click='$emit("city-clicked", city.id)'>{{city.name}}</a>
+                </li>
+            </ul>
+        </div>
     </div>
     <div class="cityinfo" v-else-if="cityLoaded">
-        <div class="title">About {{city.name}}</div>
+
+        <div class="title">
+            <a href="#" @click="$emit('city-cleared')">
+                <i class="material-icons"
+                   style="font-size: 48px; vertical-align: middle; position: relative; top: -4px">arrow_back</i>
+            </a>
+            About {{city.name}}
+        </div>
         <div class="video" v-if="city.video_link">
             <iframe frameborder="0"
                     allow="encrypted-media"
@@ -15,13 +29,36 @@
             </iframe>
         </div>
         <div class="citydesc">{{city.short_desc}}</div>
-        <!-- TODO: show the list of LCs here -->
-        <div class="details" v-if="city.details">
+        <div class="details">
+            <b>AIESEC Offices in {{city.name}}</b><br>
+            <div v-for="lc in city.lc_set">
+                <router-link :to="`/opportunities?lc=${lc.gis_id}`">{{lc.reference_name}}</router-link>
+            </div>
+        </div>
+
+        <router-link class="orange-button"
+                     :to='`/city/${city.name_unaccented.toLowerCase().replace(/\s/g, "-")}`'
+                     v-if="!showDetails">
+            Learn More about {{city.name}} &raquo;
+        </router-link>
+        <div class="details" v-if="city.details && showDetails">
             <b>More about {{city.name}}</b><br>
             <span v-html="markdown(city.details)"></span>
+
+            <div v-if="city.lc_set.length <= 1">
+                <router-link class="orange-button" :to="`/opportunities?lc=${city.lc_set[0].gis_id}`">
+                    Apply for Opportunities in {{city.name}} &raquo;
+                </router-link>
+            </div>
+            <div v-else>
+                <b>Apply for Opportunities in...</b><br>
+                <div v-for="lc in city.lc_set">
+                    <router-link :to="`/opportunities?lc=${lc.gis_id}`">{{lc.reference_name}}</router-link>
+                </div>
+            </div>
         </div>
     </div>
-    <Loading dark center v-else/>
+    <Loading :fullscreen="showDetails" dark center v-else/>
 </template>
 
 <script>
@@ -33,8 +70,10 @@
 	export default {
 		name:       "CityInfo",
 		props:      {
-			cityId: Number,
-			cities: Array
+			cityId:      Number,
+			cities:      Array,
+			showDetails: Boolean,
+			cityName:    String,
 		},
 		data()
 		{
@@ -51,13 +90,25 @@
 			{
 				this.cityLoaded = false;
 
-				let cityData;
+				let cityData, cityName;
 				try
 				{
-					cityData = await axios.get(config.api + config.endpoints.city(this.cityId));
+					if (this.cityName)
+					{
+						cityName = this.cityName.toLowerCase();
+						cityData = await axios.get(config.api + config.endpoints.city(cityName));
+					}
+					else
+						cityData = await axios.get(config.api + config.endpoints.city(this.cityId));
 				}
 				catch (err)
 				{
+					if (err.response && err.response.status === 404)
+					{
+						this.$root.$emit('fatal', 'This city does not exist.');
+						return;
+					}
+
 					console.error(err);
 					this.$root.$emit('error');
 					return false;
@@ -75,6 +126,11 @@
 				return config.youtubeURL(url);
 			}
 		},
+		mounted()
+		{
+			if (this.cityId || this.cityName)
+				this.loadCity();
+		},
 		watch:      {
 			cityId(val)
 			{
@@ -85,7 +141,9 @@
 	};
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+    @import "../../assets/colors";
+
     .title
     {
         font-size: 36px;
@@ -100,6 +158,7 @@
     .details
     {
         margin-top: 20px;
+        margin-bottom: 20px;
     }
 
     .details b

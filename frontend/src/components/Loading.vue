@@ -13,7 +13,7 @@
 			center:     Boolean,
 			dark:       Boolean,
 			small:      Boolean,
-			fullscreen: Boolean
+			fullscreen: Boolean,
 		}
 	};
 </script>

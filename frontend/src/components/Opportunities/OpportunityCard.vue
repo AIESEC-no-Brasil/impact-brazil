@@ -2,7 +2,7 @@
     <b-container fluid class="opportunity">
         <b-row>
             <b-col cols="12" md="4" class="opportunity-image opportunity-card"
-                   @mousedown="showVideo(opp.lc.video_link)"
+                   @mousedown="showVideo(opp.lc.city.video_link)"
                    :style="oppVideoThumb">
                 <div></div>
             </b-col>
@@ -10,7 +10,7 @@
                 <b-container fluid class="ml-md-3 opportunity-desc opportunity-card">
                     <b-row>
                         <b-col cols="12" md="8">
-                            <div class="city">{{opp.lc.city_name}}</div>
+                            <div class="city">{{opp.lc.city.name}}</div>
                             <div class="title text-truncate" :title="opp.title">{{opp.title}}</div>
                             <div class="organization text-truncate" :title="opp.organization_name">
                                 {{opp.organization_name}}
@@ -75,7 +75,7 @@
 		{
 			return {
 				oppVideoThumb: {
-					backgroundImage: "url('" + config.videos.lcThumbDir + (this.opp.lc.thumbnail === "" ? config.videos.defaultLCThumb : this.opp.lc.thumbnail) + "')",
+					backgroundImage: "url('" + config.videos.lcThumbDir + (this.opp.lc.city.thumbnail === "" ? config.videos.defaultLCThumb : this.opp.lc.city.thumbnail) + "')",
 				}
 			};
 		},

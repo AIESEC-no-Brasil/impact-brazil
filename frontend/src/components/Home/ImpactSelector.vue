@@ -247,7 +247,7 @@
 						}
 
 						// Store this list
-						this.$store.commit('setList', {list: listName, arr: data.data});
+						vm.$store.commit('setList', {list: listName, arr: data.data});
 						data = data.data;
 					}
 					let loadedData = [];

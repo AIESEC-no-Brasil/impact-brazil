@@ -14,13 +14,19 @@
                     <router-link to="/" exact>Home</router-link>
                 </li>
                 <li>
-                    <router-link :to="opportunityLink">Opportunities</router-link>
+                    <router-link :to="opportunityLink"
+                                 :class="routerLinkManualActive('opportunity')">
+                        Opportunities
+                    </router-link>
                 </li>
                 <li>
                     <router-link to="/projects">Projects</router-link>
                 </li>
                 <li>
-                    <router-link to="/cities">Cities</router-link>
+                    <router-link to="/cities"
+                                 :class="routerLinkManualActive('city')">
+                        Cities
+                    </router-link>
                 </li>
                 <li>
                     <router-link to="/about">About</router-link>
@@ -60,7 +66,7 @@
 			loggedIn()
 			{
 				return typeof this.$session.get('loggedIn') === "undefined" ? false : this.$session.get('loggedIn');
-			}
+			},
 		},
 		methods:  {
 			handleMenubarVisibility()
@@ -76,6 +82,12 @@
 				this.$session.set('loggedIn', false);
 				this.$session.set('accessToken', "");
 				window.location.reload();
+			},
+			routerLinkManualActive(string)
+			{
+				if (this.$route.fullPath.match(string))
+					return 'router-link-manual-active';
+				return '';
 			}
 		},
 		created()
@@ -149,7 +161,7 @@
             box-shadow: inset 0 0 0 1px #fff;
         }
 
-        a.router-link-active
+        a.router-link-active, a.router-link-manual-active
         {
             background-color: #fff;
             color: $ib-blue-dk;

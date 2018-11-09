@@ -76,6 +76,7 @@ class Subproduct(models.Model):
 
 class City(models.Model):
     name = models.CharField(max_length=255)
+    name_unaccented = models.CharField("Name without special characters", max_length=255)
     mapX = models.IntegerField("Map X")
     mapY = models.IntegerField("Map Y")
     short_desc = models.TextField("Tagline (Short)")
@@ -94,13 +95,14 @@ class LC(models.Model):
     name = ''  # Get this from GIS
     reference_name = models.CharField('LC Name', max_length=50)
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
-    city_name = models.CharField('City Name', max_length=50)
+    # city_name = models.CharField('City Name', max_length=50)
     gis_id = models.IntegerField('LC ID on GIS', unique=True)
     products = models.ManyToManyField(Product, blank=True)
     subproducts = models.ManyToManyField(Subproduct, blank=True)
     sdgs = models.ManyToManyField(SDG, verbose_name='SDG', blank=True)
-    video_link = models.CharField('Video ID (YouTube)', max_length=256, blank=True)
-    thumbnail = models.CharField('Thumbnail Filename (.jpg)', blank=True, max_length=256)
+    # video_link = models.CharField('Video ID (YouTube)', max_length=256, blank=True)
+    # thumbnail = models.CharField('Thumbnail Filename (.jpg)', blank=True, max_length=256)
+
 
     def __str__(self):
         return self.reference_name

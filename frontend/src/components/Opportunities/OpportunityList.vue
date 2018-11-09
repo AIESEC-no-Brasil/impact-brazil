@@ -6,11 +6,10 @@
 
         <div v-if="missingOpts && !iAmFromBrazil && !$store.state.noVisa" id="no-opps-available">
             <i class="material-icons">settings</i><br>
-            To get started, please select at least a product or a city from the top right.<br>
+            To get started, please select a product or a city from the top right.<br>
             You can keep customizing the filters to suit your needs better.<br>
             Not sure what product is best for you?
             <router-link to="/about">Read more about our products</router-link>
-            !
         </div>
 
         <div v-else-if="iAmFromBrazil" id="no-opps-available">
@@ -40,7 +39,7 @@
             Sorry, we couldn't find any opportunities for you.<br>
             Try changing the filters on the top right so we can search again!
         </div>
-        <div v-else id="opportunities-list">
+        <div v-else id="oplist-loading">
             <Loading center dark/>
         </div>
     </div>
@@ -224,6 +223,11 @@
     #opportunities-list
     {
         margin-top: 24px;
+    }
+    #oplist-loading
+    {
+        margin-top: 24px;
+        margin-bottom: 60vh;
     }
 
     #no-opps-available

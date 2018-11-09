@@ -38,7 +38,7 @@ const config = {
 		opportunities: "opportunities.json",
 		lcs:           "lcs.json",
 		cities:        "cities.json",
-		city:          id => `city/${id}.json`,
+		city:          name => `city/${name}.json`,
 		login:         "login.json",
 		apply:         "apply.json",
 		ip:            "ip.json",

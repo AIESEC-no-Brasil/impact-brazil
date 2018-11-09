@@ -55,7 +55,7 @@
 
 				this.svg.addEventListener('mousedown', function (evt) {
 					let loc = cursorPoint(evt);
-					console.log(loc); // TODO: remove this on prod :D
+					//console.log(loc);
 				}, false);
 			};
 
@@ -75,16 +75,19 @@
 				}
 
 				let svg = SVG.adopt(this.svg);
-				let circleRad = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) > 768 ? 35 : 60;
+				//let circleRad = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) > 768 ? 35 : 60;
+				let circleRad = 15;
 
 				this.cities.forEach(city => {
 					svg
 					.circle(circleRad)
 					.fill(config.colors.ibPurple.dark)
+					//.stroke('transparent')
 					.move(city.mapX, city.mapY)
 					.attr('class', 'city')
 					.click(() => this.showCity(city.id))
 					.mouseover((evt) => {
+						evt.target.setAttribute('r', 20);
 						this.showingDesc = true;
 						this.desc = `<b>${city.name}</b><span class="subdesc"><br>${city.short_desc}</span>`;
 						if (this.desc.length > 200)
@@ -94,7 +97,10 @@
 						this.descStyle.left = (offset.left + evt.clientX + 10) + 'px';
 						this.descStyle.top = (offset.top + evt.clientY + 10) + 'px';
 					})
-					.mouseout(() => this.showingDesc = false);
+					.mouseout((evt) => {
+						evt.target.setAttribute('r', circleRad/2);
+						this.showingDesc = false;
+					});
 				});
 			},
 			showCity(id)
@@ -151,7 +157,7 @@
         {
             display: none;
         }
-        
+
         #map >>> .subdesc
         {
             display: none;

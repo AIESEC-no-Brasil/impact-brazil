@@ -4,9 +4,8 @@ from datetime import datetime
 from builtins import str
 
 import requests
-from django.contrib.postgres.search import SearchVector
 from django.core import serializers
-from django.db.models import Max
+from django.db.models import Max, Q
 from django.shortcuts import render, get_object_or_404
 from rest_framework import status, generics, exceptions
 from rest_framework.decorators import api_view
@@ -22,7 +21,7 @@ from api.serializers import *
 class EntityList(APIView):
     def get(self, request, format=None):
         # Get entity list
-        gis_list = Entity.objects.all()
+        gis_list = Entity.objects.all().order_by('entity_name')
 
         # Get country partners
         entity_partners_list = []
@@ -99,9 +98,12 @@ class OpportunityList(APIView):
 
         # Finally, run the 'q'
         if q is not None:
-            opportunities_list = opportunities_list.annotate(
-                search=SearchVector('title', 'lc__reference_name', 'product__name', 'sdg__name', 'subproduct__name',
-                                    'organization_name', 'location')).filter(search=q)
+            opportunities_list = opportunities_list.filter(
+                Q(title__icontains=q) | Q(lc__reference_name__icontains=q) | Q(product__name__icontains=q) | Q(
+                    sdg__name__icontains=q) | Q(subproduct__name__icontains=q) | Q(organization_name__icontains=q) | Q(
+                    location__icontains=q) | Q(lc__city__name__icontains=q))
+            # search=SearchVector('title', 'lc__reference_name', 'product__name', 'sdg__name', 'subproduct__name',
+            #                     'organization_name', 'location')).filter(search=q)
 
         # The below logic is only if LC is not specified
         if lc is None:
@@ -221,13 +223,20 @@ class EntityPartnerDetails(APIView):
 
 # Get list of cities
 class CityList(generics.ListAPIView):
-    queryset = City.objects.all()
+    queryset = City.objects.all().order_by('name')
     serializer_class = CitySerializerMini
 
 
 class CityDetail(generics.RetrieveAPIView):
     queryset = City.objects.all()
     serializer_class = CitySerializer
+
+
+class CityByName(APIView):
+    def get(self, request, format=None, name=''):
+        converted_name = name.replace("-", " ")
+        found_city = get_object_or_404(City.objects.all(), name_unaccented__iexact=converted_name)
+        return Response(CitySerializer(found_city).data)
 
 
 # Login with API

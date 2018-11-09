@@ -62,14 +62,14 @@
                     {{subproduct.text}}
                 </b-dropdown-item>
             </b-dropdown>
-            <span id="daterange">
-                            <DatePicker range
-                                        range-separator="-"
-                                        width="0"
-                                        lang="en"
-                                        ref="daterange"
-                                        @change="changeDate"/>
-                        </span>
+            <span id="daterange" v-show="datepickerActive">
+                <DatePicker range
+                            range-separator="-"
+                            width="0"
+                            lang="en"
+                            ref="daterange"
+                            @change="changeDate"/>
+            </span>
             <b-dropdown id="month"
                         ref="month"
                         variant="transparent"
@@ -128,7 +128,7 @@
 		data()
 		{
 			return {
-				lists:         {
+				lists:            {
 					months:        [],
 					products:      [],
 					sdgs:          [],
@@ -136,7 +136,7 @@
 					subproductsGE: [],
 					lcs:           [],
 				},
-				selections:    {
+				selections:       {
 					months:        "Anytime",
 					products:      "All products",
 					sdgs:          "All projects",
@@ -144,10 +144,11 @@
 					subproductsGE: "All fields",
 					lcs:           "All cities",
 				},
-				search:        "",
-				customDate:    false,
-				ready:         false,
-				selectionList: [
+				search:           "",
+				customDate:       false,
+				ready:            false,
+				datepickerActive: false,
+				selectionList:    [
 					{option: "month", list: "months"},
 					{option: "product", list: "products"},
 					{option: "subproduct", list: "subproductsGT"},
@@ -155,7 +156,7 @@
 					{option: "sdg", list: "sdgs"},
 					{option: "lc", list: "lcs"},
 				],
-				searchTimer:   null,
+				searchTimer:      null,
 			};
 		},
 		computed:   {
@@ -257,6 +258,12 @@
 						this.selections.subproductsGT = "All fields";
 						this.selections.sdgs = "All fields";
 						break;
+
+					default:
+						this.selections.sdgs = "All projects";
+						this.selections.subproductsGT = "All fields";
+						this.selections.sdgs = "All fields";
+						break;
 				}
 
 				// Special case for months - get it directly from the query string
@@ -310,6 +317,11 @@
 					delete queryString['start_date'];
 					delete queryString['end_date'];
 				}
+				if (opt === 'product')
+				{
+					delete queryString['sdg'];
+					delete queryString['subproduct'];
+				}
 				this.selections[currentSelection] = text;
 
 				this.$router.push({path: 'opportunities', query: queryString});
@@ -348,6 +360,7 @@
 			chooseDateRange()
 			{
 				this.customDate = true;
+				this.datepickerActive = true;
 				this.selections.months = "Custom range";
 				document.querySelector("[name=date]").click();
 			}

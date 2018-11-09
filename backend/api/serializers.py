@@ -3,17 +3,26 @@ from rest_framework import serializers
 from .models import *
 
 
+class LCCitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = City
+        fields = ('id', 'name', 'video_link', 'thumbnail')
+
+
 class LCSerializer(serializers.ModelSerializer):
+    city = LCCitySerializer(read_only=True)
+
     class Meta:
         model = LC
-        fields = (
-            'id', 'reference_name', 'city_name', 'gis_id', 'video_link', 'thumbnail', 'products', 'subproducts', 'sdgs')
+        fields = ('id', 'reference_name', 'city', 'gis_id', 'products', 'subproducts', 'sdgs')
 
 
 class LCSerializerMini(serializers.ModelSerializer):
+    city = LCCitySerializer(read_only=True)
+
     class Meta:
         model = LC
-        fields = ('id', 'reference_name', 'city_name', 'gis_id', 'video_link', 'thumbnail')
+        fields = ('id', 'reference_name', 'city', 'gis_id')
 
 
 class LCSerializerMicro(serializers.ModelSerializer):
@@ -27,7 +36,7 @@ class CitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = City
-        fields = ('id', 'name', 'mapX', 'mapY', 'short_desc', 'video_link', 'details', 'lc_set')
+        fields = ('id', 'name', 'name_unaccented', 'mapX', 'mapY', 'short_desc', 'video_link', 'details', 'lc_set')
 
 
 class CitySerializerMini(serializers.ModelSerializer):

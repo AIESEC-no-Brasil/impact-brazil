@@ -36,7 +36,12 @@ export default new Router({
 		{
 			path:      '/cities',
 			name:      'cities',
-			component: () => import('./views/Cities.vue'),
+			component: () => import(/* webpackChunkName: "city" */ './views/Cities.vue'),
+		},
+		{
+			path:      '/city/:name',
+			name:      'city',
+			component: () => import(/* webpackChunkName: "city" */ './views/City.vue'),
 		},
 		{
 			path:      '/contact',

@@ -9,7 +9,9 @@
                 </b-col>
                 <b-col cols="12" lg="6" md="5">
                     <CityInfo :cities="cities"
-                              :city-id="city"/>
+                              :city-id="city"
+                              @city-clicked="loadCity"
+                              @city-cleared="city=0"/>
                 </b-col>
             </b-row>
         </b-container>

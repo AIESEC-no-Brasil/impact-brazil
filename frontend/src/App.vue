@@ -95,6 +95,28 @@
         color: #353535;
     }
 
+    .orange-button
+    {
+        margin: 4px 0;
+        padding: 8px 16px;
+
+        cursor: pointer;
+        background-color: $ib-orange-dk;
+        display: inline-block;
+        font-family: PierSansBold, sans-serif;
+        color: #fff !important;
+        font-size: 24px;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+
+    .orange-button:hover
+    {
+        color: #fff;
+        text-decoration: none;
+        background-color: $ib-orange-lt;
+    }
+
     .fade-enter-active, .fade-leave-active
     {
         transition: opacity .2s;
