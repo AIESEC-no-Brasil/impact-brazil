@@ -7,8 +7,6 @@
 
 <script>
 	import CityInfo from '../components/Cities/CityInfo.vue';
-	import axios from 'axios';
-	import {config} from '../config';
 
 	export default {
 		name:       "City",

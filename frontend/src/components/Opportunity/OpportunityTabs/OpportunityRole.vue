@@ -19,7 +19,7 @@
         </o-row>
         <o-row title="Main activities" fullspan>
             <ul style="margin-left: 24px;">
-                <li v-for="activity in opportunity.role_info.learning_points_list">{{activity}}</li>
+                <li v-for="activity in opportunity.role_info.learning_points_list" :key="activity">{{activity}}</li>
             </ul>
         </o-row>
     </div>

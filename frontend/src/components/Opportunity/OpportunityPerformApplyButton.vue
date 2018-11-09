@@ -95,20 +95,21 @@
 					{
 						if (err.response)
 						{
-                            if (err.response.status === 403)
-                            	this.$root.$emit('profile');
-                            else
-                            	this.$root.$emit('error');
+							if (err.response.status === 403)
+								this.$root.$emit('profile');
+							else
+								this.$root.$emit('error');
 						}
 						else
 						{
 							console.error(err);
 							this.$root.$emit('error');
 						}
-                        this.applying = false;
+						this.applying = false;
 						return;
 					}
 					window.location.reload();
+					return applyData;
 				}
 			}
 		}

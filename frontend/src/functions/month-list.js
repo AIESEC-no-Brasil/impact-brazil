@@ -1,7 +1,7 @@
 export function monthList()
 {
-	let months         = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-	    monthsNextYear = [];
+	let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+	let monthsNextYear = [];
 	
 	// We want to circle the month so it starts from this month
 	let now = new Date(), month = now.getMonth(), year = now.getFullYear();

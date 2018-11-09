@@ -99,7 +99,7 @@
 			window.removeEventListener('scroll', this.handleMenubarVisibility);
 		},
 		watch:    {
-			$route(to, from)
+			$route()
 			{
 				this.handleMenubarVisibility();
 			}

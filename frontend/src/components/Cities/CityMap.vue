@@ -56,6 +56,7 @@
 				this.svg.addEventListener('mousedown', function (evt) {
 					let loc = cursorPoint(evt);
 					//console.log(loc);
+                    return loc;
 				}, false);
 			};
 

@@ -366,7 +366,7 @@
 			}
 		},
 		watch:      {
-			options(newOpts, oldOpts)
+			options()
 			{
 				this.setSelections();
 			}

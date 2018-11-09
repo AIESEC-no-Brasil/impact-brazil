@@ -69,7 +69,7 @@
 			}
 		},
 		watch:      {
-			defaults(newProp, oldProp)
+			defaults()
 			{
 				this.detectCountry();
 			}

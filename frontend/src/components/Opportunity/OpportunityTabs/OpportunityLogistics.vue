@@ -34,8 +34,6 @@
 
 <script>
 	import OpportunityDetailRow from '../OpportunityDetailRow.vue';
-	import dateFormat from 'dateformat';
-
 
 	export default {
 		name:       "OpportunityLogistics",

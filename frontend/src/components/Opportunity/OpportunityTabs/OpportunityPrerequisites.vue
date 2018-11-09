@@ -26,8 +26,6 @@
 
 <script>
 	import OpportunityDetailRow from '../OpportunityDetailRow.vue';
-	import dateFormat from 'dateformat';
-
 
 	export default {
 		name:       "OpportunityPrerequisites",
@@ -46,7 +44,7 @@
 					// This way is more readable
 					let retList = [];
 					let sortedList = JSON.parse(JSON.stringify(list));
-					sortedList.sort((a, b) => a.option === "required" ? -1 : 1);
+					sortedList.sort((a) => a.option === "required" ? -1 : 1);
 
 					sortedList.forEach(item => {
 							let thisItem = item.constant_name ? item.constant_name : item.name;

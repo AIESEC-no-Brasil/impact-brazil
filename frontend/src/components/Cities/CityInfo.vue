@@ -4,7 +4,7 @@
         <div class="citydesc">Click on a city to get started.</div>
         <div v-if="cities">
             <ul style='margin-left: 20px;'>
-                <li v-for="city in cities">
+                <li v-for="city in cities" :key="city.id">
                     <a href="#" @click='$emit("city-clicked", city.id)'>{{city.name}}</a>
                 </li>
             </ul>
@@ -31,7 +31,7 @@
         <div class="citydesc">{{city.short_desc}}</div>
         <div class="details">
             <b>AIESEC Offices in {{city.name}}</b><br>
-            <div v-for="lc in city.lc_set">
+            <div v-for="lc in city.lc_set" :key="lc.gis_id">
                 <router-link :to="`/opportunities?lc=${lc.gis_id}`">{{lc.reference_name}}</router-link>
             </div>
         </div>
@@ -52,7 +52,7 @@
             </div>
             <div v-else>
                 <b>Apply for Opportunities in...</b><br>
-                <div v-for="lc in city.lc_set">
+                <div v-for="lc in city.lc_set" :key="lc.gis_id">
                     <router-link :to="`/opportunities?lc=${lc.gis_id}`">{{lc.reference_name}}</router-link>
                 </div>
             </div>

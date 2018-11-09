@@ -1,7 +1,7 @@
 <template>
     <section class="VideoBg">
         <video autoplay loop muted ref="video">
-            <source v-for="source in sources" :src="source" :type="getMediaType(source)">
+            <source v-for="source in sources" :key="source" :src="source" :type="getMediaType(source)">
         </video>
         <div ref="bgimage" class="VideoBg__background"></div>
         <div class="VideoBg__content">

@@ -80,7 +80,7 @@
 			{
 				this.$emit('show-video', url);
 			},
-			optionsChanged(options)
+			optionsChanged()
 			{
 				this.oppList = [];
 				this.noOpps = false;
