@@ -64,7 +64,7 @@
 				this.$store.commit('noVisa', false);
 				this.$store.commit('options', {});
 				this.$store.commit('optquery', {});
-				this.$router.push({path: 'opportunities', query: answers});
+				this.$router.push({path: '/opportunities', query: answers});
 			},
 			showQuestions()
 			{

@@ -9,6 +9,7 @@
                 </li>
             </ul>
         </div>
+        <Loading small dark v-else/>
     </div>
     <div class="cityinfo" v-else-if="cityLoaded">
 
@@ -30,11 +31,21 @@
             </iframe>
         </div>
         <div class="citydesc">{{city.short_desc}}</div>
-        <div class="details">
+        <div class="details" v-if="city.lc_set.length > 1">
             <b>AIESEC Offices in {{city.name}}</b><br>
             <div v-for="lc in city.lc_set" :key="lc.gis_id">
                 <router-link :to="`/opportunities?lc=${lc.gis_id}`">{{lc.reference_name}}</router-link>
             </div>
+        </div>
+        <div class="details" v-else>
+            The AIESEC Office in {{city.name}} is <strong>{{city.lc_set[0].reference_name}}</strong>.
+        </div>
+        <div v-if="city.lc_set.length === 1 && showDetails">
+            <div class="details" v-if="this.lc.reference_name">
+                <b>Projects available in {{city.name}}</b>
+                <CityProjects :lc="lc"/>
+            </div>
+            <Loading small dark center v-else/>
         </div>
 
         <router-link class="orange-button"
@@ -42,19 +53,25 @@
                      v-if="!showDetails">
             Learn More about {{city.name}} &raquo;
         </router-link>
+
         <div class="details" v-if="city.details && showDetails">
             <b>More about {{city.name}}</b><br>
             <span v-html="markdown(city.details)"></span>
 
             <div v-if="city.lc_set.length <= 1">
-                <router-link class="orange-button" :to="`/opportunities?lc=${city.lc_set[0].gis_id}`">
+                <router-link class="orange-button"
+                             :to="`/opportunities?lc=${city.lc_set[0].gis_id}`"
+                             @click.native="$store.commit('queueOptReload')">
                     Apply for Opportunities in {{city.name}} &raquo;
                 </router-link>
             </div>
             <div v-else>
                 <b>Apply for Opportunities in...</b><br>
                 <div v-for="lc in city.lc_set" :key="lc.gis_id">
-                    <router-link :to="`/opportunities?lc=${lc.gis_id}`">{{lc.reference_name}}</router-link>
+                    <router-link :to="`/opportunities?lc=${lc.gis_id}`"
+                                 @click.native="$store.commit('queueOptReload')">
+                        {{lc.reference_name}}
+                    </router-link>
                 </div>
             </div>
         </div>
@@ -63,6 +80,8 @@
 </template>
 
 <script>
+	import CityProjects from './CityProjects.vue';
+
 	import axios from 'axios';
 	import {config} from '../../config';
 	import Loading from '../Loading.vue';
@@ -81,10 +100,12 @@
 		{
 			return {
 				city:       {},
+				lc:         {},
 				cityLoaded: false,
 			};
 		},
 		components: {
+			CityProjects,
 			Loading,
 		},
 		methods:    {
@@ -93,6 +114,8 @@
 				this.cityLoaded = false;
 
 				let cityData, cityName;
+
+				// First get city data
 				try
 				{
 					if (this.cityName)
@@ -121,6 +144,27 @@
 					this.setTitle(this.city.name);
 
 				this.cityLoaded = true;
+
+				// Now we have to get LC Data so we know eg. what products it runs
+				// We only do this if there's =1 LC, lazy solution for now but only SP runs >1 LC
+				// so for now it's okay, maybe in the future we'll have to react this
+
+				let lcData;
+				if (this.city.lc_set.length === 1)
+				{
+					try
+					{
+						let lcID = parseInt(this.city.lc_set[0].gis_id);
+						lcData = await axios.get(config.api + config.endpoints.lc(lcID));
+					}
+					catch (err)
+					{
+						console.error(err);
+						this.$root.$emit('error');
+						return false;
+					}
+					this.lc = lcData.data;
+				}
 			},
 			markdown(text)
 			{
@@ -130,7 +174,7 @@
 			youtubeURL(url)
 			{
 				return config.youtubeURL(url);
-			}
+			},
 		},
 		created()
 		{

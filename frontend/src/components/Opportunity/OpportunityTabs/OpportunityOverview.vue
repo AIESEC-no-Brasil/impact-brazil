@@ -6,15 +6,25 @@
 
         <o-row title="Opportunity">{{opportunity.title}}</o-row>
         <o-row v-if="extra.project" :title="projectOrField">
-            {{extra.project.name}}
+            <router-link :to="projectOrFieldLink" @click.native="$store.commit('queueOptReload')">
+                {{extra.project.name}}
+            </router-link>
         </o-row>
         <o-row v-else :title="projectOrField">
             <Loading dark small/>
         </o-row>
         <o-row title="Location">{{opportunity.location}}</o-row>
-        <o-row title="Host">{{opportunity.home_lc.full_name}}</o-row>
+        <o-row title="Host">
+            <router-link :to="`/opportunities?lc=${opportunity.home_lc.id}`"
+                         @click.native="$store.commit('queueOptReload')">
+                {{opportunity.home_lc.full_name}}
+            </router-link>
+        </o-row>
         <o-row v-if="extra.lc" title="City">
-            {{extra.lc.city.name}}
+            <router-link :to="`/city/${extra.lc.city.name_unaccented.toLowerCase().replace(/\s/g, '-')}`"
+                         @click.native="$store.commit('queueOptReload')">
+                {{extra.lc.city.name}}
+            </router-link>
         </o-row>
         <o-row v-else title="City">
             <Loading dark small/>
@@ -88,6 +98,23 @@
 			projectOrField()
 			{
 				return parseInt(this.opportunity.programme.id) === 1 ? 'Project' : 'Field';
+			},
+			projectOrFieldLink()
+			{
+				switch (parseInt(this.opportunity.programme.id))
+				{
+					case 1:
+						return `/opportunities?product=1&sdg=${this.extra.project.gis_id}`;
+
+					case 2:
+						return `/opportunities?product=2&subproduct=${this.extra.project.gis_id}`;
+
+					case 5:
+						return `/opportunities?product=5&subproduct=${this.extra.project.gis_id}`;
+
+					default:
+						return '/opportunities';
+				}
 			},
 			oppFees()
 			{

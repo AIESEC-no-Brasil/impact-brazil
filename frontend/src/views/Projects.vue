@@ -143,7 +143,7 @@
 						query.subproduct = project;
 						break;
 				}
-				this.$router.push({path: 'opportunities', query});
+				this.$router.push({path: '/opportunities', query});
 			},
 			markdown(text)
 			{

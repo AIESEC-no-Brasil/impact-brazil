@@ -128,7 +128,7 @@
 		data()
 		{
 			return {
-				lists:            {
+				lists:      {
 					months:        [],
 					products:      [],
 					sdgs:          [],
@@ -136,7 +136,7 @@
 					subproductsGE: [],
 					lcs:           [],
 				},
-				selections:       {
+				selections: {
 					months:        "Anytime",
 					products:      "All products",
 					sdgs:          "All projects",
@@ -144,7 +144,7 @@
 					subproductsGE: "All fields",
 					lcs:           "All cities",
 				},
-				search:           "",
+				search:     "",
 
 				customDate:       false,
 				ready:            false,
@@ -295,7 +295,7 @@
 					delete queryString['end_date'];
 				}
 
-				this.$router.push({path: 'opportunities', query: queryString});
+				this.$router.push({path: '/opportunities', query: queryString});
 				this.$store.commit('optquery', queryString);
 				this.$emit('options-changed');
 			},
@@ -325,7 +325,7 @@
 				}
 				this.selections[currentSelection] = text;
 
-				this.$router.push({path: 'opportunities', query: queryString});
+				this.$router.push({path: '/opportunities', query: queryString});
 				this.$store.commit('optquery', queryString);
 				this.$emit('options-changed');
 			},
@@ -343,7 +343,7 @@
 				else
 					delete queryString.q;
 
-				this.$router.push({path: 'opportunities', query: queryString});
+				this.$router.push({path: '/opportunities', query: queryString});
 				this.$store.commit('optquery', queryString);
 				this.$emit('options-changed');
 			},
@@ -355,7 +355,7 @@
 				queryString['end_date'] = dateFormat(evt[1], "yyyy-mm-dd");
 
 				this.customDate = true;
-				this.$router.push({path: 'opportunities', query: queryString});
+				this.$router.push({path: '/opportunities', query: queryString});
 				this.$emit('options-changed');
 				this.$store.commit('optquery', queryString);
 			},

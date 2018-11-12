@@ -6,15 +6,7 @@ from .models import *
 class LCCitySerializer(serializers.ModelSerializer):
     class Meta:
         model = City
-        fields = ('id', 'name', 'video_link', 'thumbnail')
-
-
-class LCSerializer(serializers.ModelSerializer):
-    city = LCCitySerializer(read_only=True)
-
-    class Meta:
-        model = LC
-        fields = ('id', 'reference_name', 'city', 'gis_id', 'products', 'subproducts', 'sdgs')
+        fields = ('id', 'name', 'name_unaccented', 'video_link', 'thumbnail')
 
 
 class LCSerializerMini(serializers.ModelSerializer):
@@ -48,27 +40,32 @@ class CitySerializerMini(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    lc_set = LCSerializerMini(many=True)
-
     class Meta:
         model = Product
-        fields = ('id', 'name', 'description', 'shortname', 'details', 'gis_id', 'lc_set', 'logo')
+        fields = ('id', 'name', 'description', 'shortname', 'details', 'gis_id', 'logo')
 
 
 class SubproductSerializer(serializers.ModelSerializer):
-    lc_set = LCSerializerMini(read_only=True, many=True)
-
     class Meta:
         model = Subproduct
-        fields = ('id', 'name', 'description', 'gis_id', 'lc_set', 'logo', 'thumbnail', 'video_link')
+        fields = ('id', 'name', 'description', 'gis_id', 'product', 'logo', 'thumbnail', 'video_link')
 
 
 class SDGSerializer(serializers.ModelSerializer):
-    lc_set = LCSerializerMini(read_only=True, many=True)
-
     class Meta:
         model = SDG
-        fields = ('id', 'name', 'description', 'gis_id', 'lc_set', 'logo', 'thumbnail', 'video_link')
+        fields = ('id', 'name', 'description', 'gis_id', 'logo', 'thumbnail', 'video_link')
+
+
+class LCSerializer(serializers.ModelSerializer):
+    city = LCCitySerializer(read_only=True)
+    products = ProductSerializer(many=True)
+    sdgs = SDGSerializer(many=True)
+    subproducts = SubproductSerializer(many=True)
+
+    class Meta:
+        model = LC
+        fields = ('id', 'reference_name', 'gis_id', 'city', 'products', 'subproducts', 'sdgs')
 
 
 class EntityPartnerSerializer(serializers.ModelSerializer):
