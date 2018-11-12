@@ -112,6 +112,7 @@
 	import axios from 'axios';
 	import {config} from '../../config';
 	import {monthList} from '../../functions/month-list';
+	import {dataLoad} from '../../functions/data-loader';
 	import Loading from '../Loading';
 	import DatePicker from 'vue2-datepicker';
 	import dateFormat from 'dateformat';
@@ -178,28 +179,13 @@
 		methods:    {
 			async loadOptions()
 			{
-				async function loadData(vm, listName, url, idKey, textKey)
-				{
-					let data;
-					let storedList = vm.$store.getters.getList(listName);
+				let listsArray = ["products", "sdgs", "subproductsGT", "subproductsGE", "lcs"];
+				let loadOut = await dataLoad(this, listsArray);
 
-					if (storedList && storedList.length > 0)
-						data = storedList;
-					else
-					{
-						try
-						{
-							data = await axios.get(url);
-						}
-						catch (err)
-						{
-							console.error(err);
-							vm.$root.$emit('error');
-							return false;
-						}
-						data = data.data;
-						vm.$store.commit('setList', {list: listName, arr: data});
-					}
+				let lists = [];
+
+				// Convert our "un-vetted" data to vetted data
+				let getDataFromList = (data, idKey, textKey) => {
 					let loadedData = [];
 
 					for (let k in data)
@@ -207,7 +193,7 @@
 							loadedData.push({id: data[k][idKey], text: data[k][textKey]});
 
 					return loadedData;
-				}
+				};
 
 				// First handle months
 				let {months, month} = monthList();
@@ -215,16 +201,10 @@
 					this.lists.months.push({id: ((i + month) % 12) + 1, text: months[i]});
 
 				// Now handle dynamics
-				let loadList = ["products", "sdgs", "subproductsGT", "subproductsGE", "lcs"];
+				for (let i in listsArray)
+					this.lists[listsArray[i]] = getDataFromList(loadOut[listsArray[i]], 'gis_id', (listsArray[i] === 'lcs' ? 'reference_name' : 'name'));
 
-				let promiseArray = [];
-				for (let i in loadList)
-					promiseArray.push(loadData(this, loadList[i], config.api + config.endpoints[loadList[i]], 'gis_id', (loadList[i] === 'lcs' ? 'reference_name' : 'name')));
-
-				let [products, sdgs, subproductsGT, subproductsGE, lcs] = await Promise.all(promiseArray);
-				this.lists = {...this.lists, products, sdgs, subproductsGT, subproductsGE, lcs};
 				this.ready = true;
-
 				this.setSelections();
 			},
 			setSelections()

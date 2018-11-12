@@ -57,6 +57,7 @@
 	import MarkdownIt from 'markdown-it';
 	import axios from 'axios';
 	import {config} from '../config';
+	import {dataLoad} from '../functions/data-loader';
 
 	export default {
 		name:       "Projects",
@@ -82,36 +83,20 @@
 		},
 		async created()
 		{
-            this.setTitle("Projects");
+			this.setTitle("Projects");
 			this.loadProjects();
 		},
 		methods:    {
 			async loadProjects()
 			{
 				let lists = ["products", "sdgs", "subproductsGT", "subproductsGE"];
-				for (let i in lists)
-				{
-					let list = lists[i];
-					let storedList = this.$store.getters.getList(list);
-					if (storedList.length > 0)
-						this.lists[list] = storedList;
-					else
-					{
-						let fetchedList;
-						try
-						{
-							fetchedList = await axios.get(config.api + config.endpoints[list]);
-						}
-						catch (err)
-						{
-							console.error(err);
-							this.$root.$emit('error');
-							return false;
-						}
-						this.lists[list] = fetchedList.data;
-						this.$store.commit('setList', {list, arr: fetchedList.data});
-					}
-				}
+				let loadOut = await dataLoad(this, lists);
+
+				lists.forEach(list => {
+					if (loadOut.hasOwnProperty(list))
+						this.lists[list] = loadOut[list];
+				});
+
 				this.loading = false;
 			},
 			getDataset(product)
@@ -184,7 +169,7 @@
         }
         img
         {
-            max-width:  200px;
+            max-width: 200px;
             margin: 0 30px;
         }
 

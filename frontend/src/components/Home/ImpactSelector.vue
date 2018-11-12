@@ -47,6 +47,7 @@
 	import axios from 'axios';
 	import {config} from '../../config.js';
 	import {monthList} from '../../functions/month-list';
+	import {dataLoad} from '../../functions/data-loader';
 
 	export default {
 		name:       "ImpactSelector",
@@ -225,31 +226,14 @@
 			},
 			async loadLists()
 			{
-				// Create a function to load data into {id, text} format
-				async function loadData(vm, listName, url, idKey, textKey, imageKey = false, imageW = 0, imageDir = "/static/images/")
-				{
-					let data;
-					let storedList = vm.$store.getters.getList(listName);
+				let imageLists = ["products", "sdgs", "subproductsGT", "subproductsGE"];
+				let listsArray = ["entities", ...imageLists];
+				let loadOut = await dataLoad(this, listsArray);
 
-					if (storedList && storedList.length > 0)
-						data = storedList;
-					else
-					{
-						try
-						{
-							data = await axios.get(url);
-						}
-						catch (err)
-						{
-							console.error(err);
-							vm.$root.$emit('error');
-							return false;
-						}
+				let lists = [];
 
-						// Store this list
-						vm.$store.commit('setList', {list: listName, arr: data.data});
-						data = data.data;
-					}
+				// Convert our "un-vetted" data to vetted data
+				let getDataFromList = (data, idKey, textKey, imageKey = false, imageW = 0, imageDir = "/static/images/") => {
 					let loadedData = [];
 					let loadedDataWithImages = [];
 
@@ -270,8 +254,8 @@
 								// Preload the image in a hidden element
 								let preload = new Image();
 								preload.src = data[k][imageKey];
-								if (vm.$refs['image-preloader'] !== undefined)
-									vm.$refs['image-preloader'].appendChild(preload);
+								if (this.$refs['image-preloader'] !== undefined)
+									this.$refs['image-preloader'].appendChild(preload);
 							}
 						}
 					}
@@ -280,28 +264,19 @@
 						return loadedData;
 					else
 						return {textOnly: loadedData, withImages: loadedDataWithImages};
-
-				}
+				};
 
 				// Load entities list
-				let entityList = await loadData(this, 'entities', config.api + config.endpoints.entities, 'id', 'name');
-				if (entityList === false)
-					return false;
-
-				this.lists.entityList = entityList;
+				this.lists.entityList = getDataFromList(loadOut['entities'], 'id', 'name');
 
 				// Generate months array
 				let {months, month} = monthList();
 				for (let i = 0; i < 12; i++)
 					this.lists.months.push({id: ((i + month) % 12) + 1, text: months[i]});
 
-				// Load products etc.
-				// For the sake of not adding a "load" between choosing your product and choosing the SDG/subproduct,
-				// we load both SDGs and subproduct
-				let loadList = ["products", "sdgs", "subproductsGT", "subproductsGE"];
-
-				loadList.forEach(async (load) => {
-					let {textOnly, withImages} = await loadData(this, loadList, config.api + config.endpoints[load], 'gis_id', (load === 'products' ? 'description' : 'name'), 'logo', 90, config.logos[load]);
+				// Load products & projects
+				imageLists.forEach(load => {
+					let {textOnly, withImages} = getDataFromList(loadOut[load], 'gis_id', (load === 'products' ? 'description' : 'name'), 'logo', 90, config.logos[load]);
 
 					if (textOnly === false || withImages === false)
 						return false;
