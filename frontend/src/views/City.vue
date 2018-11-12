@@ -1,7 +1,8 @@
 <template>
     <div class="section">
         <CityInfo :city-name="cityName"
-                  show-details/>
+                  show-details
+                  change-title/>
     </div>
 </template>
 
@@ -18,6 +19,10 @@
 			{
 				return this.$route.params.name.toLowerCase();
 			}
+		},
+		created()
+		{
+			this.setTitle("City");
 		}
 	};
 </script>

@@ -3,7 +3,7 @@
         <!--<img src="../assets/logonav.png" title="Impact Brazil"/>-->
         <img v-if="opportunity"
              :src="'/static/images/products/hd/'+opportunity.programme.short_name_display.toLowerCase()+'-logo.png'"><br>
-        <!-- FIXME: eventually we will get the opportunity details from our own API, then the above URL can be computed -->
+        <!-- FIXME: this URL should be computed -->
         <nav>
             <ul>
                 <li class="">
@@ -41,12 +41,14 @@
                         Visa
                     </a>
                 </li>
-                <li style='margin-top: 10px;'>
+                <li>
                     <a @click="changeTab('city')"
+                       v-if="extra.lc"
                        role="button"
                        :class="tab === 'city' ? 'active-tab' : ''">
-                        Learn more about CITY
+                        About {{extra.lc.city.name}}
                     </a>
+                    <Loading dark small v-else/>
                 </li>
             </ul>
         </nav>
@@ -54,16 +56,22 @@
 </template>
 
 <script>
+	import Loading from "../Loading.vue";
+
 	export default {
-		name:    "OpportunityNav",
-		props:   {
+		name:       "OpportunityNav",
+		components: {
+			Loading,
+		},
+		props:      {
 			opportunity: Object,
+			extra:       Object,
 			tab:         {
 				type:    String,
 				default: 'overview'
 			}
 		},
-		methods: {
+		methods:    {
 			changeTab(tab)
 			{
 				this.$emit('change-tab', tab);

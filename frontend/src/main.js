@@ -3,6 +3,7 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 import VueSession from 'vue-session';
+import {config} from "./config";
 
 Vue.use(VueSession, {persist: true});
 
@@ -16,7 +17,15 @@ router.afterEach(() => {
 	store.commit('pageLoaded');
 });
 
-
+// "set title" mixin
+Vue.mixin({
+	methods: {
+		setTitle(title = false)
+		{
+			document.title = title ? (title + " · " + config.websiteName) : config.websiteName;
+		}
+	}
+});
 Vue.config.productionTip = false;
 
 new Vue({

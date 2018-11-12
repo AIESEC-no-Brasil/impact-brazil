@@ -11,7 +11,11 @@
 
 <script>
 	export default {
-		name: "Contact"
+		name: "Contact",
+        created()
+        {
+            this.setTitle("Contact");
+        }
 	};
 </script>
 

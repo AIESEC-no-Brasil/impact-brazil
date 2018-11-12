@@ -149,6 +149,7 @@ class LCList(generics.ListAPIView):
 
 # Get details of LC
 class LCDetails(generics.RetrieveAPIView):
+    lookup_field = 'gis_id'
     queryset = LC.objects.all()
     serializer_class = LCSerializer
 

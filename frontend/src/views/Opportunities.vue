@@ -39,6 +39,10 @@
 				this.$refs.videomodal.showVideo(url);
 			},
 		},
+        activated()
+        {
+            this.setTitle("Opportunities");
+        }
 	};
 </script>
 

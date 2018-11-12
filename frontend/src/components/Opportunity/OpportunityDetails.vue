@@ -14,21 +14,26 @@
                                       key="prerequisites"/>
             <OpportunityLogistics v-if="tab === 'logistics'"
                                   :opportunity="opportunity"
+                                  :extra="extra"
                                   key="logistics"/>
             <OpportunityVisa v-if="tab === 'visa'"
                              :opportunity="opportunity"
                              key="visa"/>
+            <CityInfo v-if="tab === 'city'"
+                      :city-id="extra.lc ? extra.lc.city.id : 0"
+                      show-details
+                      key="info"/>
         </transition-group>
     </div>
 </template>
 
 <script>
-	import OpportunityDetailRow from './OpportunityDetailRow.vue';
 	import OpportunityOverview from './OpportunityTabs/OpportunityOverview.vue';
 	import OpportunityRole from './OpportunityTabs/OpportunityRole.vue';
 	import OpportunityPrerequisites from './OpportunityTabs/OpportunityPrerequisites.vue';
 	import OpportunityLogistics from './OpportunityTabs/OpportunityLogistics.vue';
 	import OpportunityVisa from './OpportunityTabs/OpportunityVisa.vue';
+	import CityInfo from '../Cities/CityInfo.vue';
 
 	export default {
 		name:       "OpportunityDetails",
@@ -38,7 +43,7 @@
 			OpportunityPrerequisites,
 			OpportunityLogistics,
 			OpportunityVisa,
-			oRow: OpportunityDetailRow
+			CityInfo,
 		},
 		props:      {
 			opportunity: Object,

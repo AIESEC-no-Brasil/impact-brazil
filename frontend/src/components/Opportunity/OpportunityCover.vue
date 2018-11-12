@@ -6,7 +6,7 @@
                 <i class="material-icons">arrow_back</i>
             </div>
             <div id="cover-overlay">
-                <div class="title">{{opportunity.title}}</div>
+                <div class="title text-truncate">{{opportunity.title}}</div>
                 <div class="location"><i class="material-icons">location_on</i> {{opportunity.location}}</div>
                 <OpportunityPerformApplyButton
                         :id="parseInt(opportunity.id)"

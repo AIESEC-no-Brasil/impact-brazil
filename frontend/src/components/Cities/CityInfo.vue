@@ -15,7 +15,8 @@
         <div class="title">
             <a href="#" @click="$emit('city-cleared')">
                 <i class="material-icons"
-                   style="font-size: 48px; vertical-align: middle; position: relative; top: -4px">arrow_back</i>
+                   style="font-size: 48px; vertical-align: middle; position: relative; top: -4px"
+                   v-if="cities">arrow_back</i>
             </a>
             About {{city.name}}
         </div>
@@ -73,6 +74,7 @@
 			cityId:      Number,
 			cities:      Array,
 			showDetails: Boolean,
+			changeTitle: Boolean,
 			cityName:    String,
 		},
 		data()
@@ -114,6 +116,10 @@
 					return false;
 				}
 				this.city = cityData.data;
+
+				if (this.changeTitle)
+					this.setTitle(this.city.name);
+
 				this.cityLoaded = true;
 			},
 			markdown(text)
@@ -126,7 +132,7 @@
 				return config.youtubeURL(url);
 			}
 		},
-		mounted()
+		created()
 		{
 			if (this.cityId || this.cityName)
 				this.loadCity();
@@ -142,12 +148,24 @@
 </script>
 
 <style lang="scss" scoped>
+    @import "../../../node_modules/bootstrap/scss/functions";
+    @import "../../../node_modules/bootstrap/scss/variables";
+    @import "../../../node_modules/bootstrap/scss/mixins/breakpoints";
     @import "../../assets/colors";
 
     .title
     {
         font-size: 36px;
         font-family: PierSans, sans-serif;
+        @include media-breakpoint-down(sm)
+        {
+            font-size: 24px;
+
+            i
+            {
+                display: block;
+            }
+        }
     }
 
     .cityinfo

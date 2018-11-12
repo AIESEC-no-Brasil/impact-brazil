@@ -5,14 +5,20 @@
         </div>
 
         <o-row title="Opportunity">{{opportunity.title}}</o-row>
-        <o-row v-if="extra.name" :title="projectOrField">
-            {{extra.name}}
+        <o-row v-if="extra.project" :title="projectOrField">
+            {{extra.project.name}}
         </o-row>
         <o-row v-else :title="projectOrField">
             <Loading dark small/>
         </o-row>
         <o-row title="Location">{{opportunity.location}}</o-row>
         <o-row title="Host">{{opportunity.home_lc.full_name}}</o-row>
+        <o-row v-if="extra.lc" title="City">
+            {{extra.lc.city.name}}
+        </o-row>
+        <o-row v-else title="City">
+            <Loading dark small/>
+        </o-row>
         <o-row separator/>
         <o-row title="Languages">
             {{opportunity.languages.reduce((accumulator, current) => accumulator =

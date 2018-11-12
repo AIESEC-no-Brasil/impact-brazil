@@ -12,6 +12,10 @@
 		components: {
 			ImpactDescription
 		},
+		created()
+		{
+			this.setTitle("About");
+		}
 	};
 </script>
 

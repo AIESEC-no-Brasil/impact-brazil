@@ -32,7 +32,7 @@
 		props:   {
 			cities: Array
 		},
-		mounted()
+		created()
 		{
 			let loadMap = () => {
 				// Set the w/h of the SVG container after it's loaded (so it's correctly sized)

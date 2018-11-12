@@ -80,8 +80,9 @@
 				loading:  true,
 			};
 		},
-		async mounted()
+		async created()
 		{
+            this.setTitle("Projects");
 			this.loadProjects();
 		},
 		methods:    {
@@ -183,7 +184,7 @@
         }
         img
         {
-            max-width: 300px;
+            max-width:  200px;
             margin: 0 30px;
         }
 

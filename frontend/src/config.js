@@ -1,4 +1,5 @@
 const config = {
+	websiteName:        "Impact Brazil",
 	api:                "http://f7159acb.ngrok.io/api/",//"http://localhost:8000/api/",
 	gisPublicAPI:       "https://gis-api.aiesec.org/graphql?access_token=e316ebe109dd84ed16734e5161a2d236d0a7e6daf499941f7c110078e3c75493",
 	gisTokenAPI:        token => `https://gis-api.aiesec.org/graphql?access_token=${token}`,
@@ -37,6 +38,7 @@ const config = {
 		subproduct:    id => `subproduct/${id}.json`,
 		opportunities: "opportunities.json",
 		lcs:           "lcs.json",
+		lc:            id => `lcs/${id}.json`,
 		cities:        "cities.json",
 		city:          name => `city/${name}.json`,
 		login:         "login.json",

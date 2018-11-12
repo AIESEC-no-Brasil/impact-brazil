@@ -5,6 +5,7 @@
             <b-row>
                 <b-col cols="12" md="3">
                     <OpportunityNav :opportunity="opportunity"
+                                    :extra="extra"
                                     :tab="tab"
                                     @change-tab="changeTab"/>
                 </b-col>
@@ -55,8 +56,10 @@
 				subproductOrSdg: 'sdg',
 			};
 		},
-		async mounted()
+		async created()
 		{
+			this.setTitle("Opportunity");
+
 			// Do we have an Opp ID?
 			if (isNaN(parseInt(this.$route.params.id)))
 			{
@@ -93,25 +96,30 @@
 			}
 			this.opportunity = oppData.data.data.getOpportunity;
 
+			this.setTitle(this.opportunity.title.length > 23 ? this.opportunity.title.substr(0, 20) + "..." : this.opportunity.title);
+
 			// Find out if we need to find more details about subproduct or SDG?
-			let extraData;
+			let extraDataProj, extraDataLC;
 			try
 			{
 				if (parseInt(this.opportunity.programme.id) === 1)
-					extraData = await axios.get(config.api + config.endpoints.sdg(this.opportunity.sdg_info.sdg_target.goal_index));
+					extraDataProj = axios.get(config.api + config.endpoints.sdg(this.opportunity.sdg_info.sdg_target.goal_index));
 				else
-					extraData = await axios.get(config.api + config.endpoints.subproduct(this.opportunity.sub_product.id));
+					extraDataProj = axios.get(config.api + config.endpoints.subproduct(this.opportunity.sub_product.id));
 
+				extraDataLC = axios.get(config.api + config.endpoints.lc(this.opportunity.home_lc.id));
+				[extraDataProj, extraDataLC] = await Promise.all([extraDataProj, extraDataLC]);
 			}
 			catch (err)
 			{
 				// Let's not kill the whole thing in case we add a new SDG/subproduct or something
 				console.error(err);
 				//this.$root.$emit('error');
-				this.extra = {name: "Unknown"};
+				this.extra = {project: {name: "Unknown"}, lc: {id: 0, city: {id: 0, name: "Unknown"}}};
 				return;
 			}
-			this.extra = extraData.data;
+			this.$set(this.extra, 'project', extraDataProj.data);
+			this.$set(this.extra, 'lc', extraDataLC.data);
 		},
 		methods:    {
 			changeTab(tab)

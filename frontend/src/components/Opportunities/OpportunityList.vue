@@ -203,7 +203,7 @@
 				this.$store.commit('listLoaded');
 			}
 		},
-		async mounted()
+		async created()
 		{
 			this.loadOpps();
 		},

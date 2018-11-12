@@ -6,7 +6,7 @@
         <nav :class="hidden ? 'collapsed' : 'open'">
             <ul>
                 <li class="mobile-only">
-                    <a class="close-button" @click="hidden = true">
+                    <a class="close-button" role="button" @click="hidden = true">
                         <i class="material-icons">close</i>
                     </a>
                 </li>
@@ -40,7 +40,7 @@
                 </li>
             </ul>
         </nav>
-        <a @click="hidden = false" class="mobile-only open-button">
+        <a @click="hidden = false" role="button" class="mobile-only open-button">
             <i class="material-icons">menu</i>
         </a>
     </div>

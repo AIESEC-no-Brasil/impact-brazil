@@ -7,7 +7,7 @@ app_name = 'api'
 urlpatterns = [
     path('entities/', views.EntityList.as_view()),
     path('lcs/', views.LCList.as_view()),
-    path('lcs/<int:pk>/', views.LCDetails.as_view()),
+    path('lcs/<int:gis_id>/', views.LCDetails.as_view()),
     path('subproducts/', views.SubproductList.as_view()),
     path('subproduct/<int:gis_id>/', views.SubproductDetail.as_view()),
     path('products/', views.ProductList.as_view()),

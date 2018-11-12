@@ -140,7 +140,7 @@
 				];
 			}
 		},
-		async mounted()
+		async created()
 		{
 			await this.loadLists();
 		},

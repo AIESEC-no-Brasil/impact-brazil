@@ -15,6 +15,10 @@
 			ImpactWelcome,
 			ImpactDescription
 		},
+        created()
+        {
+            this.setTitle();
+        }
 	};
 </script>
 

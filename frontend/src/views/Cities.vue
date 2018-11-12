@@ -65,8 +65,9 @@
 				this.city = cityID;
 			}
 		},
-		async mounted()
+		async created()
 		{
+            this.setTitle("Cities");
 			this.loadCities();
 		}
 	};

@@ -139,7 +139,7 @@
 				window.location.reload();
 			}
 		},
-		async mounted()
+		async created()
 		{
 			this.loadInvite();
 		},

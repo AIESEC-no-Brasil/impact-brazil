@@ -5,9 +5,9 @@
             "Brazil" : this.selections.products}}</b>
         </div>
         <div id="options-right">
-            <!--div id="searchbox">
+            <div id="searchbox">
                 <b-form-input size="sm" placeholder="Search" v-model="search" @change="searchHandler"/>
-            </div--> <!-- TODO: figure out why q broke -->
+            </div>
             <b-dropdown id="prog"
                         variant="transparent"
                         right
@@ -145,6 +145,7 @@
 					lcs:           "All cities",
 				},
 				search:           "",
+
 				customDate:       false,
 				ready:            false,
 				datepickerActive: false,
@@ -331,10 +332,11 @@
 			searchHandler()
 			{
 				clearTimeout(this.searchTimer);
-				this.searchTimer = setTimeout(this.changeSearch, 600);
+				this.searchTimer = setTimeout(this.changeSearch, 200);
 			},
 			changeSearch()
 			{
+				console.log("Triggered");
 				let queryString = Object.assign({}, this.$route.query);
 				if (this.search.length > 0)
 					queryString.q = this.search;
@@ -371,7 +373,7 @@
 				this.setSelections();
 			}
 		},
-		async mounted()
+		async created()
 		{
 			this.loadOptions();
 			if (this.$route.query.product)
