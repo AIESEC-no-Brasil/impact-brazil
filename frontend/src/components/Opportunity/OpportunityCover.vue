@@ -13,7 +13,8 @@
                         :is-gt="parseInt(opportunity.programme.id) > 1"
                         v-if="daysLeft >= 0 && !opportunity.applied_to"/>
                 <div class="location" v-else-if="opportunity.applied_to">
-                    You have applied to this opportunity.
+                    You have applied to this opportunity.<br>
+                    You can check the status of your applications by clicking your name on the top right.
                 </div>
                 <div class="deadline"><i class="material-icons">alarm</i>
                     {{daysLeft > 0 ? `${daysLeft} day${daysLeft !== 1 ? 's' : ''} left to apply`

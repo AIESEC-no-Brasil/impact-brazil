@@ -43,18 +43,21 @@
     {
         font-family: PierSans;
         src: local('Pier Sans Regular'), url('./assets/PierSans-Regular.otf');
+        font-display: swap;
     }
 
     @font-face
     {
         font-family: PierSansLight;
         src: local('Pier Sans Light'), url('./assets/PierSans-Light.otf');
+        font-display: swap;
     }
 
     @font-face
     {
         font-family: PierSansBold;
         src: local('Pier Sans Bold'), url('./assets/PierSans-Bold.otf');
+        font-display: swap;
     }
 
     *

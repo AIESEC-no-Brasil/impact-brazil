@@ -4,41 +4,66 @@
         <img src="../../assets/logonav.png" title="Impact Brazil"/>
 
         <nav :class="hidden ? 'collapsed' : 'open'">
-            <ul>
-                <li class="mobile-only">
-                    <a class="close-button" role="button" @click="hidden = true">
-                        <i class="material-icons">close</i>
-                    </a>
-                </li>
-                <li>
-                    <router-link to="/" exact>Home</router-link>
-                </li>
-                <li>
-                    <router-link :to="opportunityLink"
-                                 :class="routerLinkManualActive('opportunity')">
-                        Opportunities
-                    </router-link>
-                </li>
-                <li>
-                    <router-link to="/projects">Projects</router-link>
-                </li>
-                <li>
-                    <router-link to="/cities"
-                                 :class="routerLinkManualActive('city')">
-                        Cities
-                    </router-link>
-                </li>
-                <li>
-                    <router-link to="/about">About</router-link>
-                </li>
-                <li>
-                    <router-link to="/contact">Contact</router-link>
-                </li>
-                <li>
-                    <a @click="showLoginBox" v-if="!loggedIn">Login</a>
-                    <a @click="logout" v-else>Logout</a>
-                </li>
-            </ul>
+            <transition name="fade" mode="out-in">
+                <ul v-if="!userMenu" key="general">
+                    <li class="mobile-only">
+                        <a class="close-button" role="button" @click="hidden = true">
+                            <i class="material-icons">close</i>
+                        </a>
+                    </li>
+                    <li>
+                        <router-link to="/" exact>Home</router-link>
+                    </li>
+                    <li>
+                        <router-link :to="opportunityLink"
+                                     :class="routerLinkManualActive('opportunity')">
+                            Opportunities
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link to="/projects">Projects</router-link>
+                    </li>
+                    <li>
+                        <router-link to="/cities"
+                                     :class="routerLinkManualActive('city')">
+                            Cities
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link to="/about">About</router-link>
+                    </li>
+                    <li>
+                        <router-link to="/contact">Contact</router-link>
+                    </li>
+                    <li>
+                        <a role="button" @click="showLoginBox" v-if="!loggedIn">Login</a>
+                        <a role="button" @click="userMenu = true" v-else>{{$session.get('userFirstName')}}</a>
+                    </li>
+                </ul>
+                <ul v-else key="logged-in">
+                    <li class="mobile-only">
+                        <a class="close-button" role="button" @click="hidden = true">
+                            <i class="material-icons">close</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://aiesec.org/profile/applications" target="_blank" rel="noopener">
+                            My Applications
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://aiesec.org/profile/edit" target="_blank" rel="noopener">
+                            My Profile
+                        </a>
+                    </li>
+                    <li>
+                        <a role="button" @click="logout">Logout</a>
+                    </li>
+                    <li>
+                        <a role="button" @click="userMenu = false">Back</a>
+                    </li>
+                </ul>
+            </transition>
         </nav>
         <a @click="hidden = false" role="button" class="mobile-only open-button">
             <i class="material-icons">menu</i>
@@ -56,6 +81,7 @@
 			return {
 				isTopOfPage: true,
 				hidden:      true,
+				userMenu:    false,
 			};
 		},
 		computed: {
@@ -81,6 +107,8 @@
 			{
 				this.$session.set('loggedIn', false);
 				this.$session.set('accessToken', "");
+				this.$session.set('userId', undefined);
+				this.$session.set('userFirstName', undefined);
 				window.location.reload();
 			},
 			routerLinkManualActive(string)
@@ -231,5 +259,15 @@
             color: #fff !important;
             background-color: transparent !important;
         }
+    }
+
+    .fade-enter-active, .fade-leave-active
+    {
+        transition: opacity .3s;
+    }
+
+    .fade-enter, .fade-leave-to
+    {
+        opacity: 0;
     }
 </style>

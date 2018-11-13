@@ -26,7 +26,7 @@
                     ref="changeEntity"
                     id="video-modal"
                     title="Choose your country/territory">
-            Where are you from?<br>
+            Where are you from? (Country or territory of citizenship)<br>
             <select title="entity" v-if="entityList.length > 0" v-model="entitySelection">
                 <option v-for="entity in entityList"
                         :key="entity.id"

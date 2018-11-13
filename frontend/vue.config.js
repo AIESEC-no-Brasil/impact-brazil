@@ -1,10 +1,11 @@
 module.exports = {
-	lintOnSave:       false,
-	configureWebpack: {
+	lintOnSave:          false,
+	configureWebpack:    {
 		devServer: {
 			allowedHosts: [
 				'.ngrok.io'
 			]
 		}
-	}
+	},
+	productionSourceMap: false
 };

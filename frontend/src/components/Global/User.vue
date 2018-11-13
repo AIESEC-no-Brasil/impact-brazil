@@ -3,10 +3,12 @@
         <SweetModal title="Login"
                     overlay-theme="dark"
                     modal-theme="light"
-                    ref="login">
+                    ref="login"
+                    :hide-close-button="loggingIn"
+                    :blocking="loggingIn">
             <b-form @submit.prevent="performLogin" v-show="!loggingIn">
                 <div class="title">
-                    Log in with your <a href="http://aiesec.org" target="_blank">aiesec.org</a> account
+                    Log in with your <a rel="noopener" href="http://aiesec.org" target="_blank">aiesec.org</a> account
                     credentials.<br>
                     Don't have an account? <strong><a href="#" @click="registerForm">Sign up here</a>!</strong>
                 </div>
@@ -34,7 +36,9 @@
                 <b-button type="submit" variant="success">Login</b-button>
             </b-form>
             <Loading v-if="loggingIn && !loggedIn" dark center/>
-            <div class="title" v-if="loggedIn">Logged in successfully.</div>
+            <div class="title" v-if="loggedIn">Just a few seconds more...<br>
+                <Loading dark center/>
+            </div>
         </SweetModal>
         <SweetModal title="Sign Up"
                     overlay-theme="dark"
@@ -54,9 +58,9 @@
                     ref="completeprofile">
             <div class="title">
                 Before you can apply to an opportunity, you need to make sure that your profile is completed on <a
-                    href="http://aiesec.org" target="_blank">aiesec.org</a>. Click the Profile button below to open your
-                profile so you can fill in all your details, then <strong>close that window and click on Try Again
-                below</strong> to apply again.
+                    href="http://aiesec.org" rel="noopener" target="_blank">aiesec.org</a>. Click the Profile button
+                below to open your profile so you can fill in all your details, then <strong>close that window and click
+                on Try Again below</strong> to apply again.
             </div>
             <b-button variant="primary" size="lg" @click="showProfileForm">Complete Profile</b-button>&nbsp; &nbsp;
             <b-button variant="success" size="lg" @click="retry">Try Again</b-button>
@@ -159,11 +163,34 @@
 					return;
 				}
 				this.$session.set('loggedIn', true);
-				// TODO: Refresh access token after 4hrs
 				this.$session.set('accessToken', tokenData.data.access_token);
+
+				// Failsafes, in case current_person fails
+				this.$session.set('userId', 0);
+				this.$session.set('userFirstName', "User");
+
+				// At this point, we are logged in with a valid access token
 				this.loggedIn = true;
 
-				setTimeout(() => window.location.reload(), 1000);
+				// Get current_person data
+				let currentPerson;
+				try
+				{
+					currentPerson = await axios.post(config.gisTokenAPI(tokenData.data.access_token),
+						{
+							query: "{ currentPerson { id, first_name }}"
+						});
+
+					this.$session.set('userId', currentPerson.data.data.currentPerson.id);
+					this.$session.set('userFirstName', currentPerson.data.data.currentPerson.first_name);
+				}
+				catch (err)
+				{
+					// It's okay, we have our failsafes
+					console.error(err);
+				}
+
+				window.location.reload();
 			}
 		}
 	};

@@ -275,7 +275,14 @@ class Apply(APIView):
             gip_answer = None
 
         try:
-            success, response = yop_apply_opportunity(attrs['api_key'], attrs['opp_id'], gip_answer)
+            user_id = attrs['user_id']
+            if user_id == '':
+                user_id = None
+        except KeyError:
+            user_id = None
+
+        try:
+            success, response = yop_apply_opportunity(attrs['api_key'], attrs['opp_id'], gip_answer, user_id)
         except KeyError:
             return Response({"error": "MISSING_PARAMS"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -290,6 +297,9 @@ class Apply(APIView):
                     return Response({"error": "Error", "response": response},
                                     status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             except KeyError:
+                if response.find("expired token") > -1:
+                    return Response({"error": "Expired token"}, status=status.HTTP_401_UNAUTHORIZED)
+
                 return Response({"error": "Error", "response": response},
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

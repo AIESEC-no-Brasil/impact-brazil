@@ -18,6 +18,7 @@
                         <div class="subtitle">COMPENSATION</div>
                         No
                         <a href="https://aiesec.org/global-volunteer"
+                           rel="noopener"
                            target="_blank">
                             Read More
                         </a>
@@ -37,6 +38,7 @@
                         <div class="subtitle">COMPENSATION</div>
                         Yes
                         <a href="https://aiesec.org/global-talent"
+                           rel="noopener"
                            target="_blank">
                             Read More
                         </a>
@@ -55,6 +57,7 @@
                         <div class="subtitle">COMPENSATION</div>
                         No
                         <a href="https://aiesec.org/global-entrepreneur"
+                           rel="noopener"
                            target="_blank">
                             Read More
                         </a>

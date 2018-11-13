@@ -17,6 +17,10 @@ secret_key = SECRET_KEY  # Set a secret key for Django here
 ## Backend Setup
 1. Upload `backend/` to your instance
 2. Run `pip install -r requirements.txt`
+3. Set up `crontab` to refresh the opportunities database periodically list, example below
+```bash
+0 */2 * * * /home/ec2-user/impact/backend/venv/bin/python3 /home/ec2-user/impact/backend/manage.py acquire_opps
+```
 
 ## Frontend setup
 1. Run `npm install` in `frontend/`

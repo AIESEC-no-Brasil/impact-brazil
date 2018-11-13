@@ -35,7 +35,8 @@ def generate_token(silent, print_function):
 
 # Run a GraphQL query against the GIS API
 def gis_get(query, silent=True, print_function=print, custom_api_key=None, variables=None):
-    generate_token(silent, print_function)
+    if custom_api_key is None:
+        generate_token(silent, print_function)
 
     url = config.expa_api_url.format(config.api_key if custom_api_key is None else custom_api_key)
 

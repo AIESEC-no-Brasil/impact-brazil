@@ -5,8 +5,8 @@
         </div>
 
         <o-row title="Project" fullspan v-if="parseInt(this.opportunity.programme.id) === 1">
-            <span v-if="extra.name" style='font-size: 1.2em'>{{extra.name}}</span>
-            <Loading v-else small/>
+            <span v-if="extra.project.name" style='font-size: 1.2em'>{{extra.project.name}}</span>
+            <Loading v-else dark small/>
             <br>
             {{opportunity.sdg_info.sdg_target.description}}
         </o-row>
@@ -15,7 +15,7 @@
             {{opportunity.branch.address_detail.city}}, {{opportunity.branch.address_detail.country}}
         </o-row>
         <o-row title="Role description" fullspan>
-            {{markdown(opportunity.description)}}
+            <div v-html="markdown(opportunity.description)"></div>
         </o-row>
         <o-row title="Main activities" fullspan>
             <ul style="margin-left: 24px;">

@@ -6,22 +6,23 @@
 
         <div v-if="missingOpts && !iAmFromBrazil && !$store.state.noVisa" id="no-opps-available">
             <i class="material-icons">settings</i><br>
-            To get started, please select a product or a city from the top right.<br>
-            You can keep customizing the filters to suit your needs better.<br>
+            To get started, please select a product or a city from the top right.<br class="nobreak">
+            You can keep customizing the filters to suit your needs better.<br class="doublebreak">
             Not sure what product is best for you?
             <router-link to="/about">Read more about our products</router-link>
         </div>
 
         <div v-else-if="iAmFromBrazil" id="no-opps-available">
             <i class="material-icons">location_on</i><br>
-            Hello! This website is meant for internationals who are searching for opportunities in Brazil.<br>
+            Hello! This website is meant for internationals who are searching for opportunities in Brazil.<br
+                class="nobreak">
             If you are a Brazilian and you want to find opportunities internationally, please visit <a
                 href="https://aiesec.org.br">our national website</a>.
         </div>
 
         <div v-else-if="$store.state.noVisa" id="no-opps-available">
             <i class="material-icons">location_off</i><br>
-            Sorry, due to Visa regulations, we do not have any opportunities to show you right now.<br>
+            Sorry, due to Visa regulations, we do not have any opportunities to show you right now.<br class="nobreak">
             Please
             <router-link to="/contact">get in touch</router-link>
             if you would like to know more.
@@ -36,7 +37,7 @@
         </div>
         <div v-else-if="noOpps" id="no-opps-available">
             <i class="material-icons">visibility_off</i><br>
-            Sorry, we couldn't find any opportunities for you.<br>
+            Sorry, we couldn't find any opportunities for you.<br class="nobreak">
             Try changing the filters on the top right so we can search again!
         </div>
         <div v-else id="oplist-loading">
@@ -224,6 +225,7 @@
     {
         margin-top: 24px;
     }
+
     #oplist-loading
     {
         margin-top: 24px;
@@ -239,5 +241,18 @@
     .material-icons
     {
         font-size: 96px;
+    }
+
+    @media only screen and (max-width: 767.98px)
+    {
+        br.nobreak
+        {
+            display: none;
+        }
+
+        br.doublebreak
+        {
+            line-height: 40px;
+        }
     }
 </style>
