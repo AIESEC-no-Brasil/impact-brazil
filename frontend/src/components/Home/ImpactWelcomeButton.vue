@@ -23,6 +23,7 @@
         vertical-align: middle;
         text-align: center;
         padding: 20px 30px;
+        line-height: 0.9;
         font-size: 18pt;
         color: #fff;
         box-shadow: 0 8px 4px 0 rgba(0, 0, 0, 0.4);
@@ -35,7 +36,7 @@
         b
         {
             font-size: 48pt;
-            font-weight: bold;
+            font-weight: normal;
             text-shadow: 0 2px rgba(0, 0, 0, 0.4);
         }
     }

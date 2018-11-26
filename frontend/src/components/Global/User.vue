@@ -108,6 +108,13 @@
 				if (this.$refs.completeprofile)
 					this.$refs.completeprofile.open();
 			});
+			this.$root.$on('logout', () => {
+				this.$session.set('loggedIn', false);
+				this.$session.set('accessToken', "");
+				this.$session.set('userId', undefined);
+				this.$session.set('userFirstName', undefined);
+				window.location.reload();
+			});
 		},
 		methods:    {
 			registerForm()

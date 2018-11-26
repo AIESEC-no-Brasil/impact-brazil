@@ -7,9 +7,9 @@ export default new Vuex.Store({
 	state:     {
 		// This is accessed by a bunch of components, so it's easier to just store it here
 		showingQuestions: false,
+		showingDropdown:  false,
 		
 		// We store these in $store because we don't want the opportunity page to ever reload
-		noVisa:          false,
 		options:         {},
 		optquery:        {},
 		optReloadQueued: {invite: false, list: false},
@@ -33,7 +33,7 @@ export default new Vuex.Store({
 	},
 	mutations: {
 		showingQuestions: (state, sQ) => state.showingQuestions = sQ,
-		noVisa:           (state, noVisa) => state.noVisa = noVisa,
+		showingDropdown:  (state, sD) => state.showingDropdown = sD,
 		options:          (state, options) => state.options = options,
 		optquery:         (state, optquery) => state.optquery = optquery,
 		queueOptReload:   state => state.optReloadQueued = {invite: true, list: true},

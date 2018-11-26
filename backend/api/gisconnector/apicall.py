@@ -77,8 +77,12 @@ def gis_get(query, silent=True, print_function=print, custom_api_key=None, varia
 
 
 # Shorthand for expa_get(...)['data']
-def gis_get_data(query, silent=True, print_function=print):
-    return gis_get(query, silent)['data']
+def gis_get_data(query, silent=True, print_function=print, custom_api_key=None, variables=None):
+    data =  gis_get(query, silent, print_function, custom_api_key, variables)
+    try:
+        return data['data']
+    except KeyError:
+        raise Exception(json.dumps(data))
 
 
 # Get paginated data

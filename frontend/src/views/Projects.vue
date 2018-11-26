@@ -30,7 +30,7 @@
                                     </div>
                                 </b-col>
                                 <b-col cols="12" md="4" class="no-padding text-right">
-                                    <a @click="goToOpportunity(product.gis_id, project.gis_id)"
+                                    <a @click="goToOpportunity(product.gis_id, product.gis_id === 1 ? (1100+project.sdg) : project.gis_id)"
                                        class="orange-button">
                                         Apply &raquo;
                                     </a>
@@ -73,7 +73,7 @@
 			return {
 				lists:    {
 					products:      [],
-					sdgs:          [],
+					projects:      [],
 					subproductsGT: [],
 					subproductsGE: [],
 				},
@@ -89,7 +89,7 @@
 		methods:    {
 			async loadProjects()
 			{
-				let lists = ["products", "sdgs", "subproductsGT", "subproductsGE"];
+				let lists = ["products", "projects", "subproductsGT", "subproductsGE"];
 				let loadOut = await dataLoad(this, lists);
 
 				lists.forEach(list => {
@@ -104,7 +104,7 @@
 				switch (product)
 				{
 					case 1:
-						return this.lists.sdgs;
+						return this.lists.projects;
 
 					case 2:
 						return this.lists.subproductsGT;

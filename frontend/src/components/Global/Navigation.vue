@@ -1,7 +1,8 @@
 <template>
     <div id="nav"
-         :class="isTopOfPage && !$store.state.showingQuestions ? 'no-background' : ''">
-        <img src="../../assets/logonav.png" title="Impact Brazil"/>
+         :class="isTopOfPage && !$store.state.showingQuestions ? 'no-background' : ''"
+         v-click-outside="collapse">
+        <img @click="goHome" src="../../assets/logonav.png" title="Impact Brazil"/>
 
         <nav :class="hidden ? 'collapsed' : 'open'">
             <transition name="fade" mode="out-in">
@@ -12,28 +13,41 @@
                         </a>
                     </li>
                     <li>
-                        <router-link to="/" exact>Home</router-link>
+                        <router-link @click.native="collapse"
+                                     to="/" exact>Home
+                        </router-link>
                     </li>
                     <li>
-                        <router-link :to="opportunityLink"
+                        <router-link @click.native="collapse"
+                                     :to="opportunityLink"
                                      :class="routerLinkManualActive('opportunity')">
                             Opportunities
                         </router-link>
                     </li>
                     <li>
-                        <router-link to="/projects">Projects</router-link>
+                        <router-link @click.native="collapse"
+                                     to="/projects">
+                            Projects
+                        </router-link>
                     </li>
                     <li>
-                        <router-link to="/cities"
+                        <router-link @click.native="collapse"
+                                     to="/cities"
                                      :class="routerLinkManualActive('city')">
                             Cities
                         </router-link>
                     </li>
                     <li>
-                        <router-link to="/about">About</router-link>
+                        <router-link @click.native="collapse"
+                                     to="/about">
+                            About
+                        </router-link>
                     </li>
                     <li>
-                        <router-link to="/contact">Contact</router-link>
+                        <router-link @click.native="collapse"
+                                     to="/contact">
+                            Contact
+                        </router-link>
                     </li>
                     <li>
                         <a role="button" @click="showLoginBox" v-if="!loggedIn">Login</a>
@@ -65,7 +79,7 @@
                 </ul>
             </transition>
         </nav>
-        <a @click="hidden = false" role="button" class="mobile-only open-button">
+        <a @click="hidden = false" id="open-button" role="button" class="mobile-only open-button">
             <i class="material-icons">menu</i>
         </a>
     </div>
@@ -105,17 +119,23 @@
 			},
 			logout()
 			{
-				this.$session.set('loggedIn', false);
-				this.$session.set('accessToken', "");
-				this.$session.set('userId', undefined);
-				this.$session.set('userFirstName', undefined);
-				window.location.reload();
+				this.$root.$emit('logout');
 			},
 			routerLinkManualActive(string)
 			{
 				if (this.$route.fullPath.match(string))
 					return 'router-link-manual-active';
 				return '';
+			},
+			goHome()
+			{
+				this.$router.push("/");
+			},
+			collapse()
+			{
+				console.log(arguments[1]);
+				if (!arguments[1] || arguments[1].id !== "open-button")
+					this.hidden = true;
 			}
 		},
 		created()

@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from pkgutil import get_data
 
 from builtins import str
 
@@ -13,6 +14,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.serializers import ValidationError
 
+from api.gisconnector.apicall import gis_get_data, gis_get
 from api.models import *
 from api.serializers import *
 
@@ -48,7 +50,7 @@ class EntityList(APIView):
 class OpportunityList(APIView):
     def get(self, request, format=None):
         # We don't actually need entity here, commenting this out for now
-        # entity = self.request.query_params.get('entity', None)
+        entity = self.request.query_params.get('entity', None)
         start_date = self.request.query_params.get('start_date', None)
         end_date = self.request.query_params.get('end_date', None)
         lc = self.request.query_params.get('lc', None)
@@ -73,6 +75,14 @@ class OpportunityList(APIView):
 
         # Build a list of one opportunity per LC, that opportunity will be the one satisfying all conditions and having
         # the highest number of available_openings
+
+        # Check the entity against the product
+        if entity is not None and product is not None:
+            try:
+                no_visa = VisaDenial.objects.get(entity=int(entity), product=int(product))
+                return Response({'no_visa': True})
+            except VisaDenial.DoesNotExist:
+                pass
 
         # First, get all valid opportunities, then apply filters
         opportunities_list = Opportunity.objects.filter(close_date__gt=today)
@@ -105,6 +115,7 @@ class OpportunityList(APIView):
             # search=SearchVector('title', 'lc__reference_name', 'product__name', 'sdg__name', 'subproduct__name',
             #                     'organization_name', 'location')).filter(search=q)
 
+        # TODO: filter out the products that don't support the entity
         # The below logic is only if LC is not specified
         if lc is None:
             opportunities_list = opportunities_list.distinct('lc_id').order_by('lc_id', '-available_openings')
@@ -143,7 +154,7 @@ class OpportunityList(APIView):
 
 # Get list of LCs
 class LCList(generics.ListAPIView):
-    queryset = LC.objects.all().order_by('reference_name')
+    queryset = LC.objects.filter(hidden=False).order_by('reference_name')
     serializer_class = LCSerializer
 
 
@@ -166,9 +177,9 @@ class SubproductList(generics.ListAPIView):
         product = self.request.query_params.get('product', None)
 
         if product is None:
-            return Subproduct.objects.all()
+            return Subproduct.objects.filter(hidden=False)
         else:
-            return Subproduct.objects.filter(product__gis_id=product)
+            return Subproduct.objects.filter(hidden=False, product__gis_id=product)
 
     serializer_class = SubproductSerializer
 
@@ -182,7 +193,7 @@ class SubproductDetail(generics.RetrieveAPIView):
 
 # Get list of SDGs
 class SDGList(generics.ListAPIView):
-    queryset = SDG.objects.all().order_by('number')
+    queryset = SDG.objects.filter(hidden=False).order_by('number')
     serializer_class = SDGSerializer
 
 
@@ -190,7 +201,19 @@ class SDGList(generics.ListAPIView):
 class SDGDetail(generics.RetrieveAPIView):
     lookup_field = 'number'
     queryset = SDG.objects.all()
-    serializer_class = SDGSerializer
+    serializer_class = SDGandProjectsSerializer
+
+
+# Get list of Projects
+class ProjectList(generics.ListAPIView):
+    queryset = Project.objects.filter(hidden=False).order_by('sdg_id')
+    serializer_class = ProjectSerializer
+
+
+# Get details of Project
+class ProjectDetail(generics.RetrieveAPIView):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
 
 
 # Get list of entity partners
@@ -210,14 +233,11 @@ class EntityPartnerDetails(APIView):
             is_partner = False
 
         partnership_details = {"id": entity.id, "gis_id": entity.gis_id, "name": entity.entity_name,
-                               "is_partner": is_partner, "video": None, "thumbnail": None, "no_visa": False}
+                               "is_partner": is_partner, "video": None, "thumbnail": None}
 
         if is_partner:
             partnership_details['video'] = entity.video_link
             partnership_details['thumbnail'] = entity.thumbnail
-
-        if not is_partner and entity.no_visa:
-            partnership_details['no_visa'] = True
 
         return Response(partnership_details)
 
@@ -322,3 +342,36 @@ class IP(APIView):
                 return Response({"country": g.country(ip)['country_name'], "ip": ip})
             else:
                 return Response({"country": "Private", "ip": ip})
+
+
+# Get an opportunity, if cached then get it from the cache, if not then refresh
+# TODO: Second view that clears caches
+class OpportunityGIS(APIView):
+    def get(self, request, format=None, pk=0):
+        if pk == 0:
+            return Response({'error': "Opportunity ID is compulsory."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        get_opportunity_gql = "get_opportunity.gql"
+
+        try:
+            opp_request = OpportunityCache.objects.get(opp_id=pk)
+            opp_data = json.loads(opp_request.opp_json)
+        except OpportunityCache.DoesNotExist:
+            try:
+                opp_request = gis_get(get_data("api.gql", get_opportunity_gql).decode("utf-8"),
+                                      variables={'id': pk, 'cdn_links': True})
+                opp_data = opp_request
+            except Exception as e:
+                if str(e).find("401") == -1:
+                    return Response(
+                        {'error': "There was a problem getting the opportunity from the GIS.", 'e_text': str(e)},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                else:
+                    return Response({'error': 'Access token expired'}, status=status.HTTP_401_UNAUTHORIZED)
+
+            # Save this to the database
+            opp = OpportunityCache(opp_id=pk, opp_json=json.dumps(opp_data))
+            opp.save()
+
+        return Response(opp_data)

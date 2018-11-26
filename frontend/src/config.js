@@ -1,7 +1,7 @@
 const config = {
 	websiteName:        "Impact Brazil",
 	api:                window.webpackHotUpdate
-		                    ? "http://localhost:8000/api/"
+		                    ? "http://14b09182.ngrok.io/api/"//"http://localhost:8000/api/"
 		                    : "http://impactbrazil.raitech.org/api/api/",
 	gisPublicAPI:       "https://gis-api.aiesec.org/graphql?access_token=e316ebe109dd84ed16734e5161a2d236d0a7e6daf499941f7c110078e3c75493",
 	gisTokenAPI:        token => `https://gis-api.aiesec.org/graphql?access_token=${token}`,
@@ -38,7 +38,10 @@ const config = {
 		entityPartner: id => `entity_partners/${id}.json`,
 		sdg:           id => `sdg/${id}.json`,
 		subproduct:    id => `subproduct/${id}.json`,
+		projects:      "projects.json",
+		project:       id => `project/${id}.json`,
 		opportunities: "opportunities.json",
+		opportunity:   id => `opportunity/${id}.json`,
 		lcs:           "lcs.json",
 		lc:            id => `lcs/${id}.json`,
 		cities:        "cities.json",

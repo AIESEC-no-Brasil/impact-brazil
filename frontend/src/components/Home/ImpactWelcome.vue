@@ -16,7 +16,7 @@
             <div id="buttons">
                 <ImpactWelcomeButton id="button-visit"
                                      @click.native="showQuestions">
-                    Visit<br><b>Brazil</b>
+                    Click here to<br><b>Visit Brazil</b>
                 </ImpactWelcomeButton>
             </div>
             <!-- We v-show this so that the API can load while the page is loading -->
@@ -50,10 +50,10 @@
 				this.hideQuestions();
 
 				// Entity is not part of answers, so let's put that in a session varaible
-                this.$session.set('entity', answers.entity);
-                delete answers.entity;
+				this.$session.set('entity', answers.entity);
+				delete answers.entity;
 
-                // Figure out which one of the unnecessary answers we need to delete
+				// Figure out which one of the unnecessary answers we need to delete
 				if (answers.subproductOrSdg === 'sdg')
 					delete answers.subproduct;
 				else
@@ -61,7 +61,6 @@
 				delete answers.subproductOrSdg;
 
 				this.$store.commit('queueOptReload');
-				this.$store.commit('noVisa', false);
 				this.$store.commit('options', {});
 				this.$store.commit('optquery', {});
 				this.$router.push({path: '/opportunities', query: answers});
@@ -73,6 +72,10 @@
 			},
 			hideQuestions()
 			{
+				console.log(this.$store.state.showingDropdown);
+				if (this.$store.state.showingDropdown)
+					return;
+
 				this.showingQuestions = false;
 				this.$store.commit('showingQuestions', false);
 			}
@@ -156,8 +159,8 @@
     #button-visit
     {
         background-color: $ib-blue-dk;
-        line-height: 0.85;
-        padding: 20px 60px;
+        /*line-height: 0.85;*/
+        /*padding: 20px 60px;*/
     }
 
     #button-visit:hover

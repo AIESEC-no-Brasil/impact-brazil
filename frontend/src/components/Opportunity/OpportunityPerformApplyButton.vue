@@ -99,11 +99,7 @@
 							{
 								// Access token expired, refresh the page for now
 								// TODO: Better way to handle this in the future
-								this.$session.set('loggedIn', false);
-								this.$session.set('accessToken', "");
-								this.$session.set('userId', undefined);
-								this.$session.set('userFirstName', undefined);
-								window.location.reload();
+								this.$root.$emit('logout');
 							}
 							else if (err.response.status === 403)
 								this.$root.$emit('profile');

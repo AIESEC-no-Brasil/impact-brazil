@@ -14,7 +14,8 @@
             </label>
             <transition name="autocomplete-items">
                 <div class="autocomplete-items"
-                     v-if="dropdownVisible">
+                     v-if="dropdownVisible"
+                     v-click-outside="hideDropdown">
                     <div v-for="(opt, index) in optlistFiltered"
                          :class="index === selection ? 'autocomplete-active' : ''"
                          :key="index"
@@ -36,11 +37,15 @@
 	import Loading from "../Loading.vue";
 	import axios from "axios";
 	import {config} from "../../config";
+	import vClickOutside from 'v-click-outside';
 
 	export default {
 		name:       "ImpactSelectorAutocomplete",
 		components: {
 			Loading
+		},
+		directives: {
+			vClickOutside
 		},
 		props:      {
 			caption:  String,
@@ -139,7 +144,7 @@
 
 				this.selectedID = correctedOption.id;
 				this.search = correctedOption.text;
-				this.$refs.ibox.focus();
+				this.$refs.ibox.blur();
 				this.dropdownVisible = false;
 
 				if (!noEmit)
@@ -149,8 +154,25 @@
 			},
 			focusText(e)
 			{
-				this.dropdownVisible = true;
-				e.target.select();
+				if (!this.dropdownVisible)
+				{
+					this.dropdownVisible = true;
+					this.$store.commit('showingDropdown', true);
+					e.target.blur();
+					e.preventDefault();
+				}
+				else
+				{
+					e.target.select();
+				}
+			},
+			hideDropdown()
+			{
+				if (arguments[1] && arguments[1].className === "autocomplete-items") return;
+				if (!this.dropdownVisible) return;
+
+				this.dropdownVisible = false;
+				this.$nextTick(() => this.$store.commit('showingDropdown', false));
 			}
 		}
 	};
@@ -233,35 +255,36 @@
         background-color: #e9e9e9;
     }
 
-    .autocomplete-items::-webkit-scrollbar
-    {
-        width: 4px;
-        background-color: #f5f5f5;
-    }
+    /* This was causing people to not realize you can scroll :/ */
+    /*.autocomplete-items::-webkit-scrollbar*/
+    /*{*/
+    /*width: 4px;*/
+    /*background-color: #f5f5f5;*/
+    /*}*/
 
-    .autocomplete-items::-webkit-scrollbar-track
-    {
-        border-radius: 10px;
-        background: rgba(0, 0, 0, 0.1);
-        border: 1px solid #ccc;
-    }
+    /*.autocomplete-items::-webkit-scrollbar-track*/
+    /*{*/
+    /*border-radius: 10px;*/
+    /*background: rgba(0, 0, 0, 0.1);*/
+    /*border: 1px solid #ccc;*/
+    /*}*/
 
-    .autocomplete-items::-webkit-scrollbar-thumb
-    {
-        border-radius: 10px;
-        background: linear-gradient(to left, #fff, #e4e4e4);
-        border: 1px solid #aaa;
-    }
+    /*.autocomplete-items::-webkit-scrollbar-thumb*/
+    /*{*/
+    /*border-radius: 10px;*/
+    /*background: linear-gradient(to left, #fff, #e4e4e4);*/
+    /*border: 1px solid #aaa;*/
+    /*}*/
 
-    .autocomplete-items::-webkit-scrollbar-thumb:hover
-    {
-        background: #fff;
-    }
+    /*.autocomplete-items::-webkit-scrollbar-thumb:hover*/
+    /*{*/
+    /*background: #fff;*/
+    /*}*/
 
-    .autocomplete-items::-webkit-scrollbar-thumb:active
-    {
-        background: linear-gradient(to left, #22add4, #1e98ba);
-    }
+    /*.autocomplete-items::-webkit-scrollbar-thumb:active*/
+    /*{*/
+    /*background: linear-gradient(to left, #22add4, #1e98ba);*/
+    /*}*/
 
     .autocomplete-input-container
     {

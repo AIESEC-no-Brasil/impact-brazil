@@ -22,10 +22,10 @@
                                     &middot;
                                     <i class="material-icons star star-full"
                                        v-for="rating in opp.standards_delivery.rating"
-                                       :key="rating">star</i>
+                                       :key="`a${rating}`">star</i>
                                     <i class="material-icons star star-empty"
                                        v-for="rating in 5-opp.standards_delivery.rating"
-                                       :key="rating">star_border</i>
+                                       :key="`b${rating}`">star_border</i>
                                     from {{opp.standards_delivery.responses}} responses
                                 </span>
                             </div>

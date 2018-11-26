@@ -101,7 +101,7 @@
 					{
 						id:        'q1',
 						condition: this.currentQ === 1,
-						question:  "When do you want to visit Brazil?",
+						question:  "From when are you available to visit Brazil?",
 						caption:   "Choose month",
 						options:   this.lists.months,
 						defaults:  this.lists.months
@@ -276,7 +276,7 @@
 
 				// Load products & projects
 				imageLists.forEach(load => {
-					let {textOnly, withImages} = getDataFromList(loadOut[load], 'gis_id', (load === 'products' ? 'description' : 'name'), 'logo', 90, config.logos[load]);
+					let {textOnly, withImages} = getDataFromList(loadOut[load], 'gis_id', (load === 'products' ? 'description' : 'name'), 'logo', 60, config.logos[load]);
 
 					if (textOnly === false || withImages === false)
 						return false;

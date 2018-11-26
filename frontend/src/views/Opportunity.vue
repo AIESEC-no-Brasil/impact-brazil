@@ -71,30 +71,42 @@
 			let oppData;
 			try
 			{
-				let requestURL = this.$session.get('loggedIn')
-					? config.gisTokenAPI(this.$session.get('accessToken'))
-					: config.gisPublicAPI;
+				if (this.$session.get('loggedIn'))
+				{
+					let requestURL = config.gisTokenAPI(this.$session.get('accessToken'));
 
-				oppData = await axios.post(requestURL, {
-					query:     gqlGetOpportunity,
-					variables: {
-						id:        parseInt(this.$route.params.id),
-						cdn_links: true
-					}
-				});
+					oppData = await axios.post(requestURL, {
+						query:     gqlGetOpportunity,
+						variables: {
+							id:        parseInt(this.$route.params.id),
+							cdn_links: true
+						}
+					});
+					this.opportunity = oppData.data.data.getOpportunity;
+				}
+				else
+				{
+					oppData = await axios.get(config.api + config.endpoints.opportunity(this.$route.params.id));
+					this.opportunity = oppData.data;
+				}
 			}
 			catch (err)
 			{
-				if (err.response && err.response.status === 404)
+				if (err.response)
 				{
-					this.$root.$emit('fatal', 'This opportunity does not exist.');
+					if (err.response.status === 404)
+						this.$root.$emit('fatal', 'This opportunity does not exist.');
+					else if (err.response.status === 401)
+						this.$root.$emit('logout');
+
 					return;
 				}
 				console.error(err);
 				this.$root.$emit('error');
 				return;
 			}
-			this.opportunity = oppData.data.data.getOpportunity;
+			//this.opportunity = oppData.data.data.getOpportunity;
+			//this.opportunity = oppData.data;
 
 			this.setTitle(this.opportunity.title.length > 23 ? this.opportunity.title.substr(0, 20) + "..." : this.opportunity.title);
 

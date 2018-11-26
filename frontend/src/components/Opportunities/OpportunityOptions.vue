@@ -90,7 +90,7 @@
                         right
                         size="sm"
                         :text="selections.lcs">
-                <b-dropdown-item @click="removeOption('lc', 'All cities')">All cities</b-dropdown-item>
+                <b-dropdown-item @click="removeOption('lc', 'All offices')">All offices</b-dropdown-item>
                 <b-dropdown-item v-for="lc in lists.lcs"
                                  :key="lc.id"
                                  @click="changeOption('lc', lc.id)">
@@ -143,7 +143,7 @@
 					sdgs:          "All projects",
 					subproductsGT: "All fields",
 					subproductsGE: "All fields",
-					lcs:           "All cities",
+					lcs:           "All offices",
 				},
 				search:     "",
 
@@ -316,7 +316,6 @@
 			},
 			changeSearch()
 			{
-				console.log("Triggered");
 				let queryString = Object.assign({}, this.$route.query);
 				if (this.search.length > 0)
 					queryString.q = this.search;
