@@ -1,10 +1,9 @@
 <!--suppress XmlDuplicatedId -->
 <template>
     <div id="opportunity-list-root">
-        <OpportunityOptions v-if="!$store.state.noVisa"
-                            @options-changed="optionsChanged"/>
+        <OpportunityOptions @options-changed="optionsChanged"/>
 
-        <div v-if="missingOpts && !iAmFromBrazil && !$store.state.noVisa" id="no-opps-available">
+        <div v-if="missingOpts && !iAmFromBrazil && !noVisa" id="no-opps-available">
             <i class="material-icons">settings</i><br>
             To get started, please select a product or a city from the top right.<br class="nobreak">
             You can keep customizing the filters to suit your needs better.<br class="doublebreak">
@@ -20,9 +19,11 @@
                 href="https://aiesec.org.br">our national website</a>.
         </div>
 
-        <div v-else-if="$store.state.noVisa" id="no-opps-available">
+        <div v-else-if="noVisa" id="no-opps-available">
             <i class="material-icons">location_off</i><br>
-            Sorry, due to Visa regulations, we do not have any opportunities to show you right now.<br class="nobreak">
+            Sorry, due to Visa regulations regarding your nationality, we do not have any opportunities to show you
+            right now.<br class="nobreak">
+            Try changing your product from the filters above.<br class="nobreak">
             Please
             <router-link to="/contact">get in touch</router-link>
             if you would like to know more.
@@ -67,6 +68,7 @@
 			return {
 				oppList:     [],
 				noOpps:      false,
+				noVisa:      false,
 				missingOpts: false,
 			};
 		},
@@ -85,6 +87,7 @@
 			{
 				this.oppList = [];
 				this.noOpps = false;
+				this.noVisa = false;
 				this.loadOpps();
 			},
 			async loadOpps()
@@ -149,6 +152,9 @@
 					return false;
 				}
 
+				// Last thing we need to do is add the entity
+				options['entity'] = parseInt(this.$session.get('entity'));
+
 				// Now that we're 100% sure, let's set this up
 				let query = queryString.stringify(options);
 
@@ -168,6 +174,12 @@
 				if (opps.data.length === 0)
 				{
 					this.noOpps = true;
+					return;
+				}
+				// SPECIAL CASE
+				if (opps.data.no_visa !== undefined)
+				{
+					this.noVisa = true;
 					return;
 				}
 
@@ -214,6 +226,7 @@
 			{
 				this.oppList = [];
 				this.noOpps = false;
+				this.noVisa = false;
 				this.loadOpps();
 			}
 		}

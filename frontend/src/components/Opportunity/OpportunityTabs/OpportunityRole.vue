@@ -5,6 +5,13 @@
         </div>
 
         <o-row title="Project" fullspan v-if="parseInt(this.opportunity.programme.id) === 1">
+            <div v-for="project in extra.project.project_set">
+                <div style='font-size: 1.2em'>{{project.name}}</div>
+                {{project.description}}<br>
+            </div>
+            <Loading v-if="!extra.project.name" dark small/>
+        </o-row>
+        <o-row title="Sustainable Development Goal" fullspan v-if="parseInt(this.opportunity.programme.id) === 1">
             <span v-if="extra.project.name" style='font-size: 1.2em'>{{extra.project.name}}</span>
             <Loading v-else dark small/>
             <br>

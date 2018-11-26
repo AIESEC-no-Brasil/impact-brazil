@@ -10,7 +10,7 @@
             </b-col>
             <b-col cols="12" md="10" class="project-logos">
                 <a href="#"
-                   @click="goToOpportunity(product.gis_id, project.gis_id, lc.gis_id)"
+                   @click="goToOpportunity(product.gis_id, product.gis_id === 1 ? 1100+project.sdg : project.gis_id, lc.gis_id)"
                    v-for="project in getProjectsArray(product.gis_id)"
                    :key="project.id">
                     <img :alt="project.name"
@@ -64,8 +64,8 @@
 				switch (product)
 				{
 					case 1:
-						retArray = JSON.parse(JSON.stringify(this.lc.sdgs));
-						retArray.sort((a, b) => parseInt(a.gis_id) - parseInt(b.gis_id));
+						retArray = JSON.parse(JSON.stringify(this.lc.projects));
+						retArray.sort((a, b) => parseInt(a.sdg) - parseInt(b.sdg));
 						return retArray;
 
 					case 2:

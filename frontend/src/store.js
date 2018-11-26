@@ -9,13 +9,12 @@ export default new Vuex.Store({
 		showingQuestions: false,
 		
 		// We store these in $store because we don't want the opportunity page to ever reload
-		noVisa:          false,
 		options:         {},
 		optquery:        {},
 		optReloadQueued: {invite: false, list: false},
 		
 		// This is the global page loading variable, run before each router change
-		pageLoading: false,
+		pageLoading:     false,
 		
 		// Since we need these on almost every page, it's better to put them in the store
 		lists: {
@@ -33,7 +32,6 @@ export default new Vuex.Store({
 	},
 	mutations: {
 		showingQuestions: (state, sQ) => state.showingQuestions = sQ,
-		noVisa:           (state, noVisa) => state.noVisa = noVisa,
 		options:          (state, options) => state.options = options,
 		optquery:         (state, optquery) => state.optquery = optquery,
 		queueOptReload:   state => state.optReloadQueued = {invite: true, list: true},

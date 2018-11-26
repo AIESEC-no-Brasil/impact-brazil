@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import App from './App.vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
 
@@ -60,10 +61,22 @@ export default new Router({
 	],
 	scrollBehavior: (to, from, savedPosition) => {
 		if (savedPosition)
-			return savedPosition;
+		{
+			return new Promise(resolve => {
+				setTimeout(() => {
+					resolve(savedPosition);
+				}, 250);
+			});
+		}
 		else if (to.hash)
-			return window.scrollTo({top: document.querySelector(to.hash).offsetTop, behavior: 'smooth'});
-		//else
-		//	return window.scrollTo({top: 0, behavior: 'smooth'});
+		{
+			return {
+				selector: to.hash
+			};
+		}
+		else
+		{
+			return {x: 0, y: 0};
+		}
 	}
 });

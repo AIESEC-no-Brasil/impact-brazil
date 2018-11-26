@@ -17,6 +17,7 @@ router.afterEach(() => {
 	store.commit('pageLoaded');
 });
 
+
 // "set title" mixin
 Vue.mixin({
 	methods: {

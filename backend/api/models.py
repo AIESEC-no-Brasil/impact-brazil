@@ -3,7 +3,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
-# TODO Long term - indexes
+# In the future, we might want to add more indexes to this file.
 
 # Country partners
 class EntityPartner(models.Model):
@@ -24,7 +24,6 @@ class EntityPartner(models.Model):
 class Entity(models.Model):
     entity_name = models.CharField('Entity Name', max_length=50)
     gis_id = models.IntegerField('MC ID on GIS', unique=True)
-    no_visa = models.BooleanField('No Visa for Brazil')
 
     def __str__(self):
         return self.entity_name
@@ -45,14 +44,24 @@ class Product(models.Model):
         return self.name
 
 
+class VisaDenial(models.Model):
+    entity = models.ForeignKey(Entity, to_field='gis_id', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, to_field='gis_id', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.entity.entity_name} - {self.product.name}'
+
+    class Meta:
+        unique_together = ('entity', 'product')
+
+
 class SDG(models.Model):
-    number = models.IntegerField('SDG Number')
+    number = models.IntegerField('SDG Number', unique=True)
     name = models.CharField('SDG Name', max_length=50)
     gis_id = models.IntegerField('SDG ID on GIS', unique=True)
     description = models.TextField('SDG Description', blank=True)
     logo = models.TextField('SDG Logo', blank=True)
-    video_link = models.CharField('Video ID (YouTube)', max_length=256, blank=True)
-    thumbnail = models.CharField('Thumbnail Filename (.jpg)', blank=True, max_length=256)
+    hidden = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.number}: {self.name}'
@@ -69,9 +78,23 @@ class Subproduct(models.Model):
     description = models.TextField('Subproduct Description', blank=True)
     video_link = models.CharField('Video ID (YouTube)', max_length=256, blank=True)
     thumbnail = models.CharField('Thumbnail Filename (.jpg)', blank=True, max_length=256)
+    hidden = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.name} ({self.product.shortname})'
+
+
+class Project(models.Model):
+    name = models.CharField('Project Name', max_length=50)
+    sdg = models.ForeignKey(SDG, to_field='number', on_delete=models.SET_NULL, null=True)
+    description = models.TextField('Project Description', blank=True)
+    logo = models.TextField('Project Logo', blank=True)
+    video_link = models.CharField('Video ID (YouTube)', max_length=256, blank=True)
+    thumbnail = models.CharField('Thumbnail Filename (.jpg)', blank=True, max_length=256)
+    hidden = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
 
 
 class City(models.Model):
@@ -99,10 +122,12 @@ class LC(models.Model):
     gis_id = models.IntegerField('LC ID on GIS', unique=True)
     products = models.ManyToManyField(Product, blank=True)
     subproducts = models.ManyToManyField(Subproduct, blank=True)
-    sdgs = models.ManyToManyField(SDG, verbose_name='SDG', blank=True)
+    # sdgs = models.ManyToManyField(SDG, verbose_name='SDG', blank=True)
+    projects = models.ManyToManyField(Project, blank=True)
+    hidden = models.BooleanField(default=False)
+
     # video_link = models.CharField('Video ID (YouTube)', max_length=256, blank=True)
     # thumbnail = models.CharField('Thumbnail Filename (.jpg)', blank=True, max_length=256)
-
 
     def __str__(self):
         return self.reference_name
@@ -151,7 +176,7 @@ class Opportunity(models.Model):
 
 
 class Focus(models.Model):
-    lc = models.ForeignKey(LC, on_delete=models.SET_NULL, null=True)
+    lc = models.ForeignKey(LC, to_field='gis_id', on_delete=models.SET_NULL, null=True)
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     rank = models.IntegerField(validators=[MaxValueValidator(6), MinValueValidator(1)])
 
@@ -174,14 +199,15 @@ class Analytic(models.Model):
         return f'{self.lc.reference_name} - {self.product.shortname} {self.type} - {self.stage}: {self.number}'
 
     class Meta:
-        # TODO: figure out uniqueness
+        unique_together = ('lc', 'product')
         pass
 
 
 class ResponseTime(models.Model):
-    lc = models.ForeignKey(LC, on_delete=models.SET_NULL, null=True)
+    lc = models.ForeignKey(LC, to_field='gis_id', on_delete=models.SET_NULL, null=True)
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     response_time = models.DurationField()
+    hidden = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.lc.reference_name} {self.product.shortname}: {self.response_time}'
@@ -191,10 +217,11 @@ class ResponseTime(models.Model):
 
 
 class StandardsDelivery(models.Model):
-    lc = models.ForeignKey(LC, on_delete=models.SET_NULL, null=True)
+    lc = models.ForeignKey(LC, to_field='gis_id', on_delete=models.SET_NULL, null=True)
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     standards_delivery_percent = models.IntegerField()
     responses = models.IntegerField()
+    hidden = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.lc.reference_name} {self.product.shortname}: {self.standards_delivery_percent}%'
@@ -203,3 +230,11 @@ class StandardsDelivery(models.Model):
         unique_together = ('lc', 'product')
         verbose_name = "Standard delivery percentage"
         verbose_name_plural = "Standard delivery percentages"
+
+
+class OpportunityCache(models.Model):
+    opp_id = models.IntegerField("Opportunity ID", unique=True)
+    opp_json = models.TextField("Opportunity JSON")
+
+    def __str__(self):
+        return f'Cache {self.opp_id}'

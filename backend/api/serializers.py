@@ -54,18 +54,32 @@ class SubproductSerializer(serializers.ModelSerializer):
 class SDGSerializer(serializers.ModelSerializer):
     class Meta:
         model = SDG
-        fields = ('id', 'name', 'description', 'gis_id', 'logo', 'thumbnail', 'video_link')
+        fields = ('id', 'name', 'description', 'gis_id', 'logo')
+
+
+class ProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = ('id', 'name', 'description', 'sdg', 'logo', 'thumbnail', 'video_link')
+
+
+class SDGandProjectsSerializer(serializers.ModelSerializer):
+    project_set = ProjectSerializer(many=True)
+
+    class Meta:
+        model = SDG
+        fields = ('id', 'name', 'description', 'gis_id', 'logo', 'project_set')
 
 
 class LCSerializer(serializers.ModelSerializer):
     city = LCCitySerializer(read_only=True)
     products = ProductSerializer(many=True)
-    sdgs = SDGSerializer(many=True)
+    projects = ProjectSerializer(many=True)
     subproducts = SubproductSerializer(many=True)
 
     class Meta:
         model = LC
-        fields = ('id', 'reference_name', 'gis_id', 'city', 'products', 'subproducts', 'sdgs')
+        fields = ('id', 'reference_name', 'gis_id', 'city', 'products', 'subproducts', 'projects')
 
 
 class EntityPartnerSerializer(serializers.ModelSerializer):

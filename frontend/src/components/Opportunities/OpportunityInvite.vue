@@ -1,11 +1,7 @@
 <!--suppress XmlDuplicatedId -->
 <template>
     <div>
-        <div v-if="noVisa" id="invite">
-            We have detected that you are from {{entityName}}.<br>
-            Is this not where you are from? <a href="#" @click="showEntityDialog">Click here</a> to change.
-        </div>
-        <div v-else-if="entityName !== ''"
+        <div v-if="entityName !== ''"
              id="invite">
             <div class="invitation-text">Inviting <span>{{entityName}}</span> to Impact Brazil</div>
             <div class="change-entity-text">Not from {{entityName}}? <a href="#" @click="showEntityDialog">Click
@@ -54,9 +50,6 @@
 			Loading,
 			SweetModal
 		},
-		props:      {
-			noVisa: Boolean,
-		},
 		data()
 		{
 			return {
@@ -95,9 +88,6 @@
 					this.$root.$emit('error');
 					return false;
 				}
-
-				if (entityPartner.data.gis_id === config.gisBrazilID || entityPartner.data.no_visa)
-					this.$store.commit('noVisa', true);
 
 				this.entityName = entityPartner.data['name'];
 				this.entityVideo = entityPartner.data['video'];

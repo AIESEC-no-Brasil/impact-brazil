@@ -105,11 +105,7 @@
 			},
 			logout()
 			{
-				this.$session.set('loggedIn', false);
-				this.$session.set('accessToken', "");
-				this.$session.set('userId', undefined);
-				this.$session.set('userFirstName', undefined);
-				window.location.reload();
+				this.$root.$emit('logout');
 			},
 			routerLinkManualActive(string)
 			{
