@@ -127,6 +127,9 @@ class City(models.Model):
 class LC(models.Model):
     name = ''  # Get this from GIS
     reference_name = models.CharField('LC Name', max_length=50)
+    unaccented_name = models.CharField('LC Name, without special characters / If you fill this, the LC will '
+                                       + 'be accessible through this name on impactbrazil.org/lc_name', blank=True,
+                                       max_length=255)
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
     # city_name = models.CharField('City Name', max_length=50)
     gis_id = models.IntegerField('LC ID on GIS', unique=True)
@@ -134,7 +137,7 @@ class LC(models.Model):
     subproducts = models.ManyToManyField(Subproduct, blank=True)
     # sdgs = models.ManyToManyField(SDG, verbose_name='SDG', blank=True)
     projects = models.ManyToManyField(Project, blank=True)
-    searchtool_link = models.CharField(max_length=255,blank=True)
+    searchtool_link = models.CharField(max_length=255, blank=True)
     hidden = models.BooleanField(default=False)
 
     # video_link = models.CharField('Video ID (YouTube)', max_length=256, blank=True)

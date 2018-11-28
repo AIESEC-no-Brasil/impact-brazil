@@ -260,6 +260,13 @@ class CityByName(APIView):
         return Response(CitySerializer(found_city).data)
 
 
+class LCByName(APIView):
+    def get(self, request, format=None, name=''):
+        converted_name = name.replace("-", " ")
+        found_city = get_object_or_404(LC.objects.all(), unaccented_name__iexact=converted_name)
+        return Response(LCSerializer(found_city).data)
+
+
 # Get list of regions
 class RegionList(generics.ListAPIView):
     queryset = Region.objects.all()

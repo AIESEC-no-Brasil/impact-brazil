@@ -14,7 +14,8 @@
                    style="font-size: 48px; vertical-align: middle; position: relative; top: -4px"
                    v-if="cities">arrow_back</i>
             </a>
-            About {{city.name}}
+            <span v-if="isLC">About {{lc.reference_name}}, {{city.name}}</span>
+            <span v-else>About {{city.name}}</span>
         </div>
         <div class="video" v-if="city.video_link">
             <iframe frameborder="0"
@@ -26,25 +27,29 @@
             </iframe>
         </div>
         <div class="citydesc">{{city.short_desc}}</div>
-        <div class="details" v-if="city.lc_set.length > 1">
+        <div class="details" v-if="city.lc_set.length > 1 && !isLC">
             <b>AIESEC Offices in {{city.name}}</b><br>
             <div v-for="lc in city.lc_set" :key="lc.gis_id">
-                <router-link :to="`/opportunities?lc=${lc.gis_id}`">{{lc.reference_name}}</router-link>
+                <a v-if="lc.unaccented_name" :href="`/${lc.unaccented_name}`">{{lc.reference_name}}</a>
+                <router-link v-else :to="`/opportunities?lc=${lc.gis_id}`">
+                    {{lc.reference_name}}
+                </router-link>
             </div>
         </div>
         <div class="details" v-else>
-            The AIESEC Office in {{city.name}} is <strong>{{city.lc_set[0].reference_name}}</strong>.
+            The AIESEC Office in {{city.name}} is
+            <strong v-if="!isLC">{{city.lc_set[0].reference_name}}</strong><strong v-else>{{cityRefName}}</strong>.
         </div>
-        <div v-if="city.lc_set.length === 1 && showDetails">
+        <div v-if="(city.lc_set.length === 1 || isLC) && showDetails">
             <div class="details" v-if="this.lc.reference_name">
-                <b>Projects available in {{city.name}}</b>
+                <b>Projects available in {{cityRefName}}</b>
                 <CityProjects :lc="lc"/>
             </div>
             <Loading small dark center v-else/>
         </div>
 
         <router-link class="orange-button"
-                     :to='`/city/${city.name_unaccented.toLowerCase().replace(/\s/g, "-")}`'
+                     :to='`/${city.name_unaccented.toLowerCase().replace(/\s/g, "-")}`'
                      v-if="!showDetails">
             Learn More about {{city.name}} &raquo;
         </router-link>
@@ -53,11 +58,11 @@
             <b>More about {{city.name}}</b><br>
             <span v-html="markdown(city.details)"></span>
 
-            <div v-if="city.lc_set.length <= 1">
+            <div v-if="city.lc_set.length <= 1 || isLC">
                 <router-link class="orange-button"
-                             :to="`/opportunities?lc=${city.lc_set[0].gis_id}`"
+                             :to="isLC ? `/opportunities?lc=${this.lc.id}` : `/opportunities?lc=${city.lc_set[0].gis_id}`"
                              @click.native="$store.commit('queueOptReload')">
-                    Apply for Opportunities in {{city.name}} &raquo;
+                    Apply for Opportunities in {{cityRefName}} &raquo;
                 </router-link>
             </div>
             <div v-else>
@@ -95,9 +100,11 @@
 		data()
 		{
 			return {
-				city:       {},
-				lc:         {},
-				cityLoaded: false,
+				city:        {},
+				lc:          {},
+				cityRefName: "",
+				isLC:        false,
+				cityLoaded:  false,
 			};
 		},
 		components: {
@@ -110,30 +117,72 @@
 			{
 				this.cityLoaded = false;
 
-				let cityData, cityName;
+				let cityData, cityName, lcData;
 
+				let loadCityById = async id => {
+					let cityData;
+					try
+					{
+						cityData = await axios.get(config.api + config.endpoints.city(id));
+					}
+					catch (err)
+					{
+						if (err.response && err.response.status === 404)
+						{
+							this.$root.$emit('fatal', 'This city does not exist.');
+							return false;
+						}
+
+						console.error(err);
+						this.$root.$emit('error');
+						return false;
+					}
+					return cityData;
+				};
 				// First get city data
-				try
+				// By ID
+				if (!this.cityName)
 				{
-					if (this.cityName)
-					{
-						cityName = this.cityName.toLowerCase();
-						cityData = await axios.get(config.api + config.endpoints.city(cityName));
-					}
-					else
-						cityData = await axios.get(config.api + config.endpoints.city(this.cityId));
+					cityData = await loadCityById(this.cityId);
 				}
-				catch (err)
+				// By Name
+				else
 				{
-					if (err.response && err.response.status === 404)
+					cityName = this.cityName.toLowerCase();
+					try
 					{
-						this.$root.$emit('fatal', 'This city does not exist.');
-						return;
+						cityData = await axios.get(config.api + config.endpoints.city(cityName));
+						this.cityRefName = cityData.data.name;
 					}
+					catch (err)
+					{
+						// If the name was not found, maybe they're referring to the LC name (eg. USP)
+						if (err.response && err.response.status === 404)
+						{
+							try
+							{
+								lcData = await axios.get(config.api + config.endpoints.lcByName(cityName));
+							}
+							catch (err)
+							{
+								if (err.response && err.response.status === 404)
+								{
+									// They've probably come here from typing ib.org/something, so give them a 404 page
+									this.$router.push("/404");
+									return false;
+								}
 
-					console.error(err);
-					this.$root.$emit('error');
-					return false;
+								console.error(err);
+								this.$root.$emit('error');
+								return false;
+							}
+							this.isLC = true;
+							this.lc = lcData.data;
+
+							this.cityRefName = this.lc.reference_name;
+							cityData = await loadCityById(this.lc.city.id);
+						}
+					}
 				}
 				this.city = cityData.data;
 
@@ -145,9 +194,7 @@
 				// Now we have to get LC Data so we know eg. what products it runs
 				// We only do this if there's =1 LC, lazy solution for now but only SP runs >1 LC
 				// so for now it's okay, maybe in the future we'll have to react this
-
-				let lcData;
-				if (this.city.lc_set.length === 1)
+				if (this.city.lc_set.length === 1 && !this.isLC)
 				{
 					try
 					{

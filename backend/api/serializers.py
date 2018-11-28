@@ -20,7 +20,7 @@ class LCSerializerMini(serializers.ModelSerializer):
 class LCSerializerMicro(serializers.ModelSerializer):
     class Meta:
         model = LC
-        fields = ('id', 'reference_name', 'gis_id')
+        fields = ('id', 'reference_name', 'unaccented_name', 'gis_id')
 
 
 class CitySerializer(serializers.ModelSerializer):
@@ -28,7 +28,7 @@ class CitySerializer(serializers.ModelSerializer):
 
     def get_lc_set(self, obj):
         lcs = LC.objects.filter(city__id=obj.id, hidden=False)
-        return LCSerializerMicro(lcs).data
+        return LCSerializerMicro(lcs,many=True).data
 
     class Meta:
         model = City
@@ -99,7 +99,7 @@ class LCSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LC
-        fields = ('id', 'reference_name', 'gis_id', 'city', 'products', 'subproducts', 'projects')
+        fields = ('id', 'reference_name', 'unaccented_name', 'gis_id', 'city', 'products', 'subproducts', 'projects')
 
 
 class EntityPartnerSerializer(serializers.ModelSerializer):

@@ -28,13 +28,13 @@
 					top:  0,
 					left: 0,
 				},
-                radSmall: 7.5,
-                radBig: 20
+				radSmall:    7.5,
+				radBig:      20
 			};
 		},
 		props:   {
-			cities: Array,
-            hovered: Number
+			cities:  Array,
+			hovered: Number
 		},
 		mounted()
 		{
@@ -82,11 +82,11 @@
 				let svg = SVG.adopt(this.svg);
 				//let circleRad = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) > 768 ? 35 : 60;
 
-                let cityList = [];
-                this.cities.forEach(region => cityList = cityList.concat(region.city_set));
+				let cityList = [];
+				this.cities.forEach(region => cityList = cityList.concat(region.city_set));
 				cityList.forEach(city => {
 					this.cityObjects[city.id] = svg
-					.circle(this.radSmall*2)
+					.circle(this.radSmall * 2)
 					.fill("#0048ff")
 					//.stroke('transparent')
 					.move(city.mapX, city.mapY)
@@ -126,14 +126,9 @@
 			hovered(val)
 			{
 				if (this.cityObjects[val])
-				{
-					console.log(this.cityObjects[val].attr('r'));
-					this.cityObjects[val].attr('r',this.radBig);
-				}
+					this.cityObjects[val].attr('r', this.radBig);
 				else if (val === 0)
-                {
-                	this.cityObjects.forEach(el => el.attr('r', this.radSmall));
-                }
+					this.cityObjects.forEach(el => el.attr('r', this.radSmall));
 			}
 		}
 	};

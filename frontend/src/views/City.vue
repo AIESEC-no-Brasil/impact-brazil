@@ -17,7 +17,10 @@
 		computed:   {
 			cityName()
 			{
-				return this.$route.params.name.toLowerCase();
+				if (this.$route.params.name)
+                    return this.$route.params.name.toLowerCase();
+				else
+					return this.$route.path.toString().substr(1);
 			}
 		},
 		created()

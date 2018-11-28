@@ -55,8 +55,9 @@ export default new Router({
 			component: () => import('./views/Error404.vue')
 		},
 		{
-			path:     '*',
-			redirect: '/404'
+			path:      '*',
+			name:      'city',
+			component: () => import(/* webpackChunkName: "city" */ './views/City.vue'),
 		},
 	],
 	scrollBehavior: (to, from, savedPosition) => {
