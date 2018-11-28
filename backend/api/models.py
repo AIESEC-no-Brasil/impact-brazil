@@ -115,6 +115,7 @@ class City(models.Model):
     details = models.TextField("Details (Long)")
     video_link = models.CharField('Video ID (YouTube)', max_length=256, blank=True)
     thumbnail = models.CharField('Thumbnail Filename (.jpg)', blank=True, max_length=256)
+    hidden = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

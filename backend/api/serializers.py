@@ -24,7 +24,11 @@ class LCSerializerMicro(serializers.ModelSerializer):
 
 
 class CitySerializer(serializers.ModelSerializer):
-    lc_set = LCSerializerMicro(many=True)
+    lc_set = serializers.SerializerMethodField()
+
+    def get_lc_set(self, obj):
+        lcs = LC.objects.filter(city__id=obj.id, hidden=False)
+        return LCSerializerMicro(lcs).data
 
     class Meta:
         model = City
@@ -32,7 +36,11 @@ class CitySerializer(serializers.ModelSerializer):
 
 
 class CitySerializerMini(serializers.ModelSerializer):
-    lc_set = LCSerializerMicro(many=True)
+    lc_set = serializers.SerializerMethodField()
+
+    def get_lc_set(self, obj):
+        lcs = LC.objects.filter(city__id=obj.id, hidden=False)
+        return LCSerializerMicro(lcs,many=True).data
 
     class Meta:
         model = City
@@ -40,12 +48,16 @@ class CitySerializerMini(serializers.ModelSerializer):
 
 
 class RegionSerializer(serializers.ModelSerializer):
-    city_set = CitySerializerMini(many=True)
+    city_set = serializers.SerializerMethodField()
+
+    def get_city_set(self, obj):
+        cities = City.objects.filter(region__id=obj.id, hidden=False)
+        return CitySerializerMini(cities,many=True).data
 
     class Meta:
         model = Region
         fields = ('id', 'name', 'order', 'city_set')
-        
+
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
