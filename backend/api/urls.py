@@ -22,6 +22,7 @@ urlpatterns = [
     path('cities/', views.CityList.as_view()),
     path('city/<int:pk>', views.CityDetail.as_view()),
     path('city/<slug:name>', views.CityByName.as_view()),
+    path('regions/', views.RegionList.as_view()),
     path('login/', views.Login.as_view()),
     path('apply/', views.Apply.as_view()),
     path('ip/', views.IP.as_view())

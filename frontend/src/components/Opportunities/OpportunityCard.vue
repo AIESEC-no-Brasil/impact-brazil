@@ -15,9 +15,9 @@
                             <div class="organization text-truncate" :title="opp.organization_name">
                                 {{opp.organization_name}}
                             </div>
-                            <div class="duration">
-                                {{opp.start_date}}
-                                &middot; {{opp.duration}} Weeks
+                            <div class="duration text-truncate">
+                                <span class="start-date-pc">{{opp.start_date}} &middot;</span>
+                                {{opp.duration}} Weeks
                                 <span v-if="opp.standards_delivery">
                                     &middot;
                                     <i class="material-icons star star-full"
@@ -41,7 +41,8 @@
                                 </b-col>
                                 <b-col cols="12" md="12" class="order-1 order-md-2">
                                     <div class="host-lc text-truncate" :title="'AIESEC in ' +opp.lc.reference_name">
-                                        AIESEC in {{opp.lc.reference_name}}
+                                        <span class="start-date-mob">{{opp.start_date}} &middot; </span>
+                                        <span class="lc-name">AIESEC in {{opp.lc.reference_name}}</span>
                                     </div>
                                 </b-col>
                             </b-row>
@@ -220,12 +221,17 @@
         .duration
         {
 
-            @include media-breakpoint-up(md)
+            @media screen and (min-width: 1200px)
             {
                 margin-top: 12px;
                 font-size: 20px;
             }
-            @include media-breakpoint-down(md)
+            @media screen and (min-width: 768px) and (max-width: 1199.98px)
+            {
+                margin-top: 16px;
+                font-size: 12px;
+            }
+            @media screen and (max-width: 767.98px)
             {
                 margin-top: 8px;
                 font-size: 12px;
@@ -250,8 +256,10 @@
         }
         .host-lc
         {
-            color: #686868;
-
+            .lc-name
+            {
+                color: #686868;
+            }
             @include media-breakpoint-up(md)
             {
                 font-size: 20px;
@@ -263,12 +271,32 @@
             }
         }
 
+        .start-date-pc
+        {
+            @include media-breakpoint-down(sm)
+            {
+                display: none;
+            }
+        }
+        .start-date-mob
+        {
+            @include media-breakpoint-up(md)
+            {
+                display: none;
+            }
+        }
         .star
         {
             vertical-align: middle;
             position: relative;
             top: -2px;
             letter-spacing: -4px;
+
+            @include media-breakpoint-down(sm)
+            {
+                font-size: 14px;
+                letter-spacing: 0;
+            }
         }
 
         .star-full

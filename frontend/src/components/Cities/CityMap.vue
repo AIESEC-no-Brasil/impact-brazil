@@ -20,17 +20,21 @@
 			return {
 				svg:         {},
 				pt:          {},
+				cityObjects: [],
 				currentCity: 0,
 				showingDesc: false,
 				desc:        "",
 				descStyle:   {
 					top:  0,
 					left: 0,
-				}
+				},
+                radSmall: 7.5,
+                radBig: 20
 			};
 		},
 		props:   {
-			cities: Array
+			cities: Array,
+            hovered: Number
 		},
 		mounted()
 		{
@@ -56,7 +60,7 @@
 				this.svg.addEventListener('mousedown', function (evt) {
 					let loc = cursorPoint(evt);
 					//console.log(loc);
-                    return loc;
+					return loc;
 				}, false);
 			};
 
@@ -77,18 +81,19 @@
 
 				let svg = SVG.adopt(this.svg);
 				//let circleRad = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) > 768 ? 35 : 60;
-				let circleRad = 15;
 
-				this.cities.forEach(city => {
-					svg
-					.circle(circleRad)
-					.fill(config.colors.ibPurple.dark)
+                let cityList = [];
+                this.cities.forEach(region => cityList = cityList.concat(region.city_set));
+				cityList.forEach(city => {
+					this.cityObjects[city.id] = svg
+					.circle(this.radSmall*2)
+					.fill("#0048ff")
 					//.stroke('transparent')
 					.move(city.mapX, city.mapY)
 					.attr('class', 'city')
 					.click(() => this.showCity(city.id))
 					.mouseover((evt) => {
-						evt.target.setAttribute('r', 20);
+						evt.target.setAttribute('r', this.radBig);
 						this.showingDesc = true;
 						this.desc = `<b>${city.name}</b><span class="subdesc"><br>${city.short_desc}</span>`;
 						if (this.desc.length > 200)
@@ -99,7 +104,7 @@
 						this.descStyle.top = (offset.top + evt.clientY + 10) + 'px';
 					})
 					.mouseout((evt) => {
-						evt.target.setAttribute('r', circleRad/2);
+						evt.target.setAttribute('r', this.radSmall);
 						this.showingDesc = false;
 					});
 				});
@@ -117,6 +122,18 @@
 					return;
 
 				this.plotCities();
+			},
+			hovered(val)
+			{
+				if (this.cityObjects[val])
+				{
+					console.log(this.cityObjects[val].attr('r'));
+					this.cityObjects[val].attr('r',this.radBig);
+				}
+				else if (val === 0)
+                {
+                	this.cityObjects.forEach(el => el.attr('r', this.radSmall));
+                }
 			}
 		}
 	};
@@ -126,6 +143,7 @@
     #map
     {
         text-align: center;
+        width: 100%;
     }
 
     #brazilmap
@@ -133,9 +151,17 @@
         /*We do this in JS instead so it sizes properly when the page loads*/
         /*width: 100%;*/
         /*height: 100%;*/
-        max-width: 90vw;
-        max-height: 75vh;
+
         margin: auto;
+    }
+
+    @media screen and (max-width: 767.98px)
+    {
+        #brazilmap
+        {
+            max-width: 90vw;
+            max-height: 75vh;
+        }
     }
 
     .citydesc
@@ -168,5 +194,6 @@
     #mapcontainer
     {
         display: inline-block;
+        width: 100%;
     }
 </style>

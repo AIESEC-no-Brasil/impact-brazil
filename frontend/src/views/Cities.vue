@@ -1,15 +1,18 @@
 <template>
     <div class="section">
         <div class="title">Cities</div>
-        <b-container>
+        <b-container fluid>
             <b-row>
                 <b-col cols="12" lg="6" md="7">
                     <CityMap :cities="cities"
+                             :hovered="hovered"
                              @city-clicked="loadCity"/>
                 </b-col>
                 <b-col cols="12" lg="6" md="5">
                     <CityInfo :cities="cities"
                               :city-id="city"
+                              @city-hovered="hoverCity"
+                              @city-unhovered="hovered = 0"
                               @city-clicked="loadCity"
                               @city-cleared="city=0"/>
                 </b-col>
@@ -42,6 +45,7 @@
 			return {
 				cities: [],
 				city:   0,
+                hovered: 0,
 			};
 		},
 		methods:    {
@@ -50,7 +54,7 @@
 				let cityData;
 				try
 				{
-					cityData = await axios.get(config.api + config.endpoints.cities);
+					cityData = await axios.get(config.api + config.endpoints.regions);
 				}
 				catch (err)
 				{
@@ -60,6 +64,10 @@
 				}
 				this.cities = cityData.data;
 			},
+            hoverCity(id)
+            {
+            	this.hovered = id;
+            },
 			async loadCity(cityID)
 			{
 				this.city = cityID;

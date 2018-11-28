@@ -72,7 +72,6 @@
 			},
 			hideQuestions()
 			{
-				console.log(this.$store.state.showingDropdown);
 				if (this.$store.state.showingDropdown)
 					return;
 

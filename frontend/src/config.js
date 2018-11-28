@@ -46,6 +46,7 @@ const config = {
 		lc:            id => `lcs/${id}.json`,
 		cities:        "cities.json",
 		city:          name => `city/${name}.json`,
+		regions:       "regions.json",
 		login:         "login.json",
 		apply:         "apply.json",
 		ip:            "ip.json",
@@ -56,8 +57,8 @@ const config = {
 			light: "#18c2f4",
 		},
 		ibOrange: {
-			dark:  "#ff8c01",
-			light: "#ff6d00",
+			dark:  "#ff6d00",
+			light: "#ff8c01",
 		},
 		ibGreen:  {
 			dark:  "#3be33d",

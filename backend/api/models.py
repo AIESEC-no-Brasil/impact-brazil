@@ -97,11 +97,20 @@ class Project(models.Model):
         return self.name
 
 
+class Region(models.Model):
+    name = models.CharField(max_length=255)
+    order = models.IntegerField()
+
+    def __str__(self):
+        return self.name
+
+
 class City(models.Model):
     name = models.CharField(max_length=255)
     name_unaccented = models.CharField("Name without special characters", max_length=255)
     mapX = models.IntegerField("Map X")
     mapY = models.IntegerField("Map Y")
+    region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True)
     short_desc = models.TextField("Tagline (Short)")
     details = models.TextField("Details (Long)")
     video_link = models.CharField('Video ID (YouTube)', max_length=256, blank=True)
@@ -124,6 +133,7 @@ class LC(models.Model):
     subproducts = models.ManyToManyField(Subproduct, blank=True)
     # sdgs = models.ManyToManyField(SDG, verbose_name='SDG', blank=True)
     projects = models.ManyToManyField(Project, blank=True)
+    searchtool_link = models.CharField(max_length=255,blank=True)
     hidden = models.BooleanField(default=False)
 
     # video_link = models.CharField('Video ID (YouTube)', max_length=256, blank=True)

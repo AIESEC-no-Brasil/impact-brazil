@@ -1,16 +1,13 @@
 <template>
     <div v-if="ready" id="options-menu">
-        <div id="options-left">
-            Showing <b>{{subproductOrSdg}}</b> opportunities for <b>{{this.selections.products === "Choose product" ?
-            "Brazil" : this.selections.products}}</b>
-        </div>
-        <div id="options-right">
+        <div id="options">
+            Filters:
             <div id="searchbox">
                 <b-form-input size="sm" placeholder="Search" v-model="search" @change="searchHandler"/>
             </div>
             <b-dropdown id="prog"
                         variant="transparent"
-                        right
+
                         size="sm"
                         :text="selections.products">
                 <b-dropdown-item @click="removeOption('product', 'All products')">All products</b-dropdown-item>
@@ -23,7 +20,7 @@
             <b-dropdown id="sdg"
                         ref="sdg"
                         variant="transparent"
-                        right
+
                         size="sm"
                         :text="selections.sdgs"
                         v-if="$store.state.options.product===1">
@@ -37,7 +34,7 @@
             <b-dropdown id="subproductGT"
                         ref="subproductGT"
                         variant="transparent"
-                        right
+
                         size="sm"
                         :text="selections.subproductsGT"
                         v-if="$store.state.options.product===2">
@@ -51,7 +48,7 @@
             <b-dropdown id="subproductGE"
                         ref="subproductGE"
                         variant="transparent"
-                        right
+
                         size="sm"
                         :text="selections.subproductsGE"
                         v-if="$store.state.options.product===5">
@@ -73,7 +70,7 @@
             <b-dropdown id="month"
                         ref="month"
                         variant="transparent"
-                        right
+
                         size="sm"
                         :text="selections.months">
                 <b-dropdown-item @click="removeOption('month', 'Anytime')">Anytime</b-dropdown-item>
@@ -87,7 +84,7 @@
             <b-dropdown id="lc"
                         ref="lc"
                         variant="transparent"
-                        right
+
                         size="sm"
                         :text="selections.lcs">
                 <b-dropdown-item @click="removeOption('lc', 'All offices')">All offices</b-dropdown-item>
@@ -372,7 +369,12 @@
         float: right;
     }
 
-    #options-right /deep/
+    #options
+    {
+        text-align: center;
+    }
+
+    #options /deep/
     {
         button
         {

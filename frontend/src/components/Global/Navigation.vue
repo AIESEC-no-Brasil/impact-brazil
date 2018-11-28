@@ -133,9 +133,7 @@
 			},
 			collapse()
 			{
-				console.log(arguments[1]);
-				if (!arguments[1] || arguments[1].id !== "open-button")
-					this.hidden = true;
+				this.hidden = true;
 			}
 		},
 		created()

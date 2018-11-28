@@ -1,18 +1,13 @@
 <template>
     <div class="cityinfo" v-if="cityId === 0">
-        <div class="title">About this City</div>
+        <!--<div class="title">Cities</div>-->
         <div class="citydesc">Click on a city to get started.</div>
-        <div v-if="cities">
-            <ul style='margin-left: 20px;'>
-                <li v-for="city in cities" :key="city.id">
-                    <a href="#" @click='$emit("city-clicked", city.id)'>{{city.name}}</a>
-                </li>
-            </ul>
-        </div>
-        <Loading small dark v-else/>
+        <CityList @city-clicked="id => $emit('city-clicked', id)"
+                  @city-hovered="id => $emit('city-hovered', id)"
+                  @city-unhovered="$emit('city-unhovered')"
+                  :regions="cities"/>
     </div>
     <div class="cityinfo" v-else-if="cityLoaded">
-
         <div class="title">
             <a href="#" @click="$emit('city-cleared')">
                 <i class="material-icons"
@@ -81,6 +76,7 @@
 
 <script>
 	import CityProjects from './CityProjects.vue';
+	import CityList from './CityList.vue';
 
 	import axios from 'axios';
 	import {config} from '../../config';
@@ -106,6 +102,7 @@
 		},
 		components: {
 			CityProjects,
+			CityList,
 			Loading,
 		},
 		methods:    {

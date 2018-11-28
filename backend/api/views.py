@@ -177,9 +177,9 @@ class SubproductList(generics.ListAPIView):
         product = self.request.query_params.get('product', None)
 
         if product is None:
-            return Subproduct.objects.filter(hidden=False)
+            return Subproduct.objects.filter(hidden=False).order_by('name')
         else:
-            return Subproduct.objects.filter(hidden=False, product__gis_id=product)
+            return Subproduct.objects.filter(hidden=False, product__gis_id=product).order_by('name')
 
     serializer_class = SubproductSerializer
 
@@ -258,6 +258,12 @@ class CityByName(APIView):
         converted_name = name.replace("-", " ")
         found_city = get_object_or_404(City.objects.all(), name_unaccented__iexact=converted_name)
         return Response(CitySerializer(found_city).data)
+
+
+# Get list of regions
+class RegionList(generics.ListAPIView):
+    queryset = Region.objects.all()
+    serializer_class = RegionSerializer
 
 
 # Login with API

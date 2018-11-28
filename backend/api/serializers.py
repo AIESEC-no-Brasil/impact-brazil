@@ -39,6 +39,14 @@ class CitySerializerMini(serializers.ModelSerializer):
         fields = ('id', 'name', 'mapX', 'mapY', 'short_desc', 'lc_set')
 
 
+class RegionSerializer(serializers.ModelSerializer):
+    city_set = CitySerializerMini(many=True)
+
+    class Meta:
+        model = Region
+        fields = ('id', 'name', 'order', 'city_set')
+        
+
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product

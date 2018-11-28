@@ -5,7 +5,7 @@
 
         <div v-if="missingOpts && !iAmFromBrazil && !noVisa" id="no-opps-available">
             <i class="material-icons">settings</i><br>
-            To get started, please select a product or a city from the top right.<br class="nobreak">
+            To get started, please select a product or a city from the above.<br class="nobreak">
             You can keep customizing the filters to suit your needs better.<br class="doublebreak">
             Not sure what product is best for you?
             <router-link to="/about">Read more about our products</router-link>
@@ -39,7 +39,7 @@
         <div v-else-if="noOpps" id="no-opps-available">
             <i class="material-icons">visibility_off</i><br>
             Sorry, we couldn't find any opportunities for you.<br class="nobreak">
-            Try changing the filters on the top right so we can search again!
+            Try changing the filters above so we can search again!
         </div>
         <div v-else id="oplist-loading">
             <Loading center dark/>

@@ -2,7 +2,7 @@
     <div id="footer" style="">
         <img src="../../assets/aiesec-logo.png" class="logo"/>
         <div class="social">
-            <a href="https://aiesec.org.br"
+            <a href="https://aiesec.org"
                rel="noopener"
                target="_blank">
                 <img src="../../assets/social/internet.png"/>

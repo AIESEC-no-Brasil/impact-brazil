@@ -150,7 +150,7 @@
 				if (!noEmit)
 					setTimeout(() => {
 						this.$emit('got-answer');
-					}, 500);
+					}, 100);
 			},
 			focusText(e)
 			{
