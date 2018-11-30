@@ -5,9 +5,17 @@
         </div>
 
         <o-row title="Opportunity">{{opportunity.title}}</o-row>
-        <o-row v-if="extra.project" :title="projectOrField">
+        <div v-if="parseInt(opportunity.programme.id) === 1">
+            <o-row v-if="project.name" title="Project">
+                {{project.name}}
+            </o-row>
+            <o-row v-else title="Project">
+                <Loading dark small/>
+            </o-row>
+        </div>
+        <o-row v-if="extra.field" :title="projectOrField">
             <router-link :to="projectOrFieldLink" @click.native="$store.commit('queueOptReload')">
-                {{extra.project.name}}
+                {{extra.field.name}}
             </router-link>
         </o-row>
         <o-row v-else :title="projectOrField">
@@ -86,7 +94,8 @@
 		},
 		props:      {
 			opportunity: Object,
-			extra:       Object
+			extra:       Object,
+			project:     Object
 		},
 		data()
 		{
@@ -97,20 +106,20 @@
 		computed:   {
 			projectOrField()
 			{
-				return parseInt(this.opportunity.programme.id) === 1 ? 'Project' : 'Field';
+				return parseInt(this.opportunity.programme.id) === 1 ? 'SDG' : 'Field';
 			},
 			projectOrFieldLink()
 			{
 				switch (parseInt(this.opportunity.programme.id))
 				{
 					case 1:
-						return `/opportunities?product=1&sdg=${this.extra.project.gis_id}`;
+						return `/opportunities?product=1&sdg=${this.extra.field.gis_id}`;
 
 					case 2:
-						return `/opportunities?product=2&subproduct=${this.extra.project.gis_id}`;
+						return `/opportunities?product=2&subproduct=${this.extra.field.gis_id}`;
 
 					case 5:
-						return `/opportunities?product=5&subproduct=${this.extra.project.gis_id}`;
+						return `/opportunities?product=5&subproduct=${this.extra.field.gis_id}`;
 
 					default:
 						return '/opportunities';

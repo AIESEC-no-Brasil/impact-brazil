@@ -40,14 +40,26 @@ export default new Router({
 			component: () => import(/* webpackChunkName: "city" */ './views/Cities.vue'),
 		},
 		{
-			path:      '/city/:name',
-			name:      'city',
-			component: () => import(/* webpackChunkName: "city" */ './views/City.vue'),
-		},
-		{
 			path:      '/contact',
 			name:      'contact',
 			component: () => import('./views/Contact.vue')
+		},
+		{
+			path:      '/searchtool/:prod',
+			name:      'searchtool',
+			component: () => import(/* webpackChunkName: "opportunities" */ './views/Searchtool.vue'),
+		},
+		{
+			path:     '/gv',
+			redirect: '/searchtool/1'
+		},
+		{
+			path:     '/gv',
+			redirect: '/searchtool/2'
+		},
+		{
+			path:     '/gv',
+			redirect: '/searchtool/5'
 		},
 		{
 			path:      '/404',

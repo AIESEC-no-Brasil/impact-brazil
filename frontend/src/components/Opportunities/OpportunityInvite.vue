@@ -1,7 +1,13 @@
 <!--suppress XmlDuplicatedId -->
 <template>
     <div>
-        <div v-if="entityName !== ''"
+        <div id="invite" v-if="entityNotFound">
+            We could not detect where you are from.
+            <div class="invitation-text"><span><a href="#" @click="showEntityDialog">Tell us</a> your nationality.</span></div>
+            This helps us serve you opportunities that better fit our Visa regulations.
+            <br><br>
+        </div>
+        <div v-else-if="entityName !== ''"
              id="invite">
             <div class="invitation-text">Inviting <span>{{entityName}}</span> to Impact Brazil</div>
             <div class="change-entity-text">Not from {{entityName}}? <a href="#" @click="showEntityDialog">Click
@@ -58,42 +64,78 @@
 				entityThumb:     {backgroundImage: "url('')"},
 				entityList:      [],
 				entitySelection: -1,
+				entityNotFound:  false,
 			};
 		},
 		methods:    {
 			loadInvite: async function () {
-				let entityPartner, entityPartnerID;
-				try
+				let entityPartner, entityPartnerID, entities;
+
+				if (this.$session.get('entity') !== undefined)
+					entityPartnerID = this.$session.get('entity');
+				else
 				{
-					if (this.$session.get('entity'))
-						entityPartnerID = this.$session.get('entity');
-					else
+					// Auto detect the entity!
+					let entities, myEntity;
+					try
 					{
-						// Auto detect the entity!
-						let entities = await axios.get(config.api + config.endpoints.entities);
-						let myEntity = await axios.get(config.api + config.endpoints.ip);
-
-						// TODO: what if the country is not found?
-						entityPartnerID = entities.data.find(entity => entity.name === myEntity.data.country).id;
-
-						// Store the entity in the session
-						this.$session.set('entity', entityPartnerID);
+						entities = await axios.get(config.api + config.endpoints.entities);
+					}
+					catch (err)
+					{
+						console.error(err);
+						this.$root.$emit('error');
+						return false;
 					}
 
-					entityPartner = await axios.get(config.api + config.endpoints.entityPartner(entityPartnerID));
+					// It's possible that an adblocker blocks this endpoint, so we don't error if it fails
+					try
+					{
+						myEntity = await axios.get(config.api + config.endpoints.ip);
+
+						entityPartnerID = entities.data.find(entity => entity.name === myEntity.data.country).id;
+						if (entityPartnerID === undefined)
+							entityPartnerID = 0;
+					}
+					catch (err)
+					{
+						entityPartnerID = 0;
+					}
+					// Store the entity in the session
+					this.$session.set('entity', entityPartnerID);
+
+					// Refresh the page so that the opportunities load
+					window.location.reload();
 				}
-				catch (err)
+				if (entityPartnerID > 0)
 				{
-					console.error(err);
-					this.$root.$emit('error');
-					return false;
+					try
+					{
+						entityPartner = await axios.get(config.api + config.endpoints.entityPartner(entityPartnerID));
+					}
+					catch (err)
+					{
+						console.error(err);
+						this.$root.$emit('error');
+						return false;
+					}
 				}
 
-				this.entityName = entityPartner.data['name'];
-				this.entityVideo = entityPartner.data['video'];
-				this.entityThumb = {
-					backgroundImage: "url('" + config.videos.entiyPartnerThumbDir + (entityPartner.data['thumbnail'] === "" ? config.videos.defaultEntityPartnerThumb : entityPartner.data['thumbnail']) + "')",
-				};
+				if (entityPartnerID === 0)
+				{
+					this.entityName = "";
+					this.entityVideo = null;
+					this.entityThumb = {};
+					this.entityNotFound = true;
+				}
+				else
+				{
+					this.entityName = entityPartner.data['name'];
+					this.entityVideo = entityPartner.data['video'];
+					this.entityThumb = {
+						backgroundImage: "url('" + config.videos.entiyPartnerThumbDir + (entityPartner.data['thumbnail'] === "" ? config.videos.defaultEntityPartnerThumb : entityPartner.data['thumbnail']) + "')",
+					};
+				}
 
 
 				// We don't need to reload any more

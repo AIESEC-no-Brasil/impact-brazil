@@ -28,7 +28,6 @@ class Command(BaseCommand):
         self.stdout.write("Initializing script.")
 
         # TODO: Handle exceptions
-        # TODO: add last_interaction filter
         opportunities = gis_get_paginated(get_data("api.gql", get_all_opportunities_gql).decode("utf-8"), silent=False,
                                           print_function=self.stdout.write)
         # opportunities = expa_get(get_data("api.gql", get_all_opportunities_gql).decode("utf-8").replace("$PAGE$", "1")

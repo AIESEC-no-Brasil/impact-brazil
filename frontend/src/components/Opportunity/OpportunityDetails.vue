@@ -4,10 +4,12 @@
             <OpportunityOverview v-if="tab === 'overview'"
                                  :opportunity="opportunity"
                                  :extra="extra"
+                                 :project="project"
                                  key="overview"/>
             <OpportunityRole v-if="tab === 'role'"
                              :opportunity="opportunity"
                              :extra="extra"
+                             :project="project"
                              key="role"/>
             <OpportunityPrerequisites v-if="tab === 'prerequisites'"
                                       :opportunity="opportunity"
@@ -48,6 +50,7 @@
 		props:      {
 			opportunity: Object,
 			extra:       Object,
+			project:     Object,
 			tab:         {
 				type:    String,
 				default: 'overview'

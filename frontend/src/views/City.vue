@@ -26,7 +26,11 @@
 		created()
 		{
 			this.setTitle("City");
-		}
+		},
+        mounted()
+        {
+            this.$store.commit('cityPage', true);
+        },
 	};
 </script>
 

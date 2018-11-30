@@ -78,7 +78,7 @@ def gis_get(query, silent=True, print_function=print, custom_api_key=None, varia
 
 # Shorthand for expa_get(...)['data']
 def gis_get_data(query, silent=True, print_function=print, custom_api_key=None, variables=None):
-    data =  gis_get(query, silent, print_function, custom_api_key, variables)
+    data = gis_get(query, silent, print_function, custom_api_key, variables)
     try:
         return data['data']
     except KeyError:
@@ -89,12 +89,18 @@ def gis_get_data(query, silent=True, print_function=print, custom_api_key=None, 
 # Requirements:
 # 1. Your GQL query must have paging { total_pages } and data {}
 # 2. You must leave a space for a format string for pages: {}
-def gis_get_paginated(query, silent=True, print_function=print):
+def gis_get_paginated(query, silent=True, print_function=print, variables=None):
     # TODO: Add error handling
+    if variables is None:
+        variables_with_page = {'page': 1}
+    else:
+        variables_with_page = variables
+        variables_with_page['page'] = 1
+
     _print_silent("Running GQL query: " + query, silent, print_function)
     _print_silent("Getting page 1", silent, print_function)
 
-    qout = gis_get(query, variables={'page': 1})
+    qout = gis_get(query, variables=variables_with_page)
 
     total_pages = qout['paging']['total_pages']
 
@@ -105,7 +111,9 @@ def gis_get_paginated(query, silent=True, print_function=print):
     for i in range(2, total_pages + 1):
         _print_silent(f"Getting page {i} of {total_pages}", silent, print_function)
 
-        qout_iter = gis_get(query, variables={'page': i})
+        variables_with_page['page'] = i
+        qout_iter = gis_get(query, variables=variables_with_page)
+
         qoutdata = qoutdata + qout_iter['data']
 
     qout['data'] = qoutdata

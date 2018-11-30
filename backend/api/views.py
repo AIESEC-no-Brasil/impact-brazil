@@ -56,6 +56,7 @@ class OpportunityList(APIView):
         lc = self.request.query_params.get('lc', None)
         product = self.request.query_params.get('product', None)
         q = self.request.query_params.get('q', None)
+        all_opps = self.request.query_params.get('all_opps', False)
 
         # Product must be specified
         if product is None and lc is None:
@@ -115,10 +116,11 @@ class OpportunityList(APIView):
             # search=SearchVector('title', 'lc__reference_name', 'product__name', 'sdg__name', 'subproduct__name',
             #                     'organization_name', 'location')).filter(search=q)
 
-        # TODO: filter out the products that don't support the entity
         # The below logic is only if LC is not specified
         if lc is None:
-            opportunities_list = opportunities_list.distinct('lc_id').order_by('lc_id', '-available_openings')
+            # Only if all_opps is False do we filter one unique opportunity per LC
+            if all_opps is False:
+                opportunities_list = opportunities_list.distinct('lc_id').order_by('lc_id', '-available_openings')
 
             # Reorder according to focus in reverse so we iterate through it backwards
             focus_qs = Focus.objects.filter(product__gis_id=product).order_by('-rank').values('lc__id')
@@ -201,14 +203,13 @@ class SDGList(generics.ListAPIView):
 class SDGDetail(generics.RetrieveAPIView):
     lookup_field = 'number'
     queryset = SDG.objects.all()
-    serializer_class = SDGandProjectsSerializer
+    serializer_class = SDGSerializer
 
 
 # Get list of Projects
 class ProjectList(generics.ListAPIView):
-    queryset = Project.objects.filter(hidden=False).order_by('sdg_id')
+    queryset = Project.objects.order_by('sdg_id')
     serializer_class = ProjectSerializer
-
 
 # Get details of Project
 class ProjectDetail(generics.RetrieveAPIView):
@@ -366,10 +367,12 @@ class OpportunityGIS(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         get_opportunity_gql = "get_opportunity.gql"
+        from_cache = False
 
         try:
             opp_request = OpportunityCache.objects.get(opp_id=pk)
             opp_data = json.loads(opp_request.opp_json)
+            from_cache = True
         except OpportunityCache.DoesNotExist:
             try:
                 opp_request = gis_get(get_data("api.gql", get_opportunity_gql).decode("utf-8"),
@@ -386,5 +389,40 @@ class OpportunityGIS(APIView):
             # Save this to the database
             opp = OpportunityCache(opp_id=pk, opp_json=json.dumps(opp_data))
             opp.save()
+
+        opp_data['from_cache'] = from_cache
+        return Response(opp_data)
+
+
+class OpportunityGISRefreshCache(APIView):
+    def get(self, request, format=None, pk=0):
+        try:
+            opp_request = OpportunityCache.objects.get(opp_id=pk)
+            opp_data_cached = opp_request.opp_json
+        except OpportunityCache.DoesNotExist:
+            return Response({'cache_status': "NO_CACHE"})
+
+        get_opportunity_gql = "get_opportunity.gql"
+
+        try:
+            opp_request = gis_get(get_data("api.gql", get_opportunity_gql).decode("utf-8"),
+                                  variables={'id': pk, 'cdn_links': True})
+            opp_data = opp_request
+        except Exception as e:
+            if str(e).find("401") == -1:
+                return Response(
+                    {'error': "There was a problem getting the opportunity from the GIS.", 'e_text': str(e)},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            else:
+                return Response({'error': 'Access token expired'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # Save this to the database
+        OpportunityCache.objects.update_or_create(opp_id=pk, defaults={'opp_json': json.dumps(opp_data)})
+
+        # Return whether it was changed or not
+        if opp_data_cached != json.dumps(opp_data):
+            opp_data['cache_status'] = "CACHE_UPDATED"
+        else:
+            opp_data['cache_status'] = "CACHE_NOT_UPDATED"
 
         return Response(opp_data)

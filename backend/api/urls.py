@@ -20,6 +20,7 @@ urlpatterns = [
     path('entity_partners/<int:pk>/', views.EntityPartnerDetails.as_view()),
     path('opportunities/', views.OpportunityList.as_view()),
     path('opportunity/<int:pk>', views.OpportunityGIS.as_view()),
+    path('opportunity/cache_update/<int:pk>', views.OpportunityGISRefreshCache.as_view()),
     path('cities/', views.CityList.as_view()),
     path('city/<int:pk>', views.CityDetail.as_view()),
     path('city/<slug:name>', views.CityByName.as_view()),

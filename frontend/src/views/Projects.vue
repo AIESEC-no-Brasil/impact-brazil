@@ -104,7 +104,7 @@
 				switch (product)
 				{
 					case 1:
-						return this.lists.projects;
+						return this.lists.projects.filter(project => !project.hidden);
 
 					case 2:
 						return this.lists.subproductsGT;

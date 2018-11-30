@@ -1,5 +1,5 @@
-query allOpportunity($page: Int) {
-  allOpportunity(filters: {status: "open", committee: 1606}, page: $page, per_page: 100) {
+query allOpportunity($page: Int, $applications_closing: String) {
+  allOpportunity(filters: {status: "open", committee: 1606, applications_closing: {from: $applications_closing}}, page: $page, per_page: 100) {
     paging {
       current_page
       total_pages

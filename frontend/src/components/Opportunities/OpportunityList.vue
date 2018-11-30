@@ -1,7 +1,8 @@
 <!--suppress XmlDuplicatedId -->
 <template>
     <div id="opportunity-list-root">
-        <OpportunityOptions @options-changed="optionsChanged"/>
+        <OpportunityOptions @options-changed="optionsChanged"
+                            :reloading="oppsReloading"/>
 
         <div v-if="missingOpts && !iAmFromBrazil && !noVisa" id="no-opps-available">
             <i class="material-icons">settings</i><br>
@@ -29,7 +30,7 @@
             if you would like to know more.
         </div>
 
-        <div v-else-if="oppList.length > 0 && !noOpps" id="opportunities-list">
+        <div v-else-if="oppList.length > 0 && !noOpps && !awaitingEntity" id="opportunities-list">
             <OpportunityCard v-for="opp in oppList"
                              :ref="opp.id"
                              :opp="opp"
@@ -66,10 +67,12 @@
 		data()
 		{
 			return {
-				oppList:     [],
-				noOpps:      false,
-				noVisa:      false,
-				missingOpts: false,
+				oppList:        [],
+				noOpps:         false,
+				noVisa:         false,
+				missingOpts:    false,
+				oppsReloading:  false,
+				awaitingEntity: false,
 			};
 		},
 		computed:   {
@@ -94,6 +97,14 @@
 			{
 				// Reset
 				this.missingOpts = false;
+				this.awaitingEntity = false;
+
+				// See if entity is set yet?
+				if (this.$session.get('entity') === undefined)
+				{
+					this.awaitingEntity = true;
+					return false;
+				}
 
 				// Configure the options
 				let options = {};
@@ -133,13 +144,13 @@
 				// Convert objects to proper datatype
 				for (let k in options)
 				{
-					if (k.indexOf("date") === -1 && k !== "q")
+					if (options.hasOwnProperty(k) && k.indexOf("date") === -1 && k !== "q")
 						options[k] = parseInt(options[k]);
 				}
 				// Remove all NaNs
 				for (let k in options)
 				{
-					if (isNaN(options[k]))
+					if (options.hasOwnProperty(k) && typeof options[k] === "number" && isNaN(options[k]))
 						delete options[k];
 				}
 				this.$store.commit('options', options);
@@ -214,6 +225,7 @@
 
 				// We don't need to reload any more
 				this.$store.commit('listLoaded');
+				this.oppsReloading = false;
 			}
 		},
 		async created()
@@ -227,6 +239,7 @@
 				this.oppList = [];
 				this.noOpps = false;
 				this.noVisa = false;
+				this.oppsReloading = true;
 				this.loadOpps();
 			}
 		}

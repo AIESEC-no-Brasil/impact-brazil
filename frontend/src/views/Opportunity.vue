@@ -13,6 +13,7 @@
                     <OpportunityDetails v-if="opportunity.title"
                                         :opportunity="opportunity"
                                         :extra="extra"
+                                        :project="project"
                                         :tab="tab"/>
                 </b-col>
             </b-row>
@@ -34,6 +35,7 @@
 	import bRow from 'bootstrap-vue/es/components/layout/row';
 	import axios from 'axios';
 	import {config} from '../config';
+	import {dataLoad} from '../functions/data-loader';
 	import {gqlGetOpportunity} from '../functions/get-opportunity';
 
 	export default {
@@ -52,6 +54,7 @@
 			return {
 				opportunity:     {},
 				extra:           {},
+				project:         {},
 				tab:             'overview',
 				subproductOrSdg: 'sdg',
 			};
@@ -89,17 +92,34 @@
 					oppData = await axios.get(config.api + config.endpoints.opportunity(this.$route.params.id));
 					this.opportunity = oppData.data;
 				}
+				// Now we run the cache update function, which will basically check if the opportunity was updated
+				// on GIS and update the cache on the server. We do it this way because getting data from GIS is slow,
+				// (usually) compared to IB. But GIS stopped providing updated_at, and we don't want to clear the
+				// cache unless absolutely necessary.
+				if (this.opportunity.from_cache)
+				{
+					// Run this asynchronously, otherwise our project and city requests get blocked
+					axios.get(config.api + config.endpoints.oppCacheUpdate(this.$route.params.id)).then((oppData) => {
+						if (oppData.data.cache_status === "CACHE_UPDATED")
+							this.opportunity = oppData.data;
+					});
+					// We don't care if there's an error, means GIS is down or something, that's where the cache saves us
+				}
 			}
 			catch (err)
 			{
 				if (err.response)
 				{
 					if (err.response.status === 404)
+					{
 						this.$root.$emit('fatal', 'This opportunity does not exist.');
-					else if (err.response.status === 401)
+						return;
+					}
+					else if (err.response.status === 401 && this.$session.get('loggedIn'))
+					{
 						this.$root.$emit('logout');
-
-					return;
+						return;
+					}
 				}
 				console.error(err);
 				this.$root.$emit('error');
@@ -111,16 +131,16 @@
 			this.setTitle(this.opportunity.title.length > 23 ? this.opportunity.title.substr(0, 20) + "..." : this.opportunity.title);
 
 			// Find out if we need to find more details about subproduct or SDG?
-			let extraDataProj, extraDataLC;
+			let extraDataField, extraDataLC;
 			try
 			{
 				if (parseInt(this.opportunity.programme.id) === 1)
-					extraDataProj = axios.get(config.api + config.endpoints.sdg(this.opportunity.sdg_info.sdg_target.goal_index));
+					extraDataField = axios.get(config.api + config.endpoints.sdg(this.opportunity.sdg_info.sdg_target.goal_index));
 				else
-					extraDataProj = axios.get(config.api + config.endpoints.subproduct(this.opportunity.sub_product.id));
+					extraDataField = axios.get(config.api + config.endpoints.subproduct(this.opportunity.sub_product.id));
 
 				extraDataLC = axios.get(config.api + config.endpoints.lc(this.opportunity.home_lc.id));
-				[extraDataProj, extraDataLC] = await Promise.all([extraDataProj, extraDataLC]);
+				[extraDataField, extraDataLC] = await Promise.all([extraDataField, extraDataLC]);
 			}
 			catch (err)
 			{
@@ -130,8 +150,37 @@
 				this.extra = {project: {name: "Unknown"}, lc: {id: 0, city: {id: 0, name: "Unknown"}}};
 				return;
 			}
-			this.$set(this.extra, 'project', extraDataProj.data);
+			this.$set(this.extra, 'field', extraDataField.data);
 			this.$set(this.extra, 'lc', extraDataLC.data);
+
+			// We also need to figure out the project
+			let loadOut = await dataLoad(this, ["projects"]);
+			let projectList = loadOut['projects'];
+
+			// Try to match the "project" title
+			//let projectMatch = this.opportunity.title.match(/\[(.*)]/);
+			//if (projectMatch !== null)
+			//{
+			//	projectMatch = projectMatch[0];
+			//
+			//	let project = projectList.find(project => project.name.localeCompare(projectMatch, 'en', {sensitivity: 'base'}));
+			//
+			//	if (project !== undefined)
+			//		this.project = project;
+			//	else
+			//		this.project = {name: "Unknown", description: ""};
+			//}
+			//else
+			//	this.project = {name: "Unknown", description: ""};
+
+			// The above method is too "advanced", we are smarter than following the national format:
+			// we search for the project name ANYWHERE in the title.
+			let project = projectList.find(project => this.opportunity.title.toLowerCase().indexOf(project.name.toLowerCase()) > -1);
+
+			if (project !== undefined)
+				this.project = project;
+			else
+				this.project = {name: "Unknown", description: ""};
 		},
 		methods:    {
 			changeTab(tab)

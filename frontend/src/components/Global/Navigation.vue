@@ -33,7 +33,7 @@
                     <li>
                         <router-link @click.native="collapse"
                                      to="/cities"
-                                     :class="routerLinkManualActive('city')">
+                                     :class="isCityPage">
                             Cities
                         </router-link>
                     </li>
@@ -106,6 +106,12 @@
 			loggedIn()
 			{
 				return typeof this.$session.get('loggedIn') === "undefined" ? false : this.$session.get('loggedIn');
+			},
+			isCityPage()
+			{
+				if (this.$store.state.isCityPage)
+					return 'router-link-manual-active';
+				return '';
 			},
 		},
 		methods:  {

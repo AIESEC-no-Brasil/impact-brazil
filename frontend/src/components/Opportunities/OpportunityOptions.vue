@@ -3,7 +3,9 @@
         <div id="options">
             Filters:
             <div id="searchbox">
-                <b-form-input size="sm" placeholder="Search" v-model="search" @change="searchHandler"/>
+                <b-form-input size="sm"
+                              placeholder="Search"
+                              v-model="search"/>
             </div>
             <b-dropdown id="prog"
                         variant="transparent"
@@ -116,6 +118,9 @@
 
 	export default {
 		name:       "OpportunityOptions",
+		props:      {
+			reloading: Boolean
+		},
 		components: {
 			bDropdown,
 			bDropdownItem,
@@ -148,12 +153,12 @@
 				ready:            false,
 				datepickerActive: false,
 				selectionList:    [
-					{option: "month", list: "months"},
-					{option: "product", list: "products"},
-					{option: "subproduct", list: "subproductsGT"},
-					{option: "subproduct", list: "subproductsGE"},
-					{option: "sdg", list: "sdgs"},
-					{option: "lc", list: "lcs"},
+					{option: "month", list: "months", default: "Anytime"},
+					{option: "product", list: "products", default: "All products"},
+					{option: "subproduct", list: "subproductsGT", default: "All fields"},
+					{option: "subproduct", list: "subproductsGE", default: "All fields"},
+					{option: "sdg", list: "sdgs", default: "All projects"},
+					{option: "lc", list: "lcs", default: "All offices"},
 				],
 				searchTimer:      null,
 			};
@@ -216,7 +221,11 @@
 
 						if (searchResult !== undefined)
 							this.selections[selection.list] = searchResult.text;
+						else
+							this.selections[selection.list] = selection.default;
 					}
+					else
+						this.selections[selection.list] = selection.default;
 				});
 
 				// Fix product
@@ -309,7 +318,7 @@
 			searchHandler()
 			{
 				clearTimeout(this.searchTimer);
-				this.searchTimer = setTimeout(this.changeSearch, 200);
+				this.searchTimer = setTimeout(this.changeSearch, 750);
 			},
 			changeSearch()
 			{
@@ -347,7 +356,16 @@
 			options()
 			{
 				this.setSelections();
-			}
+			},
+			reloading(val)
+			{
+				if (val)
+					this.setSelections();
+			},
+            search()
+            {
+            	this.searchHandler();
+            }
 		},
 		async created()
 		{

@@ -12,6 +12,7 @@ Vue.use(vClickOutside);
 // configure router here, since we need both $store and $router
 router.beforeEach((to, from, next) => {
 	store.commit('pageLoading');
+	store.commit('cityPage', false);
 	next();
 });
 

@@ -28,7 +28,7 @@ class CitySerializer(serializers.ModelSerializer):
 
     def get_lc_set(self, obj):
         lcs = LC.objects.filter(city__id=obj.id, hidden=False)
-        return LCSerializerMicro(lcs,many=True).data
+        return LCSerializerMicro(lcs, many=True).data
 
     class Meta:
         model = City
@@ -40,7 +40,7 @@ class CitySerializerMini(serializers.ModelSerializer):
 
     def get_lc_set(self, obj):
         lcs = LC.objects.filter(city__id=obj.id, hidden=False)
-        return LCSerializerMicro(lcs,many=True).data
+        return LCSerializerMicro(lcs, many=True).data
 
     class Meta:
         model = City
@@ -52,7 +52,7 @@ class RegionSerializer(serializers.ModelSerializer):
 
     def get_city_set(self, obj):
         cities = City.objects.filter(region__id=obj.id, hidden=False)
-        return CitySerializerMini(cities,many=True).data
+        return CitySerializerMini(cities, many=True).data
 
     class Meta:
         model = Region
@@ -80,15 +80,15 @@ class SDGSerializer(serializers.ModelSerializer):
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
-        fields = ('id', 'name', 'description', 'sdg', 'logo', 'thumbnail', 'video_link')
+        fields = ('id', 'name', 'description', 'sdg', 'logo', 'thumbnail', 'video_link', 'hidden')
 
 
-class SDGandProjectsSerializer(serializers.ModelSerializer):
-    project_set = ProjectSerializer(many=True)
-
-    class Meta:
-        model = SDG
-        fields = ('id', 'name', 'description', 'gis_id', 'logo', 'project_set')
+# class SDGandProjectsSerializer(serializers.ModelSerializer):
+#     project_set = ProjectSerializer(many=True)
+#
+#     class Meta:
+#         model = SDG
+#         fields = ('id', 'name', 'description', 'gis_id', 'logo', 'project_set')
 
 
 class LCSerializer(serializers.ModelSerializer):
@@ -146,5 +146,5 @@ class OpportunitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Opportunity
         fields = ('id', 'gis_id', 'title', 'organization_name', 'organization_gis_id', 'picture_url', 'location',
-                  'duration', 'start_date', 'available_openings', 'created_at', 'updated_at', 'lc',
-                  'response_time', 'standards_delivery')
+                  'duration', 'start_date', 'end_date', 'close_date', 'available_openings', 'created_at', 'updated_at',
+                  'lc', 'response_time', 'standards_delivery')

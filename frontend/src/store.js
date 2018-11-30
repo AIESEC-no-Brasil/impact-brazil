@@ -9,6 +9,9 @@ export default new Vuex.Store({
 		showingQuestions: false,
 		showingDropdown:  false,
 		
+		// On a city page?
+		isCityPage: false,
+		
 		// We store these in $store because we don't want the opportunity page to ever reload
 		options:         {},
 		optquery:        {},
@@ -34,6 +37,7 @@ export default new Vuex.Store({
 	mutations: {
 		showingQuestions: (state, sQ) => state.showingQuestions = sQ,
 		showingDropdown:  (state, sD) => state.showingDropdown = sD,
+		cityPage:         (state, cP) => state.isCityPage = cP,
 		options:          (state, options) => state.options = options,
 		optquery:         (state, optquery) => state.optquery = optquery,
 		queueOptReload:   state => state.optReloadQueued = {invite: true, list: true},

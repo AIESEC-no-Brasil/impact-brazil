@@ -5,14 +5,12 @@
         </div>
 
         <o-row title="Project" fullspan v-if="parseInt(this.opportunity.programme.id) === 1">
-            <div v-for="project in extra.project.project_set">
-                <div style='font-size: 1.2em'>{{project.name}}</div>
-                {{project.description}}<br>
-            </div>
-            <Loading v-if="!extra.project.name" dark small/>
+            <div style='font-size: 1.2em'>{{project.name}}</div>
+            {{project.description}}<br>
+            <Loading v-if="!project.name" dark small/>
         </o-row>
         <o-row title="Sustainable Development Goal" fullspan v-if="parseInt(this.opportunity.programme.id) === 1">
-            <span v-if="extra.project.name" style='font-size: 1.2em'>{{extra.project.name}}</span>
+            <span v-if="extra.field.name" style='font-size: 1.2em'>{{extra.field.name}}</span>
             <Loading v-else dark small/>
             <br>
             {{opportunity.sdg_info.sdg_target.description}}
@@ -47,7 +45,8 @@
 		},
 		props:      {
 			opportunity: Object,
-			extra:       Object
+			extra:       Object,
+			project:     Object,
 		},
 		methods:    {
 			markdown(text)
