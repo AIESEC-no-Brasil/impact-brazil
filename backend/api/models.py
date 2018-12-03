@@ -77,7 +77,7 @@ class Subproduct(models.Model):
     logo = models.TextField('Subproduct Logo', blank=True)
     description = models.TextField('Subproduct Description', blank=True)
     video_link = models.CharField('Video ID (YouTube)', max_length=256, blank=True)
-    thumbnail = models.CharField('Thumbnail Filename (.jpg)', blank=True, max_length=256)
+    thumbnail = models.CharField('Thumbnail Filename', blank=True, max_length=256)
     hidden = models.BooleanField(default=False)
 
     def __str__(self):
@@ -90,7 +90,7 @@ class Project(models.Model):
     description = models.TextField('Project Description', blank=True)
     logo = models.TextField('Project Logo', blank=True)
     video_link = models.CharField('Video ID (YouTube)', max_length=256, blank=True)
-    thumbnail = models.CharField('Thumbnail Filename (.jpg)', blank=True, max_length=256)
+    thumbnail = models.CharField('Thumbnail Filename', blank=True, max_length=256)
     hidden = models.BooleanField(default=False)
 
     def __str__(self):
@@ -112,9 +112,9 @@ class City(models.Model):
     mapY = models.IntegerField("Map Y")
     region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True)
     short_desc = models.TextField("Tagline (Short)")
-    details = models.TextField("Details (Long)")
+    details = models.TextField("Details (Long - MARKDOWN is accepted here)")
     video_link = models.CharField('Video ID (YouTube)', max_length=256, blank=True)
-    thumbnail = models.CharField('Thumbnail Filename (.jpg)', blank=True, max_length=256)
+    thumbnail = models.CharField('Thumbnail Filename', blank=True, max_length=256)
     hidden = models.BooleanField(default=False)
 
     def __str__(self):
@@ -141,7 +141,7 @@ class LC(models.Model):
     hidden = models.BooleanField(default=False)
 
     # video_link = models.CharField('Video ID (YouTube)', max_length=256, blank=True)
-    # thumbnail = models.CharField('Thumbnail Filename (.jpg)', blank=True, max_length=256)
+    # thumbnail = models.CharField('Thumbnail Filename', blank=True, max_length=256)
 
     def __str__(self):
         return self.reference_name

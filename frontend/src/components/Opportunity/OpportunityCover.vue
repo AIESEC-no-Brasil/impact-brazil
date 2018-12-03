@@ -8,6 +8,8 @@
             <div id="cover-overlay">
                 <div class="title text-truncate">{{opportunity.title}}</div>
                 <div class="location"><i class="material-icons">location_on</i> {{opportunity.location}}</div>
+                <div class="social"><OpportunityShare :opportunity="opportunity"/></div>
+
                 <OpportunityPerformApplyButton
                         :id="parseInt(opportunity.id)"
                         :is-gt="parseInt(opportunity.programme.id) > 1"
@@ -29,11 +31,13 @@
 
 <script>
 	import OpportunityPerformApplyButton from "./OpportunityPerformApplyButton.vue";
+	import OpportunityShare from './OpportunityShare.vue';
 
 	export default {
 		name:       "OpportunityCover",
 		components: {
-			OpportunityPerformApplyButton
+			OpportunityPerformApplyButton,
+			OpportunityShare,
 		},
 		props:      {
 			opportunity: Object
@@ -102,7 +106,7 @@
         height: 100%;
         background: rgba(0, 0, 0, 0.75);
         z-index: 100;
-        padding-top: 120px;
+        padding-top: 100px;
         text-align: center;
         color: #fff;
 
@@ -113,7 +117,7 @@
             margin-bottom: 8px;
         }
 
-        .location
+        .social
         {
             margin-bottom: 32px;
         }

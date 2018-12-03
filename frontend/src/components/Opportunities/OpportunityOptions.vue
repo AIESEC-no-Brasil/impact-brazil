@@ -284,6 +284,9 @@
 				this.$router.push({path: '/opportunities', query: queryString});
 				this.$store.commit('optquery', queryString);
 				this.$emit('options-changed');
+
+				// Track on Google
+                this.$ga.event('Filters', 'filter_set', JSON.stringify(queryString), this.id);
 			},
 			removeOption(opt, text)
 			{

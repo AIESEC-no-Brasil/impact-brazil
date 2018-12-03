@@ -14,9 +14,11 @@
             </o-row>
         </div>
         <o-row v-if="extra.field" :title="projectOrField">
-            <router-link :to="projectOrFieldLink" @click.native="$store.commit('queueOptReload')">
+            <router-link v-if="extra.field.id !== 0"
+                         :to="projectOrFieldLink" @click.native="$store.commit('queueOptReload')">
                 {{extra.field.name}}
             </router-link>
+            <div v-else>Unknown</div>
         </o-row>
         <o-row v-else :title="projectOrField">
             <Loading dark small/>
@@ -29,10 +31,12 @@
             </router-link>
         </o-row>
         <o-row v-if="extra.lc" title="City">
-            <router-link :to="`/city/${extra.lc.city.name_unaccented.toLowerCase().replace(/\s/g, '-')}`"
+            <router-link v-if="extra.lc.city.name_unaccented"
+                         :to="`/city/${extra.lc.city.name_unaccented.toLowerCase().replace(/\s/g, '-')}`"
                          @click.native="$store.commit('queueOptReload')">
                 {{extra.lc.city.name}}
             </router-link>
+            <div v-else>{{extra.lc.city.name}}</div>
         </o-row>
         <o-row v-else title="City">
             <Loading dark small/>

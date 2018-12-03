@@ -25,7 +25,8 @@ def gql_execute(url, query, variables=None):
 
 # Generate a token
 def generate_token(silent, print_function):
-    if config.api_key == '':
+    # if config.api_key == '':
+    if True:
         _print_silent("API key is blank, generating new key", silent, print_function)
         config.api_key = getkey.get_access_token(config.token_get_url)
         _print_silent("Generated key: " + config.api_key, silent, print_function)

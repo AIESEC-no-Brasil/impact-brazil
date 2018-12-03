@@ -5,9 +5,15 @@ import store from './store';
 import VueSession from 'vue-session';
 import {config} from "./config";
 import vClickOutside from 'v-click-outside';
+import VueAnalytics from 'vue-analytics';
 
 Vue.use(VueSession, {persist: true});
 Vue.use(vClickOutside);
+
+Vue.use(VueAnalytics, {
+	id: 'UA-130274379-1',
+	router
+});
 
 // configure router here, since we need both $store and $router
 router.beforeEach((to, from, next) => {

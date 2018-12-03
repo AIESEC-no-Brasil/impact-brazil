@@ -137,7 +137,12 @@
 				if (parseInt(this.opportunity.programme.id) === 1)
 					extraDataField = axios.get(config.api + config.endpoints.sdg(this.opportunity.sdg_info.sdg_target.goal_index));
 				else
-					extraDataField = axios.get(config.api + config.endpoints.subproduct(this.opportunity.sub_product.id));
+				{
+					if (this.opportunity.sub_product)
+                        extraDataField = axios.get(config.api + config.endpoints.subproduct(this.opportunity.sub_product.id));
+					else
+						extraDataField = {data: {id: 0, name: "Unknown"}};
+				}
 
 				extraDataLC = axios.get(config.api + config.endpoints.lc(this.opportunity.home_lc.id));
 				[extraDataField, extraDataLC] = await Promise.all([extraDataField, extraDataLC]);

@@ -45,6 +45,9 @@
 				setTimeout(() => {
 					this.$refs.sweetmodal.open();
 				}, 400);
+
+				// Track this event on Google
+                this.$ga.event('Video', 'play', url);
 			},
 			stopPlayingVideo()
 			{

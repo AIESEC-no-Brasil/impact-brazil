@@ -7,7 +7,8 @@ const config = {
 	gisPublicAPI:       "https://gis-api.aiesec.org/graphql?access_token=e316ebe109dd84ed16734e5161a2d236d0a7e6daf499941f7c110078e3c75493",
 	gisTokenAPI:        token => `https://gis-api.aiesec.org/graphql?access_token=${token}`,
 	youtubeURL:         url => `https://www.youtube.com/embed/${url}?enablejsapi=1`,
-	defaultVideoURL:    "https://www.youtube.com/embed/CckIMe0VT2k?enablejsapi=1",
+	defaultVideoID:     'HFvpmNchWJc',
+	defaultVideoURL:    "https://www.youtube.com/embed/HFvpmNchWJc?enablejsapi=1",
 	gisBrazilID:        1606,
 	defaultMonthOffset: 6,
 	videos:             {

@@ -13,7 +13,7 @@
             <div class="change-entity-text">Not from {{entityName}}? <a href="#" @click="showEntityDialog">Click
                 here</a> to change.
             </div>
-            <div v-if="entityVideo !== null"
+            <div v-if="entityName !== null"
                  id="ey-banner"
                  :style="entityThumb"
                  @mousedown="$emit('show-video', entityVideo)">
@@ -131,9 +131,9 @@
 				else
 				{
 					this.entityName = entityPartner.data['name'];
-					this.entityVideo = entityPartner.data['video'];
+					this.entityVideo = entityPartner.data['video'] ? entityPartner.data['video'] : config.defaultVideoID;
 					this.entityThumb = {
-						backgroundImage: "url('" + config.videos.entiyPartnerThumbDir + (entityPartner.data['thumbnail'] === "" ? config.videos.defaultEntityPartnerThumb : entityPartner.data['thumbnail']) + "')",
+						backgroundImage: "url('" + config.videos.entiyPartnerThumbDir + (entityPartner.data['thumbnail'] ? entityPartner.data['thumbnail'] : config.videos.defaultEntityPartnerThumb) + "')",
 					};
 				}
 
