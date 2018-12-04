@@ -5,27 +5,27 @@
             <a href="https://aiesec.org"
                rel="noopener"
                target="_blank">
-                <img src="../../assets/social/internet.png"/>
+                <span class="socicon socicon-internet"></span>
             </a>
             <a href="https://www.facebook.com/impactbrazil/"
                rel="noopener"
                target="_blank">
-                <img src="../../assets/social/facebook.png"/>
+                <span class="socicon socicon-facebook"></span>
             </a>
             <a href="https://instagram.com/aiesecnobrasil"
                rel="noopener"
                target="_blank">
-                <img src="../../assets/social/instagram.png"/>
+                <span class="socicon socicon-instagram"></span>
             </a>
             <a href="https://twitter.com/AIESECBrasil"
                rel="noopener"
                target="_blank">
-                <img src="../../assets/social/twitter.png"/>
+                <span class="socicon socicon-twitter"></span>
             </a>
             <a href="https://www.youtube.com/user/AIESECinBrazil/"
                rel="noopener"
                target="_blank">
-                <img src="../../assets/social/youtube.png"/>
+                <span class="socicon socicon-youtube"></span>
             </a>
         </div>
         <div class="legal">
@@ -67,7 +67,9 @@
 
         .social a
         {
-            margin: 0 8px;
+            margin: 0 12px;
+            font-size: 24px;
+            text-decoration: none !important;
         }
 
         a:not(.social)

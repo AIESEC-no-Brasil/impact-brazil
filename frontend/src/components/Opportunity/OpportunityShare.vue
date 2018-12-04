@@ -5,21 +5,21 @@
                     :quote="opportunity.description.length > 203 ? opportunity.description.substr(0, 200) + '...' : opportunity.description"
                     hashtags="brazil,opportunity,internship,professional,volunteering,entrepreneurship,aiesec"
                     inline-template>
-        <div>
+        <div class="social-icons">
             <network network="whatsapp">
-                <img src="../../assets/social/whatsapp.png"/>
+                <span class="socicon socicon-whatsapp"></span>
             </network>
             <network network="facebook">
-                <img src="../../assets/social/facebook.png"/>
+                <span class="socicon socicon-facebook"></span>
             </network>
             <network network="twitter">
-                <img src="../../assets/social/twitter.png"/>
+                <span class="socicon socicon-twitter"></span>
             </network>
             <network network="linkedin">
-                <img src="../../assets/social/linkedin.png"/>
+                <span class="socicon socicon-linkedin"></span>
             </network>
             <network network="googleplus">
-                <img src="../../assets/social/googleplus.png"/>
+                <span class="socicon socicon-googleplus"></span>
             </network>
         </div>
     </social-sharing>
@@ -46,8 +46,10 @@
 </script>
 
 <style scoped>
-    img
+    .social-icons >>> span
     {
+        font-size: 20px;
+        margin: 0 4px;
         cursor: pointer;
     }
 </style>

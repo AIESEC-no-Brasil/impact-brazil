@@ -38,8 +38,8 @@
             </select>
             <select title="entity" v-else>
                 <option>Loading...</option>
-            </select>
-            <button v-if="entityList.length > 0" @click="setEntity(entitySelection)">Submit</button>
+            </select><br>
+            <a href="#" class="orange-button" v-if="entityList.length > 0" @click="setEntity(entitySelection)">Submit</a>
         </SweetModal>
     </div>
 </template>
