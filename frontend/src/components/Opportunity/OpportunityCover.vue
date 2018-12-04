@@ -106,7 +106,7 @@
         height: 100%;
         background: rgba(0, 0, 0, 0.75);
         z-index: 100;
-        padding-top: 100px;
+        padding-top: 92px;
         text-align: center;
         color: #fff;
 
@@ -119,6 +119,7 @@
 
         .social
         {
+            margin-top: 8px;
             margin-bottom: 32px;
         }
         .deadline

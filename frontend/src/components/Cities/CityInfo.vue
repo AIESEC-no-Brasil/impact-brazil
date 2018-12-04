@@ -144,6 +144,7 @@
 				if (!this.cityName)
 				{
 					cityData = await loadCityById(this.cityId);
+                    this.cityRefName = cityData.data.name;
 				}
 				// By Name
 				else
