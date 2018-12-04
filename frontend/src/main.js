@@ -6,6 +6,7 @@ import VueSession from 'vue-session';
 import {config} from "./config";
 import vClickOutside from 'v-click-outside';
 import VueAnalytics from 'vue-analytics';
+import VueGtm from 'vue-gtm';
 
 Vue.use(VueSession, {persist: true});
 Vue.use(vClickOutside);
@@ -13,6 +14,12 @@ Vue.use(vClickOutside);
 Vue.use(VueAnalytics, {
 	id: 'UA-130274379-1',
 	router
+});
+
+Vue.use(VueGtm, {
+  id: 'GTM-T7Q2RBQ',
+  enabled: true,
+  vueRouter: router
 });
 
 // configure router here, since we need both $store and $router

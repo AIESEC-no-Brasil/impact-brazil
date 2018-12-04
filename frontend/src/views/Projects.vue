@@ -31,6 +31,7 @@
                                 </b-col>
                                 <b-col cols="12" md="4" class="no-padding text-right">
                                     <a @click="goToOpportunity(product.gis_id, product.gis_id === 1 ? (1100+project.sdg) : project.gis_id)"
+                                       :style="buttonBackground(product.color)"
                                        class="orange-button">
                                         Apply &raquo;
                                     </a>
@@ -145,6 +146,12 @@
 			showVideo(url = false)
 			{
 				this.$refs.videomodal.showVideo(url);
+			},
+			buttonBackground(color)
+			{
+				return {
+					backgroundColor: color
+				};
 			},
 		}
 	};

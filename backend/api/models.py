@@ -39,6 +39,7 @@ class Product(models.Model):
     details = models.TextField('Long Description')
     gis_id = models.IntegerField('Product ID on GIS', unique=True)
     logo = models.TextField('Product Logo Filename', blank=True)
+    color = models.TextField('Product Colour', blank=True)
 
     def __str__(self):
         return self.name

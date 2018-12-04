@@ -1,25 +1,13 @@
 <template>
-    <b-container fluid>
-        <b-row v-for="product in lc.products"
-               :key="product.id"
-               class="product-row">
-            <b-col cols="12" md="2" class="text-center product-logo">
-                <a href="#" @click="goToOpportunity(product.gis_id, false, lc.gis_id)">
-                    <img :src="`${getLogoDirectory(0)}${product.logo}`">
-                </a>
-            </b-col>
-            <b-col cols="12" md="10" class="project-logos">
-                <a href="#"
-                   @click="goToOpportunity(product.gis_id, product.gis_id === 1 ? 1100+project.sdg : project.gis_id, lc.gis_id)"
-                   v-for="project in getProjectsArray(product.gis_id)"
-                   :key="project.id">
-                    <img :alt="project.name"
-                         :title="project.name"
-                         :src="`${getLogoDirectory(product.gis_id)}${project.logo}`"/>
-                </a>
-            </b-col>
-        </b-row>
-    </b-container>
+    <div class="product-logo">
+        <a v-for="product in lc.products"
+           :key="product.id"
+           class="product-row"
+           href="#"
+           @click="goToOpportunity(product.gis_id, false, lc.gis_id)">
+            <img :src="`${getLogoDirectory(0)}${product.logo}`">
+        </a>
+    </div>
 </template>
 
 <script>
@@ -112,6 +100,6 @@
 
     .product-row, .product-logo
     {
-        margin-bottom: 10px;
+        margin: 10px;
     }
 </style>

@@ -42,7 +42,7 @@
         </div>
         <div v-if="(city.lc_set.length === 1 || isLC) && showDetails">
             <div class="details" v-if="this.lc.reference_name">
-                <b>Projects available in {{cityRefName}}</b>
+                <b>Products running in {{cityRefName}}</b>
                 <CityProjects :lc="lc"/>
             </div>
             <Loading small dark center v-else/>

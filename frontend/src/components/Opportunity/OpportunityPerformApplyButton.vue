@@ -81,7 +81,7 @@
 					this.$root.$emit('login');
 				else
 				{
-                    this.$ga.event('Opportunity', 'apply_attempt', '', this.id);
+                    this.$ga.event('Opportunity', 'apply_attempt', this.id.toString());
 					this.applying = true;
 					let applyData;
 					try
@@ -116,7 +116,7 @@
 						return;
 					}
 					// Track it on Google
-                    this.$ga.event('Opportunity', 'apply', '', this.id);
+                    this.$ga.event('Opportunity', 'apply', this.id.toString());
 					window.location.reload();
 					return applyData;
 				}

@@ -21,6 +21,7 @@
     "v-click-outside": "^2.0.1",
     "vue": "^2.5.17",
     "vue-analytics": "^5.16.1",
+    "vue-gtm": "^2.0.0",
     "vue-router": "^3.0.1",
     "vue-session": "^1.0.0",
     "vue-social-sharing": "^2.3.3",

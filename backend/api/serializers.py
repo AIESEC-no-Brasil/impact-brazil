@@ -62,7 +62,7 @@ class RegionSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ('id', 'name', 'description', 'shortname', 'details', 'gis_id', 'logo')
+        fields = ('id', 'name', 'description', 'shortname', 'details', 'gis_id', 'logo', 'color')
 
 
 class SubproductSerializer(serializers.ModelSerializer):
@@ -94,12 +94,12 @@ class ProjectSerializer(serializers.ModelSerializer):
 class LCSerializer(serializers.ModelSerializer):
     city = LCCitySerializer(read_only=True)
     products = ProductSerializer(many=True)
-    projects = ProjectSerializer(many=True)
-    subproducts = SubproductSerializer(many=True)
+    # projects = ProjectSerializer(many=True)
+    # subproducts = SubproductSerializer(many=True)
 
     class Meta:
         model = LC
-        fields = ('id', 'reference_name', 'unaccented_name', 'gis_id', 'city', 'products', 'subproducts', 'projects')
+        fields = ('id', 'reference_name', 'unaccented_name', 'gis_id', 'city', 'products')
 
 
 class EntityPartnerSerializer(serializers.ModelSerializer):

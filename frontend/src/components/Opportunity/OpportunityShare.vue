@@ -35,6 +35,12 @@
 		},
 		props:      {
 			opportunity: Object,
+		},
+		created()
+		{
+			this.$root.$on('social_shares_open', function (network, url) {
+				this.$ga.event('Share', network, url);
+			});
 		}
 	};
 </script>

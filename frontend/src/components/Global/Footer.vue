@@ -7,7 +7,7 @@
                target="_blank">
                 <img src="../../assets/social/internet.png"/>
             </a>
-            <a href="https://www.facebook.com/AIESECinBrazil/"
+            <a href="https://www.facebook.com/impactbrazil/"
                rel="noopener"
                target="_blank">
                 <img src="../../assets/social/facebook.png"/>
@@ -29,8 +29,9 @@
             </a>
         </div>
         <div class="legal">
-            <a rel="noopener" href="https://aiesec.org/assets/AIESEC%20Privacy%20Policy.pdf">Terms & Privacy</a> &middot;
-            This website does not use cookies.
+            This website uses cookies. &middot;
+            <a rel="noopener" href="/static/Privacy.pdf">Terms & Privacy</a> &middot;
+            <a rel="noopener" href="/static/Cookies.pdf">Cookie Policy</a>
         </div>
         <div class="copyright">
             &copy; AIESEC in Brazil {{ new Date().getFullYear() }}
@@ -43,7 +44,7 @@
 
 <script>
 	export default {
-		name: "Footer"
+		name: "Footer",
 	};
 </script>
 

@@ -1,5 +1,15 @@
 <template>
     <div class="section" id="description">
+        <div class="title">About Impact Brazil</div>
+        <div class="about-text">
+            <p>
+                "Impact Brazil isn't a message - it's a way of living, communicating and taking the Brazilian experience
+                Global. Impact yourself, impact a nation - Impact Brazil." Activate your leadership by going on an experience with AIESEC, through Impact Brazil. We provide you with the opportunity to live a shared responsibility for the world and equip you with the tools to shape it for a better future.
+            </p>
+            <p>
+                Take up a volunteering, entrepreneurship or professional opportunity in Brazil. Browse through hundreds of projects in 45 cities. Quickly and easily apply for opportunities. Powered by <a href="https://aiesec.org">AIESEC</a>.
+            </p>
+        </div>
         <div class="title">How will you choose to develop yourself?</div>
 
         <b-container class="blocks">
@@ -49,7 +59,8 @@
                         <img src="/static/images/products/hd/ge-logo.png"
                              title="Global Entrepreneur"
                              alt="Global Entrepreneur">
-                        Does a dynamic, fast-paced work environment excite you? Begin your entrepreneurial journey with an internship at a startup in Brazil!
+                        Does a dynamic, fast-paced work environment excite you? Begin your entrepreneurial journey with
+                        an internship at a startup in Brazil!
                         <div class="subtitle">DURATION</div>
                         6-12 weeks
                         <div class="subtitle">ORGANIZATION</div>
@@ -95,6 +106,14 @@
         {
             font-size: 32px;
             text-align: center;
+        }
+
+        .about-text
+        {
+            text-align: justify;
+            width: 75%;
+            margin: auto;
+            padding-bottom: 32px;
         }
 
         .prod

@@ -27,6 +27,7 @@
 <style lang="scss" scoped>
     @import "../../assets/colors";
     @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+    @import url("https://s3.amazonaws.com/icomoon.io/114779/Socicon/style.css?9ukd8d");
 
     i
     {
