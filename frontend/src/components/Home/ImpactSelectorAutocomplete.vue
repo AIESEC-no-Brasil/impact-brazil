@@ -20,8 +20,9 @@
                          :class="index === selection ? 'autocomplete-active' : ''"
                          :key="index"
                          @click="confirmOption(opt.id)">
-                        <strong>{{ opt.text.substr(0, search.length) }}</strong><span
-                            v-html="opt.text.substr(search.length)"></span>
+                        <span v-if="questionID === 'q0'"><strong>{{ opt.text.substr(0, search.length) }}</strong><span
+                            v-html="opt.text.substr(search.length)"></span></span>
+                        <span v-else v-html="opt.text"></span>
                     </div>
                 </div>
             </transition>
@@ -61,12 +62,18 @@
 				selectedID:      -1,
 				dropdownVisible: false,
 				search:          "",
+				clearedOnce:     false,
 			};
 		},
 		computed:   {
+			questionID()
+			{
+				let questionIDs = {q0: "q0", q1: "q1", q2: "q2", q3: "q3"};
+				return questionIDs[this.$vnode.data.ref];
+			},
 			optlistFiltered()
 			{
-				return this.search.length === 0 ? this.defaults : this.options.filter(opt => this.search.length === 0 || opt.text.substr(0, this.search.length).toLowerCase() === this.search.toLowerCase());
+				return this.search.length === 0 || this.questionID !== "q0" ? this.defaults : this.options.filter(opt => this.search.length === 0 || opt.text.substr(0, this.search.length).toLowerCase() === this.search.toLowerCase());
 			},
 			optlistReady()
 			{
@@ -154,22 +161,31 @@
 			},
 			focusText(e)
 			{
-				if (!this.dropdownVisible)
+				this.dropdownVisible = true;
+				this.$store.commit('showingDropdown', true);
+
+				if (this.questionID !== "q0") // !this.dropdownVisible &&
 				{
-					this.dropdownVisible = true;
-					this.$store.commit('showingDropdown', true);
 					e.target.blur();
 					e.preventDefault();
 				}
 				else
 				{
-					e.target.select();
+					if (this.clearedOnce)
+						e.target.select();
+					else
+					{
+						this.clearedOnce = true;
+						this.search = "";
+					}
 				}
 			},
 			hideDropdown()
 			{
-				if (arguments[1] && arguments[1].className === "autocomplete-items") return;
-				if (!this.dropdownVisible) return;
+				if (arguments[1] && arguments[1].className.indexOf("autocomplete-items-enter") > -1)
+					return false;
+				if (!this.dropdownVisible)
+					return false;
 
 				this.dropdownVisible = false;
 				this.$nextTick(() => this.$store.commit('showingDropdown', false));
