@@ -3,7 +3,6 @@
          :class="isTopOfPage && !$store.state.showingQuestions ? 'no-background' : ''"
          v-click-outside="collapse">
         <img @click="goHome" src="../../assets/logonav.png" title="Impact Brazil"/>
-
         <nav :class="hidden ? 'collapsed' : 'open'">
             <transition name="fade" mode="out-in">
                 <ul v-if="!userMenu" key="general">
@@ -19,15 +18,8 @@
                     </li>
                     <li>
                         <router-link @click.native="collapse"
-                                     :to="opportunityLink"
-                                     :class="routerLinkManualActive('opportunity')">
-                            Opportunities
-                        </router-link>
-                    </li>
-                    <li>
-                        <router-link @click.native="collapse"
-                                     to="/projects">
-                            Projects
+                                     to="/about">
+                            About
                         </router-link>
                     </li>
                     <li>
@@ -39,8 +31,15 @@
                     </li>
                     <li>
                         <router-link @click.native="collapse"
-                                     to="/about">
-                            About
+                                     to="/projects">
+                            Projects
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link @click.native="collapse"
+                                     :to="opportunityLink"
+                                     :class="routerLinkManualActive('opportunity')">
+                            Opportunities
                         </router-link>
                     </li>
                     <li>

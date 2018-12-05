@@ -26,8 +26,10 @@
         <o-row separator/>
         <o-row title="Host">{{opportunity.home_lc.full_name}}</o-row>
         <o-row title="Location">
-            <i class="material-icons" style="vertical-align: middle; position: relative; top: -2px;">satellite</i>
-            <a :href="`https://maps.google.com/?q=${opportunity.location}`">{{opportunity.location}}</a>
+            <i class="material-icons" style="vertical-align: middle; position: relative; top: -2px;">location</i>
+            <a :href="`https://maps.google.com/?q=${opportunity.location}`"
+               rel="noopener"
+               target="_blank">{{opportunity.location}}</a>
         </o-row>
     </div>
 </template>

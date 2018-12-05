@@ -32,7 +32,7 @@
         </o-row>
         <o-row v-if="extra.lc" title="City">
             <router-link v-if="extra.lc.city.name_unaccented"
-                         :to="`/city/${extra.lc.city.name_unaccented.toLowerCase().replace(/\s/g, '-')}`"
+                         :to="`/about-${extra.lc.city.name_unaccented.toLowerCase().replace(/\s/g, '-')}`"
                          @click.native="$store.commit('queueOptReload')">
                 {{extra.lc.city.name}}
             </router-link>

@@ -45,9 +45,20 @@ export default new Router({
 			component: () => import('./views/Contact.vue')
 		},
 		{
-			path:      '/searchtool/:prod',
+			path:      '/searchtool/:prod?',
 			name:      'searchtool',
 			component: () => import(/* webpackChunkName: "opportunities" */ './views/Searchtool.vue'),
+		},
+		{
+			path:      '/impact-:name',
+			name:      'cityredirect',
+			component: () => import('./views/CityRedirect.vue'),
+			alias:     ['/gv-:name', '/gt-:name', '/ge-:name']
+		},
+		{
+			path:      '/about-:city',
+			name:      'city',
+			component: () => import(/* webpackChunkName: "city" */ './views/City.vue'),
 		},
 		{
 			path:     '/gv',
@@ -68,8 +79,8 @@ export default new Router({
 		},
 		{
 			path:      '*',
-			name:      'city',
-			component: () => import(/* webpackChunkName: "city" */ './views/City.vue'),
+			name:      'cityredirect-searchtool',
+			component: () => import('./views/CityRedirect.vue'),
 		},
 	],
 	scrollBehavior: (to, from, savedPosition) => {

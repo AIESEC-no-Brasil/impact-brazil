@@ -18,6 +18,7 @@
                     <div class="project" v-for="project in getDataset(product.gis_id)" :key="project.id">
                         <div class="project-title">{{project.name}}</div>
                         <div class="project-image"
+                             v-if="project.name !== 'Other'"
                              :style="videoThumb(project.thumbnail)"
                              @click="showVideo(project.video_link)">
                             <div></div>

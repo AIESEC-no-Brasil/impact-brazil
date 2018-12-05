@@ -13,7 +13,7 @@
                        tabindex="0"/>
             </label>
             <transition name="autocomplete-items">
-                <div class="autocomplete-items"
+                <div :class="['autocomplete-items', questionID === 'q0' ? 'entity-name' : '']"
                      v-if="dropdownVisible"
                      v-click-outside="hideDropdown">
                     <div v-for="(opt, index) in optlistFiltered"
@@ -21,7 +21,7 @@
                          :key="index"
                          @click="confirmOption(opt.id)">
                         <span v-if="questionID === 'q0'"><strong>{{ opt.text.substr(0, search.length) }}</strong><span
-                            v-html="opt.text.substr(search.length)"></span></span>
+                                v-html="opt.text.substr(search.length)"></span></span>
                         <span v-else v-html="opt.text"></span>
                     </div>
                 </div>
@@ -263,6 +263,11 @@
         border-bottom: 1px solid #d4d4d4;
         /*font-size: 2em;*/
         font-family: PierSans, sans-serif;
+    }
+
+    .entity-name div
+    {
+        padding: 4px 10px;
     }
 
     .autocomplete-items div:hover

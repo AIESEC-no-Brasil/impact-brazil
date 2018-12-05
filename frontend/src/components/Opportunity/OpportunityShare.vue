@@ -7,7 +7,7 @@
                     inline-template>
         <div class="social-icons">
             <network network="whatsapp">
-                <span class="socicon socicon-whatsapp"></span>
+                <span class="whatsapp socicon socicon-whatsapp"></span>
             </network>
             <network network="facebook">
                 <span class="socicon socicon-facebook"></span>
@@ -51,5 +51,13 @@
         font-size: 20px;
         margin: 0 4px;
         cursor: pointer;
+    }
+
+    @media screen and (min-width: 768px)
+    {
+        .whatsapp
+        {
+            display: none;
+        }
     }
 </style>

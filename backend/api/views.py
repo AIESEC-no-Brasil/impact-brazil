@@ -58,9 +58,9 @@ class OpportunityList(APIView):
         q = self.request.query_params.get('q', None)
         all_opps = self.request.query_params.get('all_opps', False)
 
-        # Product must be specified
-        if product is None and lc is None:
-            raise exceptions.ParseError('Either product or lc must be specified')
+        # Product must be specified, do we really need to do this? Commented out
+        # if product is None and lc is None:
+        #    raise exceptions.ParseError('Either product or lc must be specified')
 
         # Prevent opportunities that have closed from showing
         today = datetime.now()
@@ -179,9 +179,9 @@ class SubproductList(generics.ListAPIView):
         product = self.request.query_params.get('product', None)
 
         if product is None:
-            return Subproduct.objects.filter(hidden=False).order_by('name')
+            return Subproduct.objects.filter(hidden=False).order_by('order')
         else:
-            return Subproduct.objects.filter(hidden=False, product__gis_id=product).order_by('name')
+            return Subproduct.objects.filter(hidden=False, product__gis_id=product).order_by('order')
 
     serializer_class = SubproductSerializer
 
@@ -208,8 +208,9 @@ class SDGDetail(generics.RetrieveAPIView):
 
 # Get list of Projects
 class ProjectList(generics.ListAPIView):
-    queryset = Project.objects.order_by('sdg_id')
+    queryset = Project.objects.order_by('order')
     serializer_class = ProjectSerializer
+
 
 # Get details of Project
 class ProjectDetail(generics.RetrieveAPIView):
@@ -379,12 +380,14 @@ class OpportunityGIS(APIView):
                                       variables={'id': pk, 'cdn_links': True})
                 opp_data = opp_request
             except Exception as e:
-                if str(e).find("401") == -1:
+                if str(e).find("404") > -1:
+                    return Response({'error': "Opportunity not found"}, status=status.HTTP_404_NOT_FOUND)
+                elif str(e).find("401") > -1:
+                    return Response({'error': 'Access token expired'}, status=status.HTTP_401_UNAUTHORIZED)
+                else:
                     return Response(
                         {'error': "There was a problem getting the opportunity from the GIS.", 'e_text': str(e)},
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-                else:
-                    return Response({'error': 'Access token expired'}, status=status.HTTP_401_UNAUTHORIZED)
 
             # Save this to the database
             opp = OpportunityCache(opp_id=pk, opp_json=json.dumps(opp_data))

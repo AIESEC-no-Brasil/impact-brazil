@@ -77,6 +77,24 @@ class SDGSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'description', 'gis_id', 'logo')
 
 
+class ProductSerializerMini(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ('id', 'name', 'shortname')
+
+
+class SubproductSerializerMini(serializers.ModelSerializer):
+    class Meta:
+        model = Subproduct
+        fields = ('id', 'name')
+
+
+class SDGSerializerMini(serializers.ModelSerializer):
+    class Meta:
+        model = SDG
+        fields = ('id', 'number', 'name')
+
+
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
@@ -94,6 +112,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 class LCSerializer(serializers.ModelSerializer):
     city = LCCitySerializer(read_only=True)
     products = ProductSerializer(many=True)
+
     # projects = ProjectSerializer(many=True)
     # subproducts = SubproductSerializer(many=True)
 
@@ -110,6 +129,9 @@ class EntityPartnerSerializer(serializers.ModelSerializer):
 
 class OpportunitySerializer(serializers.ModelSerializer):
     lc = LCSerializerMini(read_only=True)
+    product = ProductSerializerMini(read_only=True)
+    subproduct = SubproductSerializerMini(read_only=True)
+    sdg = SDGSerializerMini(read_only=True)
     response_time = serializers.SerializerMethodField()
     standards_delivery = serializers.SerializerMethodField()
 
@@ -145,6 +167,6 @@ class OpportunitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Opportunity
-        fields = ('id', 'gis_id', 'title', 'organization_name', 'organization_gis_id', 'picture_url', 'location',
-                  'duration', 'start_date', 'end_date', 'close_date', 'available_openings', 'created_at', 'updated_at',
-                  'lc', 'response_time', 'standards_delivery')
+        fields = ('id', 'gis_id', 'title', 'product', 'sdg', 'subproduct', 'organization_name', 'organization_gis_id',
+                  'picture_url', 'location', 'duration', 'start_date', 'end_date', 'close_date', 'available_openings',
+                  'created_at', 'updated_at', 'lc', 'response_time', 'standards_delivery')

@@ -49,7 +49,7 @@
         </div>
 
         <router-link class="orange-button"
-                     :to='`/${city.name_unaccented.toLowerCase().replace(/\s/g, "-")}`'
+                     :to='`/about-${city.name_unaccented.toLowerCase().replace(/\s/g, "-")}`'
                      v-if="!showDetails">
             Learn More about {{city.name}} &raquo;
         </router-link>

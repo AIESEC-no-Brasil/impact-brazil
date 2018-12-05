@@ -4,22 +4,43 @@
             {{[null, "GV", "GT", null, null, "GE"][$route.params.prod]}} Opportunities
             &middot; <a href="#" v-if="opps.length > 0" @click="csvExport">Export as Spreadsheet</a>
         </div>
-        <table-component :data="opps" id="opps" v-if="opps.length > 0">
-            <table-column show="gis_id" label="Opp. ID"></table-column>
-            <table-column show="lc.reference_name" label="LC"></table-column>
-            <table-column show="title" label="Title"></table-column>
-            <table-column show="organization_name" label="Organization"></table-column>
-            <table-column label="Duration">
-                <template slot-scope="row">{{row.duration}} weeks</template>
+        <div class="explanation">Click on one of the table headers to sort by that column.</div>
+        <table-component :data="opps"
+                         id="opps"
+                         v-if="opps.length > 0"
+                         ref="oppsTable">
+            <table-column label="Opp. ID" :sortable="false">
+                <template slot-scope="gis_id">
+                    <a :href='`https://expa.aiesec.org/opportunity/${gis_id.gis_id}`'
+                       target="_blank"
+                       rel="noopener">
+                        {{gis_id.gis_id}}
+                    </a>
+                </template>
             </table-column>
-            <table-column show="available_openings" label="Openings"></table-column>
-            <table-column show="start_date" label="Start Date" data-type="date:YYYY-MM-DD"></table-column>
-            <table-column show="end_date" label="End Date" data-type="date:YYYY-MM-DD"></table-column>
-            <table-column show="close_date" label="Close Date" data-type="date:YYYY-MM-DD"></table-column>
+            <table-column show="lc.reference_name" label="LC"></table-column>
+            <table-column show="product.shortname" label="Prod."></table-column>
+            <table-column show="subproduct" :formatter="subproductFormatter" label="Subproduct"></table-column>
+            <table-column show="sdg" label="SDG" :formatter="sdgFormatter"></table-column>
+            <table-column label="Title" :sortable="false">
+                <template slot-scope="title">
+                    <router-link :to='`/opportunity/${title.gis_id}`'>{{title.title}}</router-link>
+                </template>
+            </table-column>
+            <table-column show="organization_name" label="Organization"></table-column>
+            <table-column show="duration" label="Duration" :formatter="durationFormatter" data-type="numeric"
+                          sort-by="duration"></table-column>
+            <table-column show="available_openings" label="Openings" data-type="numeric"></table-column>
+            <table-column cell-class="non-wrapping-cell" show="start_date" label="Start Date"
+                          data-type="date:YYYY-MM-DD"></table-column>
+            <table-column cell-class="non-wrapping-cell" show="end_date" label="End Date"
+                          data-type="date:YYYY-MM-DD"></table-column>
+            <table-column cell-class="non-wrapping-cell" show="close_date" label="Close Date"
+                          data-type="date:YYYY-MM-DD"></table-column>
         </table-component>
         <div style="padding: 35vh 0; text-align: center;" v-else>
             <Loading dark center/>
-            Getting opportunity data, this could take a few minutes...
+            Getting opportunity data, this could take a minute...
         </div>
     </div>
 </template>
@@ -75,32 +96,51 @@
 
 				link.click();
 				return true;
+			},
+			durationFormatter(duration)
+			{
+				return `${duration} wks`;
+			},
+			sdgFormatter(sdg)
+			{
+				return sdg ? `${sdg.number}: ${sdg.name}` : "N/A";
+			},
+			subproductFormatter(subproduct)
+			{
+				return subproduct ? subproduct.name : "N/A";
+			},
+			rowClickHandler(row)
+			{
+				this.$router.push(`/opportunity/${row.data.gis_id}`);
 			}
 		},
 		async mounted()
 		{
-			if (!this.$route.params.prod)
-			{
-				this.$router.push('/404');
-			}
-			else
-			{
-				let product = parseInt(this.$route.params.prod);
-				let oppData;
-				try
-				{
-					oppData = await axios.get(config.api + config.endpoints.opportunities + '?all_opps=true&product=' + product);
-				}
-				catch (err)
-				{
-					console.error(err);
-					this.$root.$emit('error');
-					return;
-				}
+			this.setTitle("Searchtool");
 
-				this.opps = oppData.data;
+			let product = this.$route.params.prod ? parseInt(this.$route.params.prod) : null;
+			let oppData;
+			try
+			{
+				let url = config.api + config.endpoints.opportunities + '?zall_opps=true';
+				if (product)
+					url += '&product=' + product;
 
+				oppData = await axios.get(url);
 			}
+			catch (err)
+			{
+				console.error(err);
+				this.$root.$emit('error');
+				return;
+			}
+
+			this.opps = oppData.data;
+
+			// Hacky way of doing this
+			if (this.$route.query.filter)
+				setTimeout(() => this.$refs.oppsTable.filter = this.$route.query.filter, 1000);
+
 		}
 	};
 </script>
@@ -110,6 +150,15 @@
     {
         margin-top: 10px;
         font-size: 2em;
+    }
+
+    @media screen and (min-width: 768px)
+    {
+        .explanation
+        {
+            position: relative;
+            top: 40px;
+        }
     }
 
     *,
@@ -126,7 +175,7 @@
     {
         display: flex;
         flex-direction: column;
-        margin: 4em 0;
+        margin-bottom: 4em;
     }
 
     .table-component__filter
@@ -213,6 +262,16 @@
         background-color: #f0f0f0;
     }
 
+    /*.table-component__table tbody tr*/
+    /*{*/
+    /*cursor: pointer;*/
+    /*}*/
+
+    /*.table-component__table tbody tr:hover*/
+    /*{*/
+    /*background-color: #addef0;*/
+    /*}*/
+
     .table-component__table a
     {
         color: #007593;
@@ -253,5 +312,10 @@
     .table-component__th--sort-desc:after
     {
         content: '↓';
+    }
+
+    .non-wrapping-cell
+    {
+        white-space: nowrap;
     }
 </style>

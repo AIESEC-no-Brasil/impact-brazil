@@ -79,6 +79,7 @@ class Subproduct(models.Model):
     description = models.TextField('Subproduct Description', blank=True)
     video_link = models.CharField('Video ID (YouTube)', max_length=256, blank=True)
     thumbnail = models.CharField('Thumbnail Filename', blank=True, max_length=256)
+    order = models.IntegerField(default=0)
     hidden = models.BooleanField(default=False)
 
     def __str__(self):
@@ -92,6 +93,7 @@ class Project(models.Model):
     logo = models.TextField('Project Logo', blank=True)
     video_link = models.CharField('Video ID (YouTube)', max_length=256, blank=True)
     thumbnail = models.CharField('Thumbnail Filename', blank=True, max_length=256)
+    order = models.IntegerField(default=0)
     hidden = models.BooleanField(default=False)
 
     def __str__(self):
