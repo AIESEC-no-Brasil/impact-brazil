@@ -1,7 +1,9 @@
 <template>
     <div>
         <router-link :to="`/opportunity/${id}`" class="shiny-btn">Details &raquo;</router-link>
-        <div class="response-time" v-if="responseTime">Usually follows up within {{responseTime}}</div>
+        <div class="response-time" v-if="responseTime && responseTime !== '0 hours'">
+            Usually follows up within {{responseTime}}
+        </div>
         <div class="response-time" v-else>&nbsp;</div>
     </div>
 </template>

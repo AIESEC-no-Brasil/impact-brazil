@@ -1,6 +1,5 @@
 <template>
     <Loading dark fullscreen center/>
-    </div>
 </template>
 
 <script>

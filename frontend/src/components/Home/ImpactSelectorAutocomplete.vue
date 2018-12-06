@@ -19,6 +19,7 @@
                     <div v-for="(opt, index) in optlistFiltered"
                          :class="index === selection ? 'autocomplete-active' : ''"
                          :key="index"
+                         role="button"
                          @click="confirmOption(opt.id)">
                         <span v-if="questionID === 'q0'"><strong>{{ opt.text.substr(0, search.length) }}</strong><span
                                 v-html="opt.text.substr(search.length)"></span></span>

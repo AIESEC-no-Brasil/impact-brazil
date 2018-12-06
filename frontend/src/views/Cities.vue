@@ -43,9 +43,9 @@
 		data()
 		{
 			return {
-				cities: [],
-				city:   0,
-                hovered: 0,
+				cities:  [],
+				city:    0,
+				hovered: 0,
 			};
 		},
 		methods:    {
@@ -64,10 +64,10 @@
 				}
 				this.cities = cityData.data;
 			},
-            hoverCity(id)
-            {
-            	this.hovered = id;
-            },
+			hoverCity(id)
+			{
+				this.hovered = id;
+			},
 			async loadCity(cityID)
 			{
 				this.city = cityID;
@@ -75,7 +75,7 @@
 		},
 		async created()
 		{
-            this.setTitle("Cities");
+			this.setTitle("Cities");
 			this.loadCities();
 		}
 	};

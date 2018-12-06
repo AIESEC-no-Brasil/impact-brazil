@@ -1,9 +1,6 @@
 const config = {
 	websiteName:        "Impact Brazil",
-	api:                window.webpackHotUpdate
-		                    //? "http://localhost:8000/api/"
-		                    ? "http://14b09182.ngrok.io/api/"
-		                    : "https://impactbrazil.org/api/api/",
+	api:                window.webpackHotUpdate ? "http://localhost:8000/api/" : "https://impactbrazil.org/api/api/",
 	gisPublicAPI:       "https://gis-api.aiesec.org/graphql?access_token=e316ebe109dd84ed16734e5161a2d236d0a7e6daf499941f7c110078e3c75493",
 	gisTokenAPI:        token => `https://gis-api.aiesec.org/graphql?access_token=${token}`,
 	youtubeURL:         url => `https://www.youtube.com/embed/${url}?enablejsapi=1`,

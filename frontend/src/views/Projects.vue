@@ -57,7 +57,6 @@
 	import bRow from 'bootstrap-vue/es/components/layout/row';
 
 	import MarkdownIt from 'markdown-it';
-	import axios from 'axios';
 	import {config} from '../config';
 	import {dataLoad} from '../functions/data-loader';
 

@@ -2,9 +2,8 @@
     <div class="section">
         <i class="material-icons">contact_support</i>
         <div class="title">Contact Us</div>
-        <div class="text-center">
-            Drop us a mail at <a href='mailto:impact.brazil@aiesec.net' target='_blank'>impact.brazil@aiesec.net</a>
-            to get in touch with us!
+        <div class="iframe">
+            <iframe src="https://podio.com/webforms/21986117/1538640"></iframe>
         </div>
     </div>
 </template>
@@ -12,17 +11,17 @@
 <script>
 	export default {
 		name: "Contact",
-        created()
-        {
-            this.setTitle("Contact");
-        }
+		created()
+		{
+			this.setTitle("Contact");
+		},
 	};
 </script>
 
 <style scoped>
     .section
     {
-        margin: 10vh 0 45vh 0;
+        margin: 10vh 0 0 0;
     }
 
     .title
@@ -39,5 +38,18 @@
         margin: auto;
         display: block;
         text-align: center;
+    }
+
+    .iframe
+    {
+        width: 100%;
+        text-align: center;
+    }
+    iframe
+    {
+        margin: auto;
+        border: 0;
+        width: 60%;
+        height: 800px;
     }
 </style>

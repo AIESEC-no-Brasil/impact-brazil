@@ -69,7 +69,7 @@
 		},
 		methods:    {
 			loadInvite: async function () {
-				let entityPartner, entityPartnerID, entities;
+				let entityPartner, entityPartnerID;
 
 				if (this.$session.get('entity') !== undefined)
 					entityPartnerID = this.$session.get('entity');

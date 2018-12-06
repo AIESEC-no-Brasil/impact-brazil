@@ -11,7 +11,6 @@
 
 <script>
 	import SVG from 'svgjs';
-	import {config} from '../../config';
 
 	export default {
 		name:    "CityMap",

@@ -44,7 +44,6 @@
 <script>
 	import ImpactSelectorAutocomplete from './ImpactSelectorAutocomplete.vue';
 	import ImpactSelectorButton from './ImpactSelectorButton.vue';
-	import axios from 'axios';
 	import {config} from '../../config.js';
 	import {monthList} from '../../functions/month-list';
 	import {dataLoad} from '../../functions/data-loader';
@@ -229,8 +228,6 @@
 				let imageLists = ["products", "sdgs", "subproductsGT", "subproductsGE"];
 				let listsArray = ["entities", ...imageLists];
 				let loadOut = await dataLoad(this, listsArray);
-
-				let lists = [];
 
 				// Convert our "un-vetted" data to vetted data
 				let getDataFromList = (data, idKey, textKey, imageKey = false, imageW = 0, imageDir = "/static/images/") => {

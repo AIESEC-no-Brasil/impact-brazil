@@ -4,10 +4,14 @@
         <div class="about-text">
             <p>
                 "Impact Brazil isn't a message - it's a way of living, communicating and taking the Brazilian experience
-                Global. Impact yourself, impact a nation - Impact Brazil." Activate your leadership by going on an experience with AIESEC, through Impact Brazil. We provide you with the opportunity to live a shared responsibility for the world and equip you with the tools to shape it for a better future.
+                Global. Impact yourself, impact a nation - Impact Brazil." Activate your leadership by going on an
+                experience with AIESEC, through Impact Brazil. We provide you with the opportunity to live a shared
+                responsibility for the world and equip you with the tools to shape it for a better future.
             </p>
             <p>
-                Take up a volunteering, entrepreneurship or professional opportunity in Brazil. Browse through hundreds of projects in 45 cities. Quickly and easily apply for opportunities. Powered by <a href="https://aiesec.org">AIESEC</a>.
+                Take up a volunteering, entrepreneurship or professional opportunity in Brazil. Browse through hundreds
+                of projects in 45 cities. Quickly and easily apply for opportunities. Powered by <a
+                    href="https://aiesec.org">AIESEC</a>.
             </p>
         </div>
         <div class="title">How will you choose to develop yourself?</div>
@@ -27,11 +31,9 @@
                         NGO
                         <div class="subtitle">COMPENSATION</div>
                         No
-                        <a href="https://aiesec.org/global-volunteer"
-                           rel="noopener"
-                           target="_blank">
-                            Read More
-                        </a>
+                        <router-link to="/opportunities?product=1">
+                            Apply for Global Volunteer Opportunities in Brazil
+                        </router-link>
                     </div>
                 </b-col>
                 <b-col cols="12" md="4">
@@ -47,11 +49,9 @@
                         Company
                         <div class="subtitle">COMPENSATION</div>
                         Yes
-                        <a href="https://aiesec.org/global-talent"
-                           rel="noopener"
-                           target="_blank">
-                            Read More
-                        </a>
+                        <router-link to="/opportunities?product=2">
+                            Apply for Global Talent Opportunities in Brazil
+                        </router-link>
                     </div>
                 </b-col>
                 <b-col cols="12" md="4">
@@ -67,11 +67,9 @@
                         Startup
                         <div class="subtitle">COMPENSATION</div>
                         No
-                        <a href="https://aiesec.org/global-entrepreneur"
-                           rel="noopener"
-                           target="_blank">
-                            Read More
-                        </a>
+                        <router-link to="/opportunities?product=5">
+                            Apply for Global Entrepreneur Opportunities in Brazil
+                        </router-link>
                     </div>
                 </b-col>
             </b-row>

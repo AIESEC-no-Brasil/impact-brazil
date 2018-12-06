@@ -108,8 +108,6 @@
 	import bDropdownItem from 'bootstrap-vue/es/components/dropdown/dropdown-item';
 	import bFormInput from 'bootstrap-vue/es/components/form-input/form-input';
 
-	import axios from 'axios';
-	import {config} from '../../config';
 	import {monthList} from '../../functions/month-list';
 	import {dataLoad} from '../../functions/data-loader';
 	import Loading from '../Loading';
@@ -183,8 +181,6 @@
 			{
 				let listsArray = ["products", "sdgs", "subproductsGT", "subproductsGE", "lcs"];
 				let loadOut = await dataLoad(this, listsArray);
-
-				let lists = [];
 
 				// Convert our "un-vetted" data to vetted data
 				let getDataFromList = (data, idKey, textKey) => {
@@ -286,7 +282,7 @@
 				this.$emit('options-changed');
 
 				// Track on Google
-                this.$ga.event('Filters', 'filter_set', JSON.stringify(queryString), this.id);
+				this.$ga.event('Filters', 'filter_set', JSON.stringify(queryString), this.id);
 			},
 			removeOption(opt, text)
 			{
@@ -365,10 +361,10 @@
 				if (val)
 					this.setSelections();
 			},
-            search()
-            {
-            	this.searchHandler();
-            }
+			search()
+			{
+				this.searchHandler();
+			}
 		},
 		async created()
 		{
