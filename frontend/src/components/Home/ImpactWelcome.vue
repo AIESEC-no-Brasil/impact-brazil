@@ -8,7 +8,7 @@
              id="higher-overlay"
              v-show="showingQuestions"
              @mousedown="hideQuestions"></div>
-        <VideoBg :sources="['../static/background.webm']"
+        <VideoBg :sources="['../static/background.mp4']"
                  img="/static/background.jpg">
             <div class="text-center" id="logo">
                 <img src="../../assets/logo4.png">
