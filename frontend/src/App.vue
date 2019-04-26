@@ -13,8 +13,8 @@
         <Errors/>
 
         <div id="snackbar">
-          Este site usa cookies para assegurar que você tenha uma ótima experiência online.
-          <a href="../../assets/politica_cookies_ptbr.pdf" target="_blank"><u>Saiba mais</u></a>
+          This website uses cookies to ensure you get the best experience in our website.
+          <a href="./static/cookies_policy.pdf" target="_blank"><u>Learn more</u></a>
           <button type="button" class="btn btn-default" v-on:click="hideSnackBar">Ok!</button>
         </div>
     </div>
