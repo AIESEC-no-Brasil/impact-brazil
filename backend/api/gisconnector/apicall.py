@@ -160,8 +160,7 @@ def yop_apply_opportunity(api_key, opp_id, gip_answer=None, user_id=None):
 
     # Now, ideally, GIS should check if other parameters are missing and error below
     # We need to check for academic_exp, professional_exp and summary
-    if len(person_profile['academic_experiences']) == 0 or len(person_profile['professional_experiences']) == 0 or \
-            len(person_profile['summary']) == 0:
+    if len(person_profile['academic_experiences']) == 0 or len(person_profile['professional_experiences']) == 0:
         return False, json.dumps({'error': 'Incomplete profile', 'error_code': 'E_INCOMPLETE_PROFILE'})
 
     # Now submit the application and hope it worked!
@@ -172,7 +171,7 @@ def yop_apply_opportunity(api_key, opp_id, gip_answer=None, user_id=None):
         QueueUrl='https://sqs.us-west-1.amazonaws.com/846501484982/temp',
         MessageBody=json.dumps({
             'personId': current_person_id,
-            'operationId': opp_id,
+            'opportunityId': opp_id,
             'date': str(datetime.datetime.now())
         })
     )
