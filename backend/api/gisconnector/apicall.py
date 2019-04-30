@@ -168,7 +168,7 @@ def yop_apply_opportunity(api_key, opp_id, gip_answer=None, user_id=None):
     request = requests.post(url, data={'application[opportunity_id]': opp_id, 'application[gt_answer]': gip_answer})
 
     response = client.send_message(
-        QueueUrl='https://sqs.us-west-1.amazonaws.com/846501484982/temp',
+        QueueUrl='https://sqs.us-west-1.amazonaws.com/846501484982/impact_brazil_referral',
         MessageBody=json.dumps({
             'personId': current_person_id,
             'opportunityId': opp_id,
