@@ -2,6 +2,9 @@ import json
 from urllib.parse import urlparse, quote
 import requests
 from . import config, getkey
+import boto3
+import datetime
+client = boto3.client('sqs')
 
 
 # Special printing function
@@ -157,11 +160,20 @@ def yop_apply_opportunity(api_key, opp_id, gip_answer=None, user_id=None):
 
     # Now, ideally, GIS should check if other parameters are missing and error below
     # We need to check for academic_exp, professional_exp and summary
-    if len(person_profile['academic_experiences']) == 0 or len(person_profile['professional_experiences']) == 0 or \
-            len(person_profile['summary']) == 0:
+    if len(person_profile['academic_experiences']) == 0 or len(person_profile['professional_experiences']) == 0:
         return False, json.dumps({'error': 'Incomplete profile', 'error_code': 'E_INCOMPLETE_PROFILE'})
 
     # Now submit the application and hope it worked!
     url = config.expa_rest_api_apply_url.format(api_key)
     request = requests.post(url, data={'application[opportunity_id]': opp_id, 'application[gt_answer]': gip_answer})
+
+    response = client.send_message(
+        QueueUrl='https://sqs.us-west-1.amazonaws.com/846501484982/impact_brazil_referral',
+        MessageBody=json.dumps({
+            'personId': current_person_id,
+            'opportunityId': opp_id,
+            'date': str(datetime.datetime.now())
+        })
+    )
+
     return request.status_code == 201, request.json()
