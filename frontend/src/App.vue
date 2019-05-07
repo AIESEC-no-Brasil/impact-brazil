@@ -12,10 +12,12 @@
         <User/>
         <Errors/>
 
-        <div id="snackbar">
-          This website uses cookies to ensure you get the best experience in our website.
-          <a href="./static/cookies_policy.pdf" target="_blank"><u>Learn more</u></a>
-          <button type="button" class="btn btn-default" v-on:click="hideSnackBar">Ok!</button>
+        <div id='content-snackbar'>
+          <div id="snackbar">
+            This website uses cookies to ensure you get the best experience in our website.
+            <a href="./static/cookies_policy.pdf" target="_blank"><u>Learn more</u></a>
+            <button type="button" class="btn btn-default btn-transparent" v-on:click="hideSnackBar">Ok!</button>
+          </div>
         </div>
     </div>
 </template>
@@ -157,58 +159,129 @@
         opacity: 0;
     }
 
-    /* The snackbar - position it at the bottom and in the middle of the screen */
+    #content-snackbar {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+
     #snackbar {
-      visibility: hidden; /* Hidden by default. Visible on click */
-      min-width: 250px; /* Set a default minimum width */
-      margin-left: -125px; /* Divide value of min-width by 2 */
-      background-color: #333; /* Black background color */
-      color: #fff; /* White text color */
-      text-align: center; /* Centered text */
-      border-radius: 0.25rem; /* Rounded borders */
-      padding: 18px; /* Padding */
-      position: fixed; /* Sit on top of the screen */
-      z-index: 99999; /* Add a z-index if needed */
-      left: 30%; /* Center the snackbar */
-      bottom: 0px; /* 30px from the bottom */
-    }
+        visibility: hidden;
+        /* Hidden by default. Visible on click */
+        min-width: 250px;
+        /* Set a default minimum width */
+        margin: auto;
+        background-color: #333;
+        /* Black background color */
+        color: #fff;
+        /* White text color */
+        text-align: center;
+        /* Centered text */
+        border-radius: 0.25rem;
+        /* Rounded borders */
+        padding: 5px 15px;
+        /* Padding */
+        position: relative;
+        /* Sit on top of the screen */
+        display: flex;
+        align-items: center;
 
-    #snackbar button {
-        margin-left: 20px;
-        margin-top: 5px;
-    }
-
-    #snackbar a {
-        margin-left: 10px;    
-    }
-
-    /* Show the snackbar when clicking on a button (class added with JavaScript) */
-    #snackbar.show {
-      visibility: visible; /* Show the snackbar */
-      /* Add animation: Take 0.5 seconds to fade in and out the snackbar. 
+        /* Add a z-index if needed */
+        &.show {
+            visibility: visible;
+            /* Show the snackbar */
+            /* Add animation: Take 0.5 seconds to fade in and out the snackbar. 
       However, delay the fade out process for 2.5 seconds */
-      -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-      animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        button {
+            margin-left: 20px;
+            padding: 5px 15px;
+            font-size: 12px;
+            line-height: 15px;
+        }
+
+        a {
+            margin-left: 10px;
+        }
+    }
+}
+
+
+/* Animations to fade the snackbar in and out */
+@-webkit-keyframes fadein {
+    from {
+        bottom: 0;
+        opacity: 0;
     }
 
-    /* Animations to fade the snackbar in and out */
-    @-webkit-keyframes fadein {
-      from {bottom: 0; opacity: 0;} 
-      to {bottom: 30px; opacity: 1;}
+    to {
+
+        opacity: 1;
+    }
+}
+
+@keyframes fadein {
+    from {
+        bottom: 0;
+        opacity: 0;
     }
 
-    @keyframes fadein {
-      from {bottom: 0; opacity: 0;}
-      to {bottom: 30px; opacity: 1;}
+    to {
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes fadeout {
+    from {
+        opacity: 1;
     }
 
-    @-webkit-keyframes fadeout {
-      from {bottom: 30px; opacity: 1;} 
-      to {bottom: 0; opacity: 0;}
+    to {
+        bottom: 0;
+        opacity: 0;
+    }
+}
+
+@keyframes fadeout {
+    from {
+        opacity: 1;
     }
 
-    @keyframes fadeout {
-      from {bottom: 30px; opacity: 1;}
-      to {bottom: 0; opacity: 0;}
+    to {
+        bottom: 0;
+        opacity: 0;
     }
+}
+
+@media screen and (max-width: 991px) {
+    #content-snackbar {
+        #snackbar {
+            display: block;
+            padding: 10px;
+
+            button {
+                margin-top: 10px;
+            }
+        }
+    }
+}
+
+.btn-transparent {
+  background-color: #333;
+  color: white;
+  border: 1px solid #fff;
+}
+
+.btn-transparent:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: black;
+}
+
 </style>
