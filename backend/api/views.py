@@ -325,7 +325,11 @@ class Apply(APIView):
             return Response({"success": True, "response": response})
         else:
             try:
-                response_dict = json.loads(response)
+                if isinstance(response, str):
+                    response_dict = json.loads(response)
+                else:
+                    return Response({"error": response['error']}, status=status.HTTP_400_BAD_REQUEST)
+                
                 if response_dict['error_code'] == 'E_INCOMPLETE_PROFILE':
                     return Response({"error": "Incomplete profile"}, status=status.HTTP_403_FORBIDDEN)
                 else:

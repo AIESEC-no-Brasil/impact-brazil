@@ -7,8 +7,8 @@
                     overlay-theme="dark"
                     modal-theme="light"
                     ref="reloaderror">
-            We were unable to load this page. Check your internet connection and try again.
-
+                    {{fatalError}}
+                    <br/>
             <button class="retry"
                     @click="reloadPage()">
                 Try Again
@@ -57,8 +57,12 @@
 		},
 		created()
 		{
-			this.$root.$on('error', () => {
+			this.$root.$on('error', (errorMessage) => {
 				setTimeout(() => {
+                    this.fatalError = "We were unable to load this page. Check your internet connection and try again.";
+                    if(errorMessage){
+                        this.fatalError = errorMessage;
+                    }
 					this.$refs.reloaderror.open();
 				}, 1000);
 			});
