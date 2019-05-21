@@ -104,8 +104,9 @@
 							}
 							else if (err.response.status === 403)
 								this.$root.$emit('profile');
-							else
-								this.$root.$emit('error');
+							else{
+								this.$root.$emit('error', err.response && err.response.data && err.response.data.error ? err.response.data.error : '');
+							}
 						}
 						else
 						{
