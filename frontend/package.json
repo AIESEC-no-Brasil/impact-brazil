@@ -14,7 +14,7 @@
     "bootstrap-vue": "^2.0.0-rc.11",
     "dateformat": "^3.0.3",
     "markdown-it": "^8.4.2",
-    "moment": "^2.22.2",
+    "moment": "^2.29.2",
     "query-string": "^6.2.0",
     "svgjs": "^2.6.2",
     "sweet-modal-vue": "^2.0.0",
